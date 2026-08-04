@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scenarios — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="Short interactive missions where the technology fails on purpose, so you learn to catch it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A1A2E; --navy:#003366; --orange:#FF6600; --gold:#F9DD56; --teal:#008DA7;
+  --ondk:#A7B7C9; --dimdk:#5C6E82; --line:rgba(255,255,255,.12);
+  --green:#6FD79B; --red:#FF8A78;
+  --sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--ink);color:#fff;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;min-height:100vh}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit}
+code{font-family:var(--mono);font-size:.92em;background:rgba(255,255,255,.1);padding:2px 6px;border-radius:5px}
+
+.bar{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,30px);
+  border-bottom:1px solid var(--line);background:rgba(6,16,30,.92);position:sticky;top:0;z-index:40;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);flex-wrap:wrap}
+.bar .home{font-size:14.5px;font-weight:700;text-decoration:none;white-space:nowrap}
+.bar .home span{color:var(--orange)}
+.bar .sep{width:1px;height:20px;background:var(--line)}
+.bar .where{font-size:13.5px;color:var(--ondk)}
+.bar .right{margin-left:auto;display:flex;gap:8px}
+.bar .right a{font-size:12.5px;text-decoration:none;border:1px solid var(--line);border-radius:9px;
+  padding:7px 13px;color:var(--ondk);transition:background .2s,color .2s}
+.bar .right a:hover{background:rgba(255,255,255,.08);color:#fff}
+
+main{flex:1;width:100%;max-width:1120px;margin:0 auto;padding:clamp(22px,5vw,44px) clamp(16px,4vw,30px) 60px}
+
+/* ---------------- library ---------------- */
+.kicker{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--orange)}
+h1{font-size:clamp(27px,5vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:12px}
+h1 span{color:var(--dimdk)}
+.lede{color:var(--ondk);font-size:clamp(15px,1.8vw,18px);line-height:1.65;margin-top:18px;max-width:64ch}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(298px,1fr));gap:16px;margin-top:34px}
+.card{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04);
+  padding:22px;text-align:left;display:flex;flex-direction:column;gap:10px;width:100%;
+  transition:transform .25s cubic-bezier(.2,.7,.3,1),background .25s,border-color .25s}
+.card:hover{transform:translateY(-4px);background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.3)}
+.card:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+.card .top{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.card .tag{font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  padding:4px 9px;border-radius:20px;background:rgba(255,102,0,.17);color:#FFB37A}
+.card .mins{font-size:11.5px;color:var(--dimdk)}
+.card h3{font-size:18.5px;font-weight:600;line-height:1.25}
+.card p{font-size:14px;color:var(--ondk);line-height:1.6;flex:1}
+.card .foot{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  border-top:1px solid var(--line);padding-top:12px;margin-top:2px}
+.card .go{font-size:13px;font-weight:600;color:var(--orange)}
+.card .done{font-size:11.5px;color:var(--green);display:flex;align-items:center;gap:5px}
+.card .part{font-size:11.5px;color:var(--gold)}
+
+.libfoot{margin-top:30px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.libfoot button{font-size:12.5px;color:var(--dimdk);border:1px solid var(--line);
+  border-radius:9px;padding:8px 14px;transition:background .2s,color .2s}
+.libfoot button:hover{background:rgba(255,255,255,.07);color:#fff}
+
+/* ---------------- runner ---------------- */
+.run{max-width:860px;margin:0 auto}
+.runbar{display:flex;align-items:center;gap:16px;margin-bottom:26px;flex-wrap:wrap}
+.rb.back{font-size:13px;color:var(--ondk);border:1px solid var(--line);border-radius:9px;padding:8px 14px;
+  transition:background .2s,color .2s;white-space:nowrap}
+.rb.back:hover{background:rgba(255,255,255,.08);color:#fff}
+.rprog{flex:1;min-width:120px;height:5px;background:rgba(255,255,255,.11);border-radius:4px;overflow:hidden}
+.rprogfill{height:100%;background:linear-gradient(90deg,var(--orange),var(--gold));
+  border-radius:4px;transition:width .45s cubic-bezier(.2,.8,.3,1)}
+.rcount{font-size:12px;color:var(--dimdk);white-space:nowrap}
+
+.stitle{font-size:clamp(21px,3.2vw,30px);font-weight:700;line-height:1.22;letter-spacing:-.01em}
+.sbody{margin-top:14px;color:var(--ondk);font-size:15.5px;line-height:1.72}
+.sbody p+p{margin-top:12px}
+.sbody strong{color:#fff}
+
+/* artifacts */
+.art{margin-top:22px;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  background:rgba(255,255,255,.035)}
+.art-head{font-size:10.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--gold);padding:11px 16px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.04)}
+.art-meta{padding:12px 16px;border-bottom:1px solid var(--line);font-size:13px;display:grid;gap:5px}
+.art-meta div{display:flex;gap:10px}
+.art-meta span{color:var(--dimdk);min-width:62px;flex-shrink:0}
+.art-body{padding:16px;font-size:14.5px;line-height:1.68;color:#E4EAF1}
+.art-body p+p{margin-top:11px}
+.art-body.doc{background:#F6F7F9;color:#141821;font-size:14px;line-height:1.85}
+.art-body.doc h4{font-size:14px;font-weight:700;margin:14px 0 6px;color:#000}
+.art-body.doc p:first-child{margin-top:0}
+.redbox{background:#000;color:#000;border-radius:2px;padding:1px 4px;
+  transition:background .5s ease,color .5s ease;cursor:default;-webkit-user-select:all;user-select:all}
+.redbox .redtext{opacity:0;transition:opacity .5s ease}
+.redbox.lifted{background:rgba(255,138,120,.28);color:#7A1A08}
+.redbox.lifted .redtext{opacity:1}
+.art-term .art-body,pre.art-body{font-family:var(--mono);font-size:13px;white-space:pre-wrap;
+  background:#050B14;color:#B9E4C9;line-height:1.6}
+.art-table table{width:100%;border-collapse:collapse;font-size:13.5px}
+.art-table th{text-align:left;font-weight:600;color:var(--gold);padding:8px 10px;
+  border-bottom:1px solid var(--line);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase}
+.art-table td{padding:8px 10px;border-bottom:1px dashed rgba(255,255,255,.09);color:#DCE4EC}
+.art-chat .turn{display:grid;grid-template-columns:74px 1fr;gap:12px;padding:11px 0;
+  border-bottom:1px dashed rgba(255,255,255,.09)}
+.art-chat .turn:last-child{border-bottom:none}
+.art-chat .who{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--dimdk);padding-top:3px}
+.art-chat .turn.ai .who{color:var(--teal)}
+
+/* interaction */
+.prompt{margin-top:24px;font-size:16px;font-weight:600;line-height:1.5}
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.opt{display:flex;gap:13px;align-items:flex-start;text-align:left;padding:15px 17px;
+  border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.035);
+  font-size:14.5px;line-height:1.55;transition:background .2s,border-color .2s,transform .15s}
+.opt:hover:not(:disabled){background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.3)}
+.opt:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.opt:disabled{cursor:default;opacity:.86}
+.opt .dot{width:17px;height:17px;border-radius:50%;border:2px solid var(--dimdk);flex-shrink:0;margin-top:2px}
+.opt .box{width:17px;height:17px;border-radius:5px;border:2px solid var(--dimdk);flex-shrink:0;margin-top:2px}
+.opt.on .box{background:var(--orange);border-color:var(--orange);
+  box-shadow:inset 0 0 0 2px rgba(10,26,46,.9)}
+.opt.right{border-color:rgba(111,215,155,.6);background:rgba(111,215,155,.11)}
+.opt.right .dot,.opt.right .box{border-color:var(--green);background:var(--green)}
+.opt.chosen-right{border-color:var(--green);background:rgba(111,215,155,.17)}
+.opt.chosen-wrong{border-color:var(--red);background:rgba(255,138,120,.13)}
+.opt.chosen-wrong .dot,.opt.chosen-wrong .box{border-color:var(--red)}
+
+.fb{margin-top:16px;padding:16px 18px;border-radius:13px;font-size:14.5px;line-height:1.68}
+.fb.good{background:rgba(111,215,155,.1);border:1px solid rgba(111,215,155,.42);color:#CFE9DA}
+.fb.bad{background:rgba(255,138,120,.1);border:1px solid rgba(255,138,120,.42);color:#FFD8D0}
+.fbhead{font-weight:700;margin-bottom:7px;font-size:14px}
+.fb p+p{margin-top:9px}
+.fb strong{color:#fff}
+
+.acts{display:flex;gap:11px;align-items:center;margin-top:20px;flex-wrap:wrap}
+.acts .primary{background:var(--orange);color:#fff;border-radius:11px;padding:13px 27px;
+  font-size:14.5px;font-weight:600;transition:background .2s}
+.acts .primary:hover{background:#e25c00}
+.acts .primary:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.acts .primary:disabled{background:#4a3524;color:#8d7d70;cursor:not-allowed}
+.acts .ghost{border:1px solid var(--line);border-radius:11px;padding:12px 20px;
+  font-size:13.5px;color:var(--ondk);transition:background .2s,color .2s}
+.acts .ghost:hover{background:rgba(255,255,255,.08);color:#fff}
+.acts .hint{font-size:12.5px;color:var(--dimdk)}
+
+/* sort */
+.sortlist{display:flex;flex-direction:column;gap:11px;margin-top:16px}
+.sortitem{border:1px solid var(--line);border-radius:13px;padding:14px 16px;background:rgba(255,255,255,.035)}
+.sortitem.ok{border-color:rgba(111,215,155,.5)}
+.sortitem.no{border-color:rgba(255,138,120,.5)}
+.sittext{font-size:14.5px;line-height:1.55}
+.sitbtns{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
+.bkt{border:1.5px solid var(--bc);color:var(--bc);border-radius:9px;padding:7px 14px;
+  font-size:12px;font-weight:700;letter-spacing:.06em;transition:background .18s,color .18s}
+.bkt:hover:not(:disabled){background:var(--bc);color:#0A1A2E}
+.bkt.on{background:var(--bc);color:#0A1A2E}
+.bkt.answer{box-shadow:0 0 0 2px rgba(255,255,255,.55)}
+.bkt:disabled{cursor:default}
+.bkt:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.sitwhy{margin-top:11px;font-size:13px;color:var(--ondk);line-height:1.6;
+  border-top:1px dashed rgba(255,255,255,.13);padding-top:10px}
+.sitwhy strong{color:#fff}
+
+/* inspect */
+.inspectdoc{margin-top:16px;background:#F6F7F9;color:#141821;border-radius:13px;
+  padding:20px 22px;font-size:14.5px;line-height:1.95}
+.inspectdoc p+p{margin-top:11px}
+/* Negative side margins cancel the padding so the highlight has breathing
+   room without pushing the following punctuation away from the words. */
+.spot{background:rgba(0,141,167,.15);border-bottom:2px dotted #007e95;color:inherit;
+  padding:1px 3px;margin:0 -3px;border-radius:3px;font:inherit;transition:background .2s}
+.spot:hover:not(:disabled){background:rgba(0,141,167,.32)}
+.spot:focus-visible{outline:3px solid var(--orange);outline-offset:1px}
+.spot.hit{background:rgba(214,48,20,.19);border-bottom:2px solid #C7341A;font-weight:600}
+.spot.miss{background:rgba(120,132,148,.16);border-bottom:2px solid #8894a4;opacity:.75}
+.found{margin-top:14px;font-size:13px;color:var(--gold);font-weight:600}
+.fblist{display:flex;flex-direction:column;gap:9px;margin-top:12px}
+.fitem{border:1px solid rgba(255,138,120,.4);background:rgba(255,138,120,.09);
+  border-radius:11px;padding:13px 15px;font-size:14px;line-height:1.62;color:#FFD8D0}
+.fitem strong{display:block;color:#fff;margin-bottom:4px}
+.fitem.neutral{border-color:var(--line);background:rgba(255,255,255,.05);color:var(--ondk)}
+.fitem.missed{border-color:rgba(249,221,86,.45);background:rgba(249,221,86,.09);color:#F3E6B4}
+
+/* terminal */
+.term{margin-top:16px;background:#050B14;border:1px solid rgba(111,215,155,.25);
+  border-radius:13px;overflow:hidden;font-family:var(--mono);font-size:13px}
+.termout{padding:14px 16px;max-height:290px;overflow-y:auto;line-height:1.65}
+.tl{color:#B9E4C9;white-space:pre-wrap;word-break:break-word}
+.tl.cmd{color:#fff}
+.tl.dim{color:#5E7F6C}
+.tl.err{color:#FF8A78}
+.tl.ok{color:#6FD79B;font-weight:700}
+.tl.note{color:var(--gold)}
+.termline{display:flex;align-items:center;gap:9px;border-top:1px solid rgba(111,215,155,.2);padding:11px 16px}
+.ps1{color:#6FD79B;flex-shrink:0}
+#termin{flex:1;background:none;border:none;color:#fff;font-family:var(--mono);font-size:13px;outline:none}
+.termhint{margin-top:11px;font-size:13px;color:var(--ondk);line-height:1.6}
+.termhint strong{color:var(--gold)}
+
+/* reveal */
+.revealed{margin-top:20px;border:1px solid rgba(255,138,120,.45);border-radius:14px;
+  padding:18px 20px;background:rgba(255,138,120,.08)}
+.revhead{font-size:16px;font-weight:700;color:#FFB0A2;margin-bottom:10px}
+.revealed p{font-size:14.5px;line-height:1.7;color:#FFD8D0}
+.revealed p+p{margin-top:10px}
+.revealed strong{color:#fff}
+
+/* summary */
+.summary{text-align:center;padding-top:10px}
+.summary h2{font-size:26px;font-weight:700;margin-top:6px}
+.sline{color:var(--ondk);font-size:15px;margin-top:8px}
+.summary .acts{justify-content:center}
+.ring{width:130px;height:130px;border-radius:50%;margin:0 auto 18px;display:grid;place-items:center;
+  background:conic-gradient(var(--green) calc(var(--pct)*1%),rgba(255,255,255,.11) 0);position:relative}
+.ring::after{content:'';position:absolute;inset:11px;border-radius:50%;background:var(--ink)}
+.ring span{position:relative;z-index:1;font-size:31px;font-weight:700}
+.ring small{font-size:15px;color:var(--ondk)}
+.takeaway,.review{margin-top:20px;text-align:left;border:1px solid var(--line);border-radius:14px;
+  padding:17px 19px;background:rgba(255,255,255,.035)}
+.tkhead{font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:9px}
+.takeaway p{font-size:14.5px;line-height:1.72;color:var(--ondk)}
+.takeaway strong{color:#fff}
+.review ul{margin:0;padding-left:20px;color:var(--ondk);font-size:14px;line-height:1.8}
+.review.clean{color:var(--green);font-size:14px}
+.warn{color:var(--red);font-size:14px;margin-top:14px}
+
+/* authoring guide */
+.guide{margin-top:52px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.03);overflow:hidden}
+.guide summary{padding:18px 22px;font-size:15px;font-weight:600;cursor:pointer;display:flex;
+  align-items:center;gap:11px;list-style:none}
+.guide summary::-webkit-details-marker{display:none}
+.guide summary .chev{color:var(--orange);transition:transform .2s;display:inline-block}
+.guide[open] summary .chev{transform:rotate(90deg)}
+.gbody{padding:0 22px 26px;font-size:14px;line-height:1.72;color:var(--ondk);max-width:82ch}
+.gbody h4{color:#fff;font-size:13.5px;margin:20px 0 7px;font-weight:600}
+.gbody ul{margin:8px 0 0;padding-left:20px}
+.gbody li{margin:6px 0}
+.gbody strong{color:#fff}
+.gbody pre{background:#050B14;border:1px solid var(--line);border-radius:11px;padding:15px 17px;
+  overflow-x:auto;font-family:var(--mono);font-size:12px;line-height:1.65;color:#B9E4C9;margin:12px 0}
+.gbody table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+.gbody th{text-align:left;color:var(--gold);padding:7px 9px;border-bottom:1px solid var(--line);
+  font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.gbody td{padding:7px 9px;border-bottom:1px dashed rgba(255,255,255,.09);vertical-align:top}
+.gbody td code{white-space:nowrap}
+
+footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--dimdk)}
+
+@media (max-width:700px){
+  /* The reference tables in the authoring guide are wider than a phone.
+     Let them scroll on their own rather than pushing the page sideways. */
+  .gbody table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .gbody td code{white-space:normal;word-break:break-word}
+}
+@media (max-width:640px){
+  .art-chat .turn{grid-template-columns:1fr;gap:3px}
+  .ring{width:108px;height:108px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{.bar,.libfoot,.guide,.acts,footer{display:none}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <a class="home" href="../">AI Professional <span>Development</span></a>
+  <div class="sep" aria-hidden="true"></div>
+  <div class="where">Scenarios</div>
+  <div class="right">
+    <a href="../inspector/">Inspector</a>
+    <a href="../sandbox/">Sandbox</a>
+    <a href="../workshop/">Workshop</a>
+  </div>
+</div>
+
+<main>
+  <div id="library">
+    <div class="kicker">Practice missions</div>
+    <h1>Scenarios<br><span>Where the technology fails on purpose</span></h1>
+    <p class="lede">Short missions built around the mistakes that actually happen. Each one puts
+      you in front of a real decision, lets you make it, and then shows you what it cost.
+      Nothing here is live and nothing can break.</p>
+
+    <div class="cards" id="cards"></div>
+
+    <div class="libfoot">
+      <button type="button" id="reset">Clear my progress on this device</button>
+      <span class="acts hint" style="margin:0">Progress is stored in this browser only — never uploaded.</span>
+    </div>
+
+    <details class="guide">
+      <summary><span class="chev">&#9654;</span> How to write a new scenario</summary>
+      <div class="gbody">
+        <p>A scenario is one JSON file. You never edit the engine, the page, or any CSS — you add a
+          file to <code>scenarios/data/</code> and add its id to <code>scenarios/data/index.json</code>.
+          That is the whole process.</p>
+
+        <h4>1. Add the file</h4>
+        <p>Create <code>scenarios/data/my-scenario.json</code>:</p>
+<pre>{
+  "id": "my-scenario",
+  "title": "The one where it goes wrong",
+  "subtitle": "A line that says what they will practise",
+  "audience": "Staff",
+  "minutes": 10,
+  "summary": "Shown on the card in the library.",
+  "takeaway": "The sentence you want them repeating afterwards.",
+  "steps": [ ... ]
+}</pre>
+
+        <h4>2. Register it</h4>
+        <p>Open <code>scenarios/data/index.json</code> and add the id to the list:</p>
+<pre>{ "scenarios": ["redaction-trap", "citation-check", "my-scenario"] }</pre>
+        <p>Order in that list is the order on the page. That is the only thing that file controls.</p>
+
+        <h4>Step types</h4>
+        <table>
+          <tr><th>Type</th><th>What it does</th></tr>
+          <tr><td><code>brief</code></td><td>Sets the scene. Text, an optional artifact, and a Continue button.</td></tr>
+          <tr><td><code>choice</code></td><td>One right answer. Every option carries its own feedback.</td></tr>
+          <tr><td><code>multi</code></td><td>Select all that apply. Scored as all-or-nothing.</td></tr>
+          <tr><td><code>sort</code></td><td>Put each item in a bucket. This is the Sort the Stack format.</td></tr>
+          <tr><td><code>inspect</code></td><td>Find the problems hidden in a document. Decoys allowed.</td></tr>
+          <tr><td><code>terminal</code></td><td>Type commands against a simulated shell.</td></tr>
+          <tr><td><code>reveal</code></td><td>They take an action, then see the consequence.</td></tr>
+        </table>
+
+        <h4>Artifacts</h4>
+        <p>Any step can carry an <code>artifact</code> — the thing they are looking at:</p>
+        <table>
+          <tr><th>Kind</th><th>Fields</th></tr>
+          <tr><td><code>email</code></td><td><code>from, to, date, subject, body</code></td></tr>
+          <tr><td><code>doc</code></td><td><code>lines[]</code> — a string, or <code>{heading}</code>, or <code>{redacted:true, under:"…"}</code></td></tr>
+          <tr><td><code>chat</code></td><td><code>aiName, turns[{who:"ai"|"you", text}]</code></td></tr>
+          <tr><td><code>table</code></td><td><code>columns[], rows[][]</code></td></tr>
+          <tr><td><code>terminal</code></td><td><code>lines[]</code></td></tr>
+        </table>
+
+        <h4>Worked example — a choice step</h4>
+<pre>{
+  "type": "choice",
+  "title": "The request",
+  "body": "It is 4:45 on a Friday.",
+  "artifact": {
+    "kind": "email",
+    "from": "dean@example.edu",
+    "subject": "Need this tonight",
+    "body": "Can you send me the list of students who failed?"
+  },
+  "prompt": "What do you do first?",
+  "options": [
+    { "text": "Send it — the dean asked.",
+      "correct": false,
+      "feedback": "Authority is not the same as authorisation." },
+    { "text": "Check whether the dean has an educational interest in those records.",
+      "correct": true,
+      "feedback": "That is the FERPA question, and it survives being asked on a Friday." }
+  ]
+}</pre>
+
+        <h4>Marking up an inspect step</h4>
+        <p>Write the passage in <code>text</code> and wrap each clickable region in
+          <code>{{id|the words they click}}</code>. Then describe each id in <code>spans</code>.
+          Set <code>"target": true</code> for real problems and leave it off for decoys — decoys are
+          what make it a skill rather than a scavenger hunt.</p>
+<pre>{
+  "type": "inspect",
+  "prompt": "Three things here should stop you. Find them.",
+  "text": "Per our call, {{a|attached is the full unredacted file}} …",
+  "spans": [
+    { "id": "a", "target": true, "label": "Unredacted file",
+      "note": "Nothing about the request required the whole file." }
+  ]
+}</pre>
+
+        <h4>Things worth knowing</h4>
+        <ul>
+          <li><strong>Options are shuffled</strong> so the right answer is not always in the same place.
+            Set <code>"shuffle": false</code> on a choice step when order matters.</li>
+          <li><strong>Text formatting</strong> supports <code>**bold**</code>, <code>*italic*</code>,
+            <code>`code`</code> and blank lines for paragraphs. Everything else is escaped, so a
+            scenario file can never break the page.</li>
+          <li><strong>Deep links work.</strong> <code>#my-scenario</code> opens it and
+            <code>#my-scenario/4</code> opens at step 4 — useful with the QR button when you want
+            thirty people on the same screen at once.</li>
+          <li><strong>Progress is local.</strong> It lives in this browser and is never uploaded.</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+
+  <div id="runner" hidden></div>
+</main>
+
+<footer>
+  <div>Ted Gonzalez, JD/MBA</div>
+  <div>&copy; 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
+</footer>
+
+<script src="../assets/mcc-scenario.js"></script>
+<script src="../assets/mcc-qr.js" defer></script>
+<script>
+(function () {
+  'use strict';
+
+  var libEl = document.getElementById('library');
+  var runEl = document.getElementById('runner');
+  var cardsEl = document.getElementById('cards');
+  var loaded = {};
+  var index = [];
+  var runner = null;
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function drawCards() {
+    var prog = MCCScenario.progress();
+    cardsEl.innerHTML = index.map(function (s) {
+      var p = prog[s.id];
+      var state = '';
+      if (p && p.done) state = '<span class="done">&#10003; Completed</span>';
+      else if (p && p.step > 0) state = '<span class="part">Step ' + (p.step + 1) + ' of ' + p.total + '</span>';
+      return '<button class="card" type="button" data-id="' + esc(s.id) + '">' +
+        '<span class="top"><span class="tag">' + esc(s.audience || 'All') + '</span>' +
+        '<span class="mins">' + esc(s.minutes || 10) + ' min</span></span>' +
+        '<h3>' + esc(s.title) + '</h3>' +
+        '<p>' + esc(s.summary || s.subtitle || '') + '</p>' +
+        '<span class="foot"><span class="go">Start &rarr;</span>' + state + '</span></button>';
+    }).join('');
+  }
+
+  cardsEl.addEventListener('click', function (e) {
+    var b = e.target.closest('.card');
+    if (b) open(b.dataset.id, 0);
+  });
+
+  document.getElementById('reset').addEventListener('click', function () {
+    MCCScenario.reset();
+    drawCards();
+    this.textContent = 'Progress cleared';
+    var self = this;
+    setTimeout(function () { self.textContent = 'Clear my progress on this device'; }, 1800);
+  });
+
+  function showLibrary() {
+    runEl.hidden = true;
+    libEl.hidden = false;
+    runner = null;
+    if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+    drawCards();
+    document.title = 'Scenarios — MCC AI Professional Development';
+  }
+
+  function open(id, step) {
+    var meta = index.filter(function (s) { return s.id === id; })[0];
+    if (!meta) { showLibrary(); return; }
+
+    var start = function (data) {
+      libEl.hidden = true;
+      runEl.hidden = false;
+      document.title = data.title + ' — MCC Scenarios';
+      runner = new MCCScenario.Runner(runEl, data, {
+        onExit: showLibrary,
+        onStep: function (sid, n) {
+          var h = '#' + sid + (n > 0 ? '/' + n : '');
+          if (location.hash !== h) history.replaceState(null, '', h);
+        }
+      });
+      runner.go(step || 0);
+    };
+
+    if (loaded[id]) { start(loaded[id]); return; }
+
+    runEl.hidden = false;
+    libEl.hidden = true;
+    runEl.innerHTML = '<div class="run"><p class="sbody">Loading…</p></div>';
+
+    fetch('data/' + id + '.json')
+      .then(function (r) { if (!r.ok) throw new Error('not found'); return r.json(); })
+      .then(function (data) { loaded[id] = data; start(data); })
+      .catch(function () {
+        runEl.innerHTML = '<div class="run"><div class="runbar">' +
+          '<button class="rb back" type="button" id="berr">&larr; All scenarios</button></div>' +
+          '<p class="warn">That scenario could not be loaded. If you opened this page directly from ' +
+          'a folder rather than over the web, the browser will block the file — use the live site.</p></div>';
+        document.getElementById('berr').addEventListener('click', showLibrary);
+      });
+  }
+
+  function fromHash() {
+    var h = location.hash.replace(/^#/, '');
+    if (!h) { showLibrary(); return; }
+    var parts = h.split('/');
+    var id = parts[0];
+    var step = parts[1] ? parseInt(parts[1], 10) || 0 : 0;
+    if (index.filter(function (s) { return s.id === id; }).length) open(id, step);
+    else showLibrary();
+  }
+
+  /* Load the index, then each scenario's header so cards can be drawn. */
+  fetch('data/index.json')
+    .then(function (r) { return r.json(); })
+    .then(function (list) {
+      var ids = list.scenarios || [];
+      return Promise.all(ids.map(function (id) {
+        return fetch('data/' + id + '.json')
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .catch(function () { return null; });
+      }));
+    })
+    .then(function (all) {
+      all.forEach(function (d) {
+        if (!d) return;
+        loaded[d.id] = d;
+        index.push({ id: d.id, title: d.title, subtitle: d.subtitle,
+                     summary: d.summary, audience: d.audience, minutes: d.minutes });
+      });
+      drawCards();
+      fromHash();
+    })
+    .catch(function () {
+      cardsEl.innerHTML = '<p class="warn">The scenario list could not be loaded. ' +
+        'This page needs to be served over the web rather than opened from a folder.</p>';
+    });
+
+  window.addEventListener('hashchange', function () {
+    if (!location.hash) { if (!libEl.hidden) return; showLibrary(); return; }
+    var parts = location.hash.replace(/^#/, '').split('/');
+    if (runner && runner.s.id === parts[0]) {
+      var want = parts[1] ? parseInt(parts[1], 10) || 0 : 0;
+      if (want !== runner.i) runner.go(want);
+    } else {
+      fromHash();
+    }
+  });
+})();
+</script>
+</body>
+</html>
