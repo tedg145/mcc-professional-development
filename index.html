@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-qr-start-hidden>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -113,12 +113,18 @@ a.card:before{content:'';position:absolute;inset:0;opacity:0;transition:opacity 
   background:radial-gradient(420px circle at var(--mx,50%) var(--my,0%),rgba(255,102,0,.16),transparent 60%)}
 a.card:hover{transform:translateY(-5px);background:rgba(255,255,255,.085);border-color:rgba(255,255,255,.26)}
 a.card:hover:before{opacity:1}
-.card .k{font-size:10px;font-weight:700;letter-spacing:.17em;text-transform:uppercase;color:var(--gold);position:relative}
+/* Fixed height so a two-line kicker does not push one card's title out of
+   line with its neighbours. */
+.card .khead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+  position:relative;min-height:30px}
+.card .k{font-size:10px;font-weight:700;letter-spacing:.17em;text-transform:uppercase;color:var(--gold);
+  position:relative;line-height:1.5;min-width:0}
 .card h2{font-size:20px;font-weight:600;margin:11px 0 9px;position:relative}
 .card p{font-size:14px;color:var(--ondk);line-height:1.6;position:relative}
 .card .go{margin-top:16px;font-size:12.5px;font-weight:600;color:var(--orange);position:relative}
-.card .tag{position:absolute;top:22px;right:22px;font-size:10px;font-weight:700;letter-spacing:.08em;
-  padding:4px 10px;border-radius:11px;background:rgba(255,255,255,.09);color:var(--ondk)}
+.card .tag{flex-shrink:0;font-size:10px;font-weight:700;letter-spacing:.08em;white-space:nowrap;
+  padding:4px 10px;border-radius:11px;background:rgba(255,255,255,.09);color:var(--ondk);
+  position:relative;margin-top:-2px}
 div.card{opacity:.55}
 div.card .go{color:var(--dimdk)}
 #hubfoot{margin-top:auto;padding:34px 0 26px;font-size:12px;color:var(--dimdk);
@@ -184,7 +190,17 @@ const SECTIONS = [
   { href:'sandbox/', kicker:'Practice environment', tag:'6 missions',
     title:'The Sabine Crossing Sandbox',
     desc:'A fictional college where nothing can break. A scoped assistant, authorization screens, a connector marketplace and a terminal.',
-    cta:'Open the sandbox' }
+    cta:'Open the sandbox' },
+
+  { href:'scenarios/', kicker:'Practice missions', tag:'4 scenarios',
+    title:'Scenarios',
+    desc:'Short missions where the technology fails on purpose — a fabricated citation, a redaction that is only a drawing, an assistant that invents policy.',
+    cta:'Run a scenario' },
+
+  { href:'inspector/', kicker:'Hands-on lab', tag:'Nothing uploads',
+    title:'Metadata Inspector',
+    desc:'Drop in a photo or a document and see what it is carrying. Camera, author, revision history, and sometimes exactly where it was taken.',
+    cta:'Open the inspector' }
 
   // Add the next section by copying a block above. Example:
   // ,{ href:'resources/', kicker:'Reference', tag:'Coming soon',
@@ -195,8 +211,10 @@ const SECTIONS = [
 
 const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 document.getElementById('cards').innerHTML = SECTIONS.map(s => {
-  const inner = (s.tag ? '<div class="tag">' + esc(s.tag) + '</div>' : '')
-    + '<div class="k">' + esc(s.kicker) + '</div>'
+  /* Kicker and tag share one flex row so a long kicker can never run
+     underneath the pill, whatever either of them says. */
+  const inner = '<div class="khead"><div class="k">' + esc(s.kicker) + '</div>'
+    + (s.tag ? '<div class="tag">' + esc(s.tag) + '</div>' : '') + '</div>'
     + '<h2>' + esc(s.title) + '</h2>'
     + '<p>' + esc(s.desc) + '</p>'
     + '<div class="go">' + esc(s.cta) + ' &rarr;</div>';
@@ -410,6 +428,8 @@ function enter(instant){
   document.documentElement.style.overflow = 'auto';
   document.body.style.overflow = 'auto';
   if(location.hash !== '#hub') history.replaceState(null, '', '#hub');
+  /* The QR button stays out of the intro and appears with the hub. */
+  if(window.MCCQR) window.MCCQR.show();
   setTimeout(function(){
     if(raf) cancelAnimationFrame(raf);
     raf = null; boot.style.display = 'none';
@@ -428,6 +448,10 @@ document.getElementById('replay').addEventListener('click', function(){
   location.hash = '';
   location.reload();
 });
+
+/* If we arrived straight at #hub the QR button is wanted immediately. */
+if(entered && window.MCCQR) window.MCCQR.show();
 </script>
+<script src="assets/mcc-qr.js" defer></script>
 </body>
 </html>

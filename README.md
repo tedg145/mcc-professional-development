@@ -8,10 +8,25 @@ Workshop materials for MCC staff and faculty.
 |---|---|
 | `/` | Landing page — the intro sequence, then the hub |
 | `/presentations/` | Slide library, grouped into **Staff** and **Faculty** |
+| `/scenarios/` | Interactive missions where the technology fails on purpose |
+| `/inspector/` | Metadata Inspector — read what a file is carrying, in the browser |
 | `/workshop/` | Build Your Own Tools (three-hour workshop) |
 | `/sandbox/` | The Sabine Crossing practice environment |
+| `/assets/` | Shared JavaScript. No frameworks, no CDN, no build step. |
 
-Everything runs in a browser. No install, no account, no build step.
+Everything runs in a browser. No install, no account, nothing to configure.
+
+---
+
+## The QR button
+
+Every page has a QR button in the bottom-left corner, or **Shift + Q** from the
+keyboard. It generates a code for whatever URL is in the address bar *including
+the `#` fragment*, so you can push the exact deck, scenario or step you are on to
+every phone in the room. **Project it** blows it up full screen for the back row.
+
+The QR encoder is written out in `assets/mcc-qr.js` rather than loaded from a
+CDN, so the button still works when campus wifi does not.
 
 ---
 
@@ -19,21 +34,60 @@ Everything runs in a browser. No install, no account, no build step.
 
 1. Put the PDF and the `.pptx` in `presentations/files/`, named the same
    (`my-deck.pdf`, `my-deck.pptx`).
-2. Open `presentations/index.html` and add one entry to the `LIBRARY` array,
-   inside whichever category it belongs to. Copy the shape of an existing entry.
-   The `id` must match the filename without the extension.
+2. In `presentations/index.html`, add one entry to the `LIBRARY` array inside the
+   right category. The `id` must match the filename without its extension.
 
-The page has a **How to add a presentation** panel at the bottom with the same
-instructions, including how to add a whole new category.
+The page carries its own **How to add a presentation** panel with the same
+instructions plus how to add a whole new category.
 
-> When uploading through GitHub's web interface, wait for the file list to
-> appear before clicking **Commit changes** — clicking early silently drops
-> the upload.
+## Adding a scenario
 
-## Skipping the intro in class
+1. Create `scenarios/data/my-scenario.json`.
+2. Add `"my-scenario"` to the list in `scenarios/data/index.json`.
 
-Bookmark `…/#hub` and the landing page goes straight to the menu. The intro is
-still there on the plain URL, and the hub footer has a **Replay intro** link.
+That is the whole process — no engine, page or CSS changes. Step types are
+`brief`, `choice`, `multi`, `sort`, `inspect`, `terminal` and `reveal`; artifacts
+are `email`, `doc`, `chat`, `table` and `terminal`. The full format reference,
+with worked examples, is in the **How to write a new scenario** panel on the
+scenarios page itself, so the instructions travel with the site.
+
+## Adding a hub card
+
+Edit the `SECTIONS` array near the bottom of the root `index.html`. There is a
+commented-out example showing a `soon: true` entry for something not built yet.
+
+---
+
+## Notes for teaching
+
+**Skip the intro.** Bookmark `…/#hub` and the landing page goes straight to the
+menu. The intro still plays on the plain URL, and the hub footer has a **Replay
+intro** link.
+
+**Deep links.** `…/presentations/#foundations` opens that deck.
+`…/scenarios/#redaction-trap/3` opens that scenario at step 4. Combine either
+with the QR button to put a whole room on the same screen.
+
+**The inspector is genuinely local.** Files are read in the browser and never
+uploaded. Worth disconnecting from wifi once in front of a class to prove it —
+only the map tiles for GPS coordinates come from the network.
+
+**Sample files** live in `inspector/samples/` and are built to carry deliberate
+metadata: a photo with GPS and a camera serial number, a Word draft that has been
+through three people with tracked changes still in it, a PDF with two saved
+revisions, and a screenshot that is nearly empty as the counter-example.
+
+---
+
+## Two things that will bite you
+
+**Wait for the file list before committing.** When you upload through GitHub's
+web interface, the staged file has to finish appearing on screen before you click
+**Commit changes**. Click early and the commit silently succeeds with nothing in
+it.
+
+**Give Pages 30–90 seconds, then hard-refresh.** Ctrl+Shift+R, or Cmd+Shift+R on
+a Mac. Browsers cache these pages aggressively.
 
 ---
 
