@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sabine Crossing AI Sandbox — Practice Environment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#003366; --blue-dk:#001B3B; --blue-lt:#D6E8EE;
+  --orange:#FF6600; --gold:#F9DD56; --teal:#008DA7; --magenta:#EC008C; --lav:#B3B3DA;
+  --ink:#12161c; --mute:#5b6672; --line:#dfe4ea; --bg:#f4f6f8; --white:#fff;
+  --green:#1a7f4b; --red:#c0392b; --amber:#b8860b;
+  --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+  --sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;overflow:hidden}
+button{font-family:inherit;font-size:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+/* ---------- Simulation banner ---------- */
+#simbar{background:repeating-linear-gradient(45deg,var(--orange),var(--orange) 12px,#e35c00 12px,#e35c00 24px);
+  color:#fff;text-align:center;padding:5px 12px;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+
+/* ---------- Layout ---------- */
+#app{display:flex;flex-direction:column;height:100vh}
+#main{flex:1;display:flex;min-height:0}
+#side{width:290px;background:var(--blue-dk);color:#dbe4ee;display:flex;flex-direction:column;flex-shrink:0}
+#stage{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--white)}
+
+/* ---------- Header ---------- */
+header{background:var(--blue);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-shrink:0}
+header .mark{width:34px;height:34px;border-radius:8px;background:var(--orange);display:grid;place-items:center;font-weight:700;font-size:15px;flex-shrink:0}
+header h1{font-size:15.5px;font-weight:600;letter-spacing:.01em}
+header .sub{font-size:11.5px;opacity:.72;font-weight:300}
+header .spacer{flex:1}
+.scorepill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:5px 13px;border-radius:20px;font-size:12px;font-weight:500}
+
+/* ---------- Sidebar ---------- */
+.side-h{padding:15px 18px 9px;font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:#8fa6bd;font-weight:600}
+#missions{flex:1;overflow-y:auto;padding:0 10px 14px}
+.mission{padding:11px 12px;border-radius:9px;margin-bottom:5px;cursor:pointer;border:1px solid transparent;transition:.15s}
+.mission:hover{background:rgba(255,255,255,.06)}
+.mission.active{background:rgba(255,102,0,.16);border-color:var(--orange)}
+.mission.done{opacity:.62}
+.mission .t{display:flex;align-items:flex-start;gap:9px}
+.mission .n{width:19px;height:19px;border-radius:50%;border:1.5px solid #6b8299;display:grid;place-items:center;font-size:10.5px;flex-shrink:0;margin-top:1px;font-weight:600}
+.mission.done .n{background:var(--green);border-color:var(--green);color:#fff}
+.mission.active .n{border-color:var(--orange);color:var(--orange)}
+.mission .ttl{font-size:12.8px;font-weight:500;line-height:1.35}
+.mission .dsc{font-size:11px;color:#8fa6bd;margin-top:3px;line-height:1.4;padding-left:28px}
+#sidefoot{padding:13px 18px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;color:#8fa6bd;line-height:1.5}
+#sidefoot b{color:var(--gold)}
+
+/* ---------- Tabs ---------- */
+#tabs{display:flex;border-bottom:1px solid var(--line);background:#fafbfc;flex-shrink:0;overflow-x:auto}
+.tab{padding:12px 19px;font-size:13px;font-weight:500;color:var(--mute);border-bottom:2.5px solid transparent;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.tab:hover{color:var(--ink);background:#f2f4f7}
+.tab.on{color:var(--blue);border-bottom-color:var(--orange);background:var(--white)}
+.tab .dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:none}
+.tab.has .dot{display:block}
+#panes{flex:1;min-height:0;position:relative}
+.pane{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden}
+.pane.on{display:flex}
+
+/* ---------- Brief ---------- */
+#brief{background:var(--blue-lt);border-bottom:1px solid #b9d4de;padding:11px 20px;font-size:12.8px;display:flex;gap:11px;align-items:flex-start;flex-shrink:0}
+#brief .ic{color:var(--blue);font-weight:700;flex-shrink:0}
+#brief b{color:var(--blue)}
+
+/* ---------- Terminal ---------- */
+#term{flex:1;background:#0d1117;color:#c9d1d9;font-family:var(--mono);font-size:12.8px;padding:16px 18px;overflow-y:auto;line-height:1.65}
+#term .p{color:#7ee787}.term-path{color:#79c0ff}
+#term .err{color:#ff7b72}#term .ok{color:#7ee787}#term .dim{color:#8b949e}
+#term .warn{color:#e3b341}
+#termline{display:flex;align-items:baseline;gap:0}
+#termin{flex:1;background:none;border:none;color:#c9d1d9;font-family:var(--mono);font-size:12.8px;outline:none;caret-color:var(--orange)}
+.tw{white-space:pre-wrap;word-break:break-word}
+
+/* ---------- Files ---------- */
+#files{flex:1;overflow-y:auto;padding:20px 24px}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:13px;margin-top:13px}
+.fcard{border:1px solid var(--line);border-radius:11px;padding:14px;background:var(--white);transition:.15s}
+.fcard:hover{border-color:var(--blue);box-shadow:0 3px 12px rgba(0,51,102,.09)}
+.fcard .fn{font-weight:600;font-size:13px;display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.fcard .fd{font-size:11.8px;color:var(--mute);line-height:1.5;margin-bottom:9px}
+.badge{display:inline-block;padding:2.5px 9px;border-radius:11px;font-size:10px;font-weight:700;letter-spacing:.05em}
+.b-green{background:#e3f5ea;color:var(--green)}
+.b-amber{background:#fdf3d9;color:var(--amber)}
+.b-red{background:#fbe6e3;color:var(--red)}
+.sec{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--mute);font-weight:600;margin:22px 0 3px}
+.sec:first-child{margin-top:0}
+h2.ph{font-size:17px;font-weight:600;color:var(--blue)}
+p.pi{font-size:12.8px;color:var(--mute);margin-top:4px;max-width:70ch}
+
+/* ---------- Connectors ---------- */
+#conns{flex:1;overflow-y:auto;padding:20px 24px}
+.cn{border:1px solid var(--line);border-radius:11px;padding:15px;display:flex;gap:14px;align-items:center;margin-bottom:11px;background:var(--white)}
+.cn .logo{width:42px;height:42px;border-radius:10px;display:grid;place-items:center;font-weight:700;color:#fff;font-size:15px;flex-shrink:0}
+.cn .meta{flex:1;min-width:0}
+.cn .nm{font-weight:600;font-size:13.5px;display:flex;align-items:center;gap:8px}
+.cn .ds{font-size:11.8px;color:var(--mute);margin-top:2px}
+.btn{background:var(--blue);color:#fff;padding:8px 17px;border-radius:7px;font-size:12.5px;font-weight:500;transition:.15s}
+.btn:hover{background:#00284f}
+.btn.ghost{background:none;color:var(--blue);border:1px solid var(--blue)}
+.btn.ghost:hover{background:var(--blue-lt)}
+.btn.danger{background:var(--red)}.btn.danger:hover{background:#a13124}
+.btn.ok{background:var(--green)}
+.btn:disabled{background:#c8d0d8;cursor:default}
+.tag{font-size:9.5px;padding:2px 7px;border-radius:9px;font-weight:700;letter-spacing:.05em}
+.tag.appr{background:#e3f5ea;color:var(--green)}
+.tag.unv{background:#fbe6e3;color:var(--red)}
+
+/* ---------- Chat ---------- */
+#chatwrap{flex:1;display:flex;flex-direction:column;min-height:0}
+#chat{flex:1;overflow-y:auto;padding:20px 24px}
+.msg{margin-bottom:15px;max-width:74ch}
+.msg .who{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--mute);font-weight:600;margin-bottom:4px}
+.msg .bub{padding:11px 14px;border-radius:11px;font-size:13px;line-height:1.6}
+.msg.u .bub{background:var(--blue);color:#fff;border-bottom-right-radius:3px}
+.msg.u{margin-left:auto}.msg.u .who{text-align:right}
+.msg.a .bub{background:#f1f3f6;border-bottom-left-radius:3px}
+.msg.sys .bub{background:#fff8e6;border:1px solid #f0d998;font-size:12.5px}
+.verify{margin-top:9px;display:flex;gap:8px;flex-wrap:wrap}
+.vbtn{font-size:11.5px;padding:6px 12px;border-radius:16px;border:1px solid var(--line);background:var(--white);color:var(--mute);font-weight:500}
+.vbtn:hover{border-color:var(--blue);color:var(--blue)}
+#chatin{border-top:1px solid var(--line);padding:13px 20px;display:flex;gap:10px;align-items:flex-end;flex-shrink:0;background:#fafbfc}
+#chatbox{flex:1;border:1px solid var(--line);border-radius:9px;padding:10px 13px;font-family:inherit;font-size:13px;resize:none;height:44px;max-height:120px;outline:none}
+#chatbox:focus{border-color:var(--blue)}
+.chip{font-size:11px;padding:5px 11px;border-radius:14px;background:#eef1f5;color:var(--mute);border:1px solid var(--line);font-weight:500}
+.chip:hover{background:var(--blue-lt);color:var(--blue)}
+#chips{padding:0 20px 11px;display:flex;gap:7px;flex-wrap:wrap;background:#fafbfc}
+
+/* ---------- Modal ---------- */
+#veil{position:fixed;inset:0;background:rgba(6,14,24,.62);display:none;place-items:center;z-index:50;padding:20px}
+#veil.on{display:grid}
+.modal{background:var(--white);border-radius:15px;max-width:530px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 22px 60px rgba(0,0,0,.35)}
+.mh{padding:20px 24px 15px;border-bottom:1px solid var(--line)}
+.mh .t{font-size:16px;font-weight:600}
+.mh .s{font-size:12.3px;color:var(--mute);margin-top:4px}
+.mb{padding:20px 24px}
+.mf{padding:15px 24px 20px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.scope{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid #f0f2f5;font-size:12.7px;align-items:flex-start}
+.scope:last-child{border-bottom:none}
+.scope .i{flex-shrink:0;font-size:14px;line-height:1.3}
+.scope .sd{color:var(--mute);font-size:11.5px;margin-top:2px}
+.alert{padding:12px 14px;border-radius:9px;font-size:12.5px;line-height:1.55;margin-bottom:14px}
+.alert.bad{background:#fbe6e3;border-left:3px solid var(--red)}
+.alert.good{background:#e3f5ea;border-left:3px solid var(--green)}
+.alert.warn{background:#fdf3d9;border-left:3px solid var(--amber)}
+
+/* ---------- Debrief ---------- */
+.debrief{background:var(--blue-dk);color:#dbe4ee;border-radius:11px;padding:16px 18px;font-size:12.6px;line-height:1.65;margin-top:13px}
+.debrief b{color:var(--gold)}
+.kbd{font-family:var(--mono);background:#eef1f5;border:1px solid var(--line);border-radius:4px;padding:1px 6px;font-size:11.5px}
+code{font-family:var(--mono);font-size:12px;background:#f1f3f6;padding:1px 5px;border-radius:4px}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#c3ccd6;border-radius:5px}
+::-webkit-scrollbar-track{background:transparent}
+#term::-webkit-scrollbar-thumb{background:#30363d}
+@media(max-width:880px){#side{display:none}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="simbar">Simulation only · Nothing here connects to a real system · No real student data exists in this environment</div>
+
+  <header>
+    <div class="mark">SC</div>
+    <div>
+      <h1>Sabine Crossing AI Sandbox</h1>
+      <div class="sub">Practice environment · a fictional college · nothing you do here can break anything</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="scorepill" id="score">0 / 6 missions</div>
+  </header>
+
+  <div id="main">
+    <nav id="side">
+      <div class="side-h">Missions</div>
+      <div id="missions"></div>
+      <div id="sidefoot">
+        Everything in this sandbox is <b>fake</b> — the college, the students, the repository, the connectors.
+        The <i>motions</i> are real. That's the point.
+      </div>
+    </nav>
+
+    <section id="stage">
+      <div id="tabs">
+        <button class="tab on" data-p="p-files">Files<span class="dot"></span></button>
+        <button class="tab" data-p="p-chat">AI Assistant<span class="dot"></span></button>
+        <button class="tab" data-p="p-conn">Connectors<span class="dot"></span></button>
+        <button class="tab" data-p="p-term">Terminal<span class="dot"></span></button>
+      </div>
+
+      <div id="brief"><span class="ic">▸</span><span id="brieftext"></span></div>
+
+      <div id="panes">
+        <!-- FILES -->
+        <div class="pane on" id="p-files">
+          <div id="files">
+            <h2 class="ph">Sabine Crossing — working files</h2>
+            <p class="pi">This is what the sandbox gives you to work with. Every file is fabricated. The colored badge shows how the <em>equivalent real file at MCC</em> would be classified — that's the habit we're building. Here, all of it is safe.</p>
+            <div class="sec">Safe to use anywhere</div>
+            <div class="fgrid" id="fg-green"></div>
+            <div class="sec">Internal — licensed tools only (if it were real)</div>
+            <div class="fgrid" id="fg-amber"></div>
+            <div class="sec">Would be prohibited (if it were real)</div>
+            <div class="fgrid" id="fg-red"></div>
+          </div>
+        </div>
+
+        <!-- CHAT -->
+        <div class="pane" id="p-chat">
+          <div id="chatwrap">
+            <div id="chat"></div>
+            <div id="chips"></div>
+            <div id="chatin">
+              <textarea id="chatbox" placeholder="Ask the assistant something about Sabine Crossing…"></textarea>
+              <button class="btn" id="send">Send</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONNECTORS -->
+        <div class="pane" id="p-conn">
+          <div id="conns">
+            <h2 class="ph">Connect a tool</h2>
+            <p class="pi">Every one of these opens a simulated authorization screen. Nothing is really connected and no account of yours is touched. Read what each one is asking for before you click — that is the entire exercise.</p>
+            <div style="margin-top:16px" id="cnlist"></div>
+          </div>
+        </div>
+
+        <!-- TERMINAL -->
+        <div class="pane" id="p-term">
+          <div id="term">
+            <div id="termout" class="tw"></div>
+            <div id="termline"><span class="p">sandbox@sccc</span><span class="dim">:</span><span class="term-path" id="cwd">~</span><span class="dim">$&nbsp;</span><input id="termin" autocomplete="off" spellcheck="false"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div id="veil"><div class="modal" id="modal"></div></div>
+
+<script>
+/* ============================================================
+   STATE  (in-memory only — no browser storage anywhere)
+   ============================================================ */
+const S = {
+  tab:'p-files',
+  connected:{github:false, drive:false},
+  declined:{},
+  readScopes:false,
+  caught:false,
+  blocked:false,
+  cloned:false, staged:false, committed:false, pushed:false,
+  cwd:['~'],
+  done:{},
+  active:'m1'
+};
+
+const MISSIONS = [
+  {id:'m1', t:'Ask, then doubt', d:'Use the assistant. Catch it being confidently wrong.', tab:'p-chat',
+   brief:'Open <b>AI Assistant</b> and ask about something the handbook does not cover — parking, transfer credit, veterans benefits. Then press <b>Check this against the handbook</b>. Your job is not to get an answer. It is to catch one.'},
+  {id:'m2', t:'Read before you click', d:'Authorize a connector — after actually reading it.', tab:'p-conn',
+   brief:'Go to <b>Connectors</b> and connect GitHub. Open <b>Review permissions</b> first and read what it wants. Nobody reads these. That is exactly why this mission exists.'},
+  {id:'m3', t:'Decline something', d:'One of these connectors should not be approved.', tab:'p-conn',
+   brief:'One connector in the list is asking for far more than its job requires, from a vendor with no agreement. Find it, open it, and <b>decline</b> it. Getting this wrong is a normal, survivable mistake here.'},
+  {id:'m4', t:'The paste you almost made', d:'Try to paste a student record into the assistant.', tab:'p-chat',
+   brief:'In <b>AI Assistant</b>, use the <b>Paste a student aid record</b> chip. Go ahead — the sandbox is watching, and this is the safest place in the world to make this mistake.'},
+  {id:'m5', t:'Move around', d:'Terminal: look before you leap.', tab:'p-term',
+   brief:'Open <b>Terminal</b>. Type <span class="kbd">help</span> to see what works, then find your way to the project: <span class="kbd">ls</span>, <span class="kbd">cd</span>, <span class="kbd">cat</span>. Nothing you type can break anything.'},
+  {id:'m6', t:'Ship it', d:'Clone, change, commit, push.', tab:'p-term',
+   brief:'Run the full loop: <span class="kbd">git clone</span> the outreach tool, make a change, <span class="kbd">git add</span>, <span class="kbd">git commit -m "…"</span>, <span class="kbd">git push</span>. Muscle memory, no consequences.'}
+];
+
+const FILES = {
+  green:[
+    {n:'sccc_mission_statement.txt', d:'Published mission and values. Public on the website.', b:'GREEN'},
+    {n:'SCCC_Student_Handbook_Excerpt.md', d:'Public handbook policies. This is the source file for the scoped-assistant build.', b:'GREEN'},
+    {n:'consultant_report_excerpt.md', d:'Enrollment strategy findings 4–9. Check the contract before assuming it is public.', b:'GREEN'}
+  ],
+  amber:[
+    {n:'SCCC_Department_Budget.xlsx', d:'FY27 request. Internal, no personal data. Two planted formula errors.', b:'INTERNAL'},
+    {n:'enrollment_mtg_notes_10-14.txt', d:'Raw meeting notes. Internal, unflattering, no student PII.', b:'INTERNAL'},
+    {n:'travel_reimbursement_memo.txt', d:'Draft all-staff announcement, not yet sent.', b:'INTERNAL'}
+  ],
+  red:[
+    {n:'SCCC_Student_Roster_MESSY.xlsx', d:'123 students with IDs, GPAs, advisors. The real-world equivalent is an education record.', b:'PROHIBITED'},
+    {n:'advising_notes_alcaraz.txt', d:'Individual advising note. Sole-possession exclusion dies the moment it is pasted.', b:'PROHIBITED'},
+    {n:'aid_file_S881044.txt', d:'Title IV record — SSN fragment, award detail, appeal narrative. GLBA, not just FERPA.', b:'PROHIBITED'}
+  ]
+};
+
+const CONNECTORS = [
+  {id:'github', nm:'GitHub', ds:'Version control for the tools you build', color:'#24292f', ini:'GH', appr:true,
+   scopes:[
+     {i:'📖', t:'Read your public repositories', d:'Repository names, files, and commit history'},
+     {i:'✏️', t:'Write to repositories you select', d:'You choose which. It cannot reach the others.'},
+     {i:'👤', t:'Read your profile', d:'Username and email address'}
+   ], note:'good', noteText:'Scoped to repositories you pick, one at a time. Read access is broad but the write access is narrow. This is what a reasonable request looks like.'},
+
+  {id:'drive', nm:'Google Drive (SCCC account)', ds:'Documents from your college Workspace account', color:'#1a73e8', ini:'GD', appr:true,
+   scopes:[
+     {i:'📁', t:'See and download files you open with this app', d:'Per-file access only — not your whole Drive'},
+     {i:'➕', t:'Create new files', d:'Cannot modify files it did not create'}
+   ], note:'good', noteText:'Per-file access, not whole-Drive access. Signed in with the institutional account, which is the whole difference.'},
+
+  {id:'studentsync', nm:'StudentSync Pro', ds:'"AI-powered student success insights"', color:'#7b2ff7', ini:'SS', appr:false,
+   scopes:[
+     {i:'⚠️', t:'Full read and write access to the student information system', d:'All records, all students, all terms — including holds and conduct flags'},
+     {i:'⚠️', t:'Read all student email and advising notes', d:'Including notes marked private'},
+     {i:'⚠️', t:'Read financial aid records', d:'Award data, SSNs, verification documents, appeal narratives'},
+     {i:'⚠️', t:'Share data with partner services for model improvement', d:'Subprocessors not listed. Terms may change without notice.'},
+     {i:'⚠️', t:'Retain data after you disconnect', d:'No stated deletion timeline'}
+   ], note:'bad', noteText:'This is the one. Full SIS read/write, financial aid, private advising notes, training on your data, retention after disconnect, unnamed subprocessors, and terms the vendor can change unilaterally — which by itself defeats the "direct control" test a vendor needs to qualify as a school official.'},
+
+  {id:'slack', nm:'Campus Slack', ds:'Team messaging', color:'#4a154b', ini:'SL', appr:true,
+   scopes:[
+     {i:'💬', t:'Read messages in channels you add it to', d:'Not your DMs, not channels it is not in'},
+     {i:'📤', t:'Post messages as you', d:'Anything it posts carries your name'}
+   ], note:'warn', noteText:'Reasonable, with one thing worth noticing: "post as you" means anything it sends carries your name. That is a judgment question, not a security one.'}
+];
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const $  = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = t => t.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function go(tab){
+  S.tab = tab;
+  $$('.tab').forEach(b => b.classList.toggle('on', b.dataset.p === tab));
+  $$('.pane').forEach(p => p.classList.toggle('on', p.id === tab));
+  if(tab === 'p-term') setTimeout(()=>$('#termin').focus(), 40);
+  if(tab === 'p-chat') setTimeout(()=>$('#chatbox').focus(), 40);
+}
+
+function complete(id, title, body){
+  if(S.done[id]) return;
+  S.done[id] = true;
+  const n = Object.keys(S.done).length;
+  $('#score').textContent = n + ' / 6 missions';
+  const nxt = MISSIONS.find(m => !S.done[m.id]);
+  S.active = nxt ? nxt.id : null;
+  renderMissions();
+  modal({
+    title: '✓ ' + title,
+    sub: nxt ? 'Next up: ' + nxt.t : 'That is all six.',
+    body: body + (nxt ? '' : `<div class="alert good" style="margin-top:14px"><b>All six done.</b> You have now connected a tool, refused a tool, been caught pasting something you shouldn't have, and pushed a commit — without touching a single real system. Go build something.</div>`),
+    actions: [{label: nxt ? 'Next mission →' : 'Done', cls:'btn', fn: () => { close(); if(nxt) go(nxt.tab); }}]
+  });
+}
+
+function renderMissions(){
+  $('#missions').innerHTML = MISSIONS.map(m => `
+    <div class="mission ${S.done[m.id]?'done':''} ${S.active===m.id?'active':''}" data-m="${m.id}">
+      <div class="t"><div class="n">${S.done[m.id]?'✓':MISSIONS.indexOf(m)+1}</div><div class="ttl">${m.t}</div></div>
+      <div class="dsc">${m.d}</div>
+    </div>`).join('');
+  $$('.mission').forEach(el => el.onclick = () => {
+    S.active = el.dataset.m; renderMissions();
+    const m = MISSIONS.find(x => x.id === el.dataset.m);
+    go(m.tab);
+  });
+  const act = MISSIONS.find(m => m.id === S.active);
+  $('#brieftext').innerHTML = act ? act.brief : 'All six missions complete. Keep playing — the terminal and the assistant still work.';
+}
+
+function modal({title, sub, body, actions}){
+  $('#modal').innerHTML = `
+    <div class="mh"><div class="t">${title}</div>${sub?`<div class="s">${sub}</div>`:''}</div>
+    <div class="mb">${body}</div>
+    <div class="mf">${actions.map((a,i)=>`<button class="${a.cls}" data-a="${i}">${a.label}</button>`).join('')}</div>`;
+  $('#veil').classList.add('on');
+  $$('#modal [data-a]').forEach(b => b.onclick = () => actions[+b.dataset.a].fn());
+}
+const close = () => $('#veil').classList.remove('on');
+
+/* ============================================================
+   FILES
+   ============================================================ */
+function renderFiles(){
+  const cls = {GREEN:'b-green', INTERNAL:'b-amber', PROHIBITED:'b-red'};
+  const ico = {GREEN:'🟢', INTERNAL:'🟡', PROHIBITED:'🔴'};
+  for(const [k, id] of [['green','#fg-green'],['amber','#fg-amber'],['red','#fg-red']]){
+    $(id).innerHTML = FILES[k].map(f => `
+      <div class="fcard">
+        <div class="fn">${ico[f.b]} ${esc(f.n)}</div>
+        <div class="fd">${esc(f.d)}</div>
+        <span class="badge ${cls[f.b]}">${f.b}</span>
+      </div>`).join('');
+  }
+}
+
+/* ============================================================
+   CONNECTORS
+   ============================================================ */
+function renderConns(){
+  $('#cnlist').innerHTML = CONNECTORS.map(c => {
+    const on = S.connected[c.id], no = S.declined[c.id];
+    return `<div class="cn">
+      <div class="logo" style="background:${c.color}">${c.ini}</div>
+      <div class="meta">
+        <div class="nm">${esc(c.nm)} <span class="tag ${c.appr?'appr':'unv'}">${c.appr?'AGREEMENT ON FILE':'NO AGREEMENT'}</span></div>
+        <div class="ds">${esc(c.ds)}</div>
+      </div>
+      ${on ? `<button class="btn ok" disabled>Connected ✓</button>`
+        : no ? `<button class="btn ghost" data-c="${c.id}">Declined — review again</button>`
+        : `<button class="btn" data-c="${c.id}">Connect</button>`}
+    </div>`;
+  }).join('');
+  $$('#cnlist [data-c]').forEach(b => b.onclick = () => authScreen(b.dataset.c));
+}
+
+function authScreen(id){
+  const c = CONNECTORS.find(x => x.id === id);
+  modal({
+    title: 'Authorize ' + c.nm,
+    sub: 'Simulated authorization — no real account is involved',
+    body: `
+      <div class="alert ${c.note==='bad'?'bad':c.note==='warn'?'warn':'good'}" style="display:none" id="revealbox">
+        <b>What you just read:</b> ${c.noteText}
+      </div>
+      <p style="font-size:12.7px;color:var(--mute);margin-bottom:11px"><b>${esc(c.nm)}</b> is requesting the following access to your Sabine Crossing account:</p>
+      <div id="scopelist">${c.scopes.map(s=>`
+        <div class="scope"><div class="i">${s.i}</div><div><div>${esc(s.t)}</div><div class="sd">${esc(s.d)}</div></div></div>`).join('')}</div>
+      <p style="font-size:11.5px;color:var(--mute);margin-top:13px">Vendor status: <b style="color:${c.appr?'var(--green)':'var(--red)'}">${c.appr?'Agreement on file with the college':'No agreement on file — unvetted vendor'}</b></p>`,
+    actions: [
+      {label:'Review permissions', cls:'btn ghost', fn: () => {
+         S.readScopes = true;
+         const rb = $('#revealbox'); if(rb) rb.style.display = 'block';
+      }},
+      {label:'Decline', cls:'btn ghost', fn: () => decline(id)},
+      {label:'Authorize', cls: c.note==='bad' ? 'btn danger' : 'btn', fn: () => authorize(id)}
+    ]
+  });
+}
+
+function authorize(id){
+  const c = CONNECTORS.find(x => x.id === id);
+  close();
+  if(c.note === 'bad'){
+    // The trap. Failing it is the lesson.
+    modal({
+      title:'Connected — and that was the wrong call',
+      sub:'This is the mistake worth making here instead of at work',
+      body:`<div class="alert bad"><b>You just authorized ${esc(c.nm)}.</b> It now has full read/write on the student information system, every advising note including private ones, and all financial aid records — from a vendor with no agreement on file, with permission to train on the data and keep it after you disconnect.</div>
+      <p style="font-size:12.8px;line-height:1.65">Nobody reads these screens. That is not a character flaw, it is how the screens are designed. The countermeasure is not willpower — it is a habit: <b>before you authorize anything, find the sentence that says what happens to the data.</b></p>
+      <div class="debrief">
+        <b>Two questions that would have caught this:</b><br>
+        1. Does this vendor have an agreement with the college? <i>(No agreement → it cannot be a "school official" under FERPA, and under the FTC Safeguards Rule you have just created an unvetted service-provider relationship on the college's behalf.)</i><br>
+        2. Does it want more than its job requires? <i>("Student success insights" does not need write access to financial aid.)</i><br><br>
+        <b>Try again.</b> Decline it this time.
+      </div>`,
+      actions:[{label:'Disconnect and retry', cls:'btn', fn:()=>{ S.connected[id]=false; renderConns(); close(); }}]
+    });
+    return;
+  }
+  S.connected[id] = true;
+  renderConns();
+  if(id === 'github' && !S.done.m2){
+    complete('m2','GitHub connected', S.readScopes
+      ? `<p style="font-size:13px;line-height:1.65">You opened the permissions before authorizing. That is the whole habit.</p>
+         <div class="debrief">The thing to carry out of here: an authorization screen is a <b>contract you are signing by clicking</b>. The question is never "do I trust this brand" — it is "what is it asking for, and does it need it?"</div>`
+      : `<p style="font-size:13px;line-height:1.65">Connected — but you clicked <b>Authorize</b> without opening <b>Review permissions</b> first.</p>
+         <div class="debrief">You just did the thing everyone does. GitHub happens to be a reasonable request, so nothing bad happened. <b>But you didn't know that when you clicked.</b> Go open one of the others and read it properly before you authorize.</div>`);
+  }
+}
+
+function decline(id){
+  const c = CONNECTORS.find(x => x.id === id);
+  S.declined[id] = true;
+  close();
+  renderConns();
+  if(c.note === 'bad'){
+    complete('m3','Declined — correctly', `
+      <p style="font-size:13px;line-height:1.65">You caught it. <b>${esc(c.nm)}</b> was asking for full SIS read/write, private advising notes, and financial aid records, from a vendor with no agreement, with permission to train on the data and retain it after disconnection.</p>
+      <div class="debrief">
+        <b>The tell wasn't the permissions list — it was the mismatch.</b> A tool that produces "student success insights" has no business writing to financial aid records. Whenever the ask exceeds the job, stop.<br><br>
+        Also note the last two scopes: <i>terms may change without notice</i> and <i>retain data after you disconnect</i>. A vendor that can unilaterally change its terms cannot be under the institution's "direct control" — which is one of the four things FERPA requires before a vendor can be treated as a school official at all.
+      </div>`);
+  }
+}
+
+/* ============================================================
+   AI ASSISTANT
+   ============================================================ */
+const CHIPS = [
+  'What is the withdrawal deadline?',
+  'What is the parking policy?',
+  'How do transfer credits work here?',
+  'Do you have veterans benefits information?',
+  'Summarize the academic probation rules',
+  '📋 Paste a student aid record'
+];
+
+// Topics genuinely covered by the handbook
+const KNOWN = {
+  'withdraw': 'The last day to withdraw with a grade of <b>W</b> from a 16-week course is the <b>Friday of the eleventh week</b>. For 8-week courses it is the Friday of the fifth week. (Handbook §3.3)',
+  'probation': 'A student who remains below a 2.0 cumulative GPA after a term on Academic Warning is placed on <b>Academic Probation</b>. On probation the student may enroll in no more than 12 credit hours, must complete SCCC 0100 concurrently, and must meet their advisor at least twice during the term. (Handbook §1.3)',
+  'incomplete': 'A grade of <b>I</b> may be assigned when a student has completed at least <b>75%</b> of coursework and is prevented by circumstances beyond their control from finishing. Unresolved by the deadline, it converts automatically to F. (Handbook §4.2)',
+  'sap': 'To keep federal aid a student must hold a 2.0 cumulative GPA, complete at least <b>67%</b> of attempted hours, and finish within 150% of the published program length. (Handbook §5.1)',
+  'directory': 'SCCC designates as directory information: name, enrollment status, program of study, dates of attendance, degrees and awards, and participation in recognized activities. Students may file a Directory Hold with the Registrar. (Handbook §7.2–7.3)',
+  'drop': 'Texas law limits students who first enrolled in fall 2007 or later to <b>six lifetime drops</b> across all Texas public institutions. Drops beyond six are recorded as F. (Handbook §3.4)',
+  'appeal': 'A suspension may be appealed within <b>10 business days</b> of the notice date using the Academic Standing Appeal Form. Hardship appeals get expedited review. (Handbook §1.6)'
+};
+
+// Topics the handbook explicitly does NOT cover — the assistant invents these
+const INVENTED = {
+  'parking': `Student parking permits at Sabine Crossing are <b>$85 per academic year</b> or $45 per semester, available through the Campus Safety Office in Building C. Permits must be displayed on the lower left windshield. The first two citations each year are waived on appeal; after that, fines are $25 and escalate to $75 for repeat violations. Overnight parking requires advance registration with Campus Safety. <i>(Handbook §11.4)</i>`,
+  'transfer': `Sabine Crossing accepts transfer credit from regionally accredited institutions with a grade of C or better. Credits must be evaluated by the Registrar within <b>30 days</b> of admission. A maximum of <b>45 credit hours</b> may be applied toward an associate degree, and at least 25% of the degree must be completed in residence at SCCC. Transfer credit does not compute into the SCCC GPA. <i>(Handbook §12.1–12.3)</i>`,
+  'veteran': `Veterans and eligible dependents are served through the Office of Military and Veteran Services in the Student Center. SCCC is a <b>Yellow Ribbon participant</b> and certifies enrollment to the VA within 14 days of census date. Veterans receive priority registration beginning the sixth week of the prior term, and the $50 application fee is waived. <i>(Handbook §13.2)</i>`,
+  'graduat': `Students must file an Application for Graduation with the Registrar by <b>October 1</b> for fall completion or <b>March 1</b> for spring. A graduation fee of $40 applies whether or not the student participates in the ceremony. Students must hold a 2.0 cumulative GPA and complete at least 25% of credit hours in residence. <i>(Handbook §14.1)</i>`,
+  'tuition': `In-district tuition is <b>$79 per credit hour</b>, out-of-district $148, and out-of-state $215, plus a $28 per-hour general fee. Residency is determined at the time of application per Texas Education Code rules, and reclassification requires documentation filed before census date. <i>(Handbook §15.2)</i>`
+};
+
+function push(role, html, opts){
+  const d = document.createElement('div');
+  d.className = 'msg ' + role;
+  d.innerHTML = `<div class="who">${role==='u'?'You':role==='sys'?'Sandbox':'Assistant'}</div><div class="bub">${html}</div>` + (opts?.after || '');
+  $('#chat').appendChild(d);
+  $('#chat').scrollTop = $('#chat').scrollHeight;
+  return d;
+}
+
+function ask(text){
+  push('u', esc(text));
+  const q = text.toLowerCase();
+
+  // --- RED data interception -------------------------------------------
+  const redHit = /\b\d{3}-?\d{2}-?\d{4}\b/.test(text) || /xxx-xx-\d{4}/i.test(text) ||
+                 /\bS\d{6}\b/.test(text) || /pell|efc|sai\b|title iv|isir|aid year|award:/i.test(text) ||
+                 /advising note|gpa 1\.|verification/i.test(text);
+  if(redHit){
+    S.blocked = true;
+    setTimeout(() => {
+      push('sys', `<b style="color:var(--red)">⛔ Hold on.</b><br><br>
+        That input contains what looks like an individual student record — an identifier, aid data, or a private note.<br><br>
+        In this sandbox it is fabricated, so nothing happened. <b>At MCC, that paste would have been the incident.</b>`,
+        {after:`<div class="debrief" style="margin-top:11px">
+          <b>What just would have gone wrong, in order:</b><br>
+          1. If it is an advising note, the <b>sole-possession exclusion</b> is gone the instant it leaves your hands. Nothing about the note changed — only where it went.<br>
+          2. If it is aid data, you are in <b>GLBA / FTC Safeguards</b> territory, not just FERPA. §314.4(f) requires oversight of service providers; a free tool is an unvetted one.<br>
+          3. If you were signed into a personal account, the prompt is likely still a <b>public record</b> under the Texas Public Information Act — just harder to produce.<br><br>
+          <b>What to do instead:</b> ask the question without the record. "What does V1-selected mean?" gets the same answer with none of the exposure. Or build a de-identified hypothetical that keeps the shape of the problem and drop the person.
+        </div>`});
+      if(!S.done.m4) setTimeout(()=>complete('m4','Caught in the act — on purpose',
+        `<p style="font-size:13px;line-height:1.65">That is the muscle. Not "never use AI" — <b>notice the moment</b> where the fastest path runs through a record that shouldn't move.</p>
+         <div class="debrief">The impulse is real and it happens at 4:40 p.m. when you have one more letter to write. The countermeasure is a two-second pause with one question: <b>does the task actually need the record, or just the policy?</b> Nearly always, just the policy.</div>`), 700);
+    }, 380);
+    return;
+  }
+
+  // --- Invented answer (the hallucination trap) ------------------------
+  for(const [k, v] of Object.entries(INVENTED)){
+    if(q.includes(k)){
+      setTimeout(() => {
+        const el = push('a', v, {after:`<div class="verify"><button class="vbtn" data-v="${k}">🔍 Check this against the handbook</button></div>`});
+        el.querySelector('[data-v]').onclick = () => reveal(k);
+      }, 420);
+      return;
+    }
+  }
+
+  // --- Grounded answer -------------------------------------------------
+  for(const [k, v] of Object.entries(KNOWN)){
+    if(q.includes(k)){
+      setTimeout(() => push('a', v + `<div style="margin-top:9px;font-size:11.5px;color:var(--mute)">Answered from the handbook excerpt loaded into this assistant.</div>`), 420);
+      return;
+    }
+  }
+
+  setTimeout(() => push('a', `I do not find that in the Sabine Crossing handbook excerpt I have been given. Try asking about withdrawal deadlines, academic probation, incompletes, satisfactory academic progress, directory information, or the six-drop limit.<div style="margin-top:9px;font-size:11.5px;color:var(--mute)">Note what just happened: a well-scoped assistant says "not in my sources." Try asking about parking or transfer credit and watch a badly-scoped one do the opposite.</div>`), 420);
+}
+
+function reveal(k){
+  push('sys', `<b style="color:var(--red)">That answer was fabricated.</b><br><br>
+    The handbook excerpt loaded into this assistant has <b>no section on that topic at all</b> — §9 lists it as explicitly out of scope. There is no §11.4, no §12.1, no §13.2. The section numbers were invented along with the policy.`,
+    {after:`<div class="debrief" style="margin-top:11px">
+      <b>Look at what made it convincing:</b> specific dollar figures. A building name. A section citation. A deadline. Round numbers that feel researched. Every signal you use to judge whether a person knows what they are talking about — fluency, specificity, confident citation — is exactly what this thing optimizes for.<br><br>
+      Our error detection is trained on humans. It does not transfer.<br><br>
+      <b>The fix is not a better prompt.</b> Asking it to "only use the handbook" changes the style of the answer, not whether it checked. The fix is the instruction line — <i>"if it is not in the provided documents, say so and name a human"</i> — plus you, opening the source.
+    </div>`});
+  if(!S.done.m1) setTimeout(()=>complete('m1','You caught it',
+    `<p style="font-size:13px;line-height:1.65">A confident, cited, entirely fictional policy — and you checked it instead of forwarding it.</p>
+     <div class="debrief"><b>The three-question check, for the rest of the course:</b><br>
+     1. What would make this wrong?<br>2. Where did this come from?<br>3. Who is accountable when it's wrong? <i>(You are.)</i></div>`), 700);
+}
+
+function renderChips(){
+  $('#chips').innerHTML = CHIPS.map((c,i)=>`<button class="chip" data-i="${i}">${esc(c)}</button>`).join('');
+  $$('#chips .chip').forEach(b => b.onclick = () => {
+    const t = CHIPS[+b.dataset.i];
+    if(t.startsWith('📋')){
+      ask(`Can you help me draft a SAP appeal decision letter for this student?\n\nSTUDENT: Okonkwo, Amari  ID: S881044\nSSN: XXX-XX-4419\nAID YEAR: 2026-2027   EFC/SAI: -1500\nAWARD: Pell $3,697 | Direct Sub $1,750\nSAP STATUS: Warning - completion rate 61%`);
+    } else ask(t);
+  });
+}
+
+/* ============================================================
+   TERMINAL
+   ============================================================ */
+const FS = {
+  '~': {dirs:['data','projects'], files:{'README.md':'Sabine Crossing AI Sandbox\n===========================\n\nEverything in this environment is fabricated. Break whatever you like.\n\n  data/      fictional college files\n  projects/  where you clone things\n\nTry: cd projects  then  git clone https://github.com/sccc/outreach-tool.git'}},
+  '~/data': {dirs:[], files:{
+    'roster_messy.csv':'student_id,name,program,term,credit_hrs,gpa,status,advisor\nS447201,"Alcaraz, Marisol",NURS,FA2026,12,1.87,Enrolled,R. Fontaine\nS662155,Bennett Trendell,weld,Fall 2026,9,2.4,enrolled,Okafor, M.\nS881044,AMARI OKONKWO,RADT,fa26,12,2.11,Enrolled,D. Salgado\n... 120 more rows, four of them duplicates',
+    'handbook.md':'# Sabine Crossing Student Handbook (excerpt)\n\n§1 Academic Standing\n§2 Attendance\n§3 Registration and Enrollment\n§4 Grades\n§5 Financial Aid\n§6 Student Conduct\n§7 Student Records and Privacy\n§8 Support Services\n§9 What This Handbook Does Not Cover\n\n(Section 9 exists on purpose. Ask the assistant about parking.)',
+    'budget.csv':'line_item,category,fy26_actual,fy27_request\nAdjunct instruction,Personnel,412000,448000\nProfessional development,Operating,38000,71500\nSoftware licenses,Operating,116700,184300\n... 9 more rows, two planted formula errors'}},
+  '~/projects': {dirs:[], files:{}}
+};
+
+let HIST = [], HI = -1;
+
+function tp(html, cls){
+  const d = document.createElement('div');
+  if(cls) d.className = cls;
+  d.innerHTML = html;
+  $('#termout').appendChild(d);
+  $('#term').scrollTop = $('#term').scrollHeight;
+}
+const path = () => S.cwd.join('/');
+
+function prompt_echo(cmd){
+  tp(`<span class="p">sandbox@sccc</span><span class="dim">:</span><span class="term-path">${path()}</span><span class="dim">$</span> ${esc(cmd)}`);
+}
+
+const HELP = `<span class="ok">Available in this sandbox:</span>
+  <span class="warn">ls</span>                    list what's here
+  <span class="warn">cd</span> &lt;dir&gt;              move (try: cd data, cd projects, cd ..)
+  <span class="warn">cat</span> &lt;file&gt;            print a file
+  <span class="warn">pwd</span>                   where am I
+  <span class="warn">git clone</span> &lt;url&gt;       copy a repository down
+  <span class="warn">git status</span>            what's changed
+  <span class="warn">git add</span> &lt;file|.&gt;      stage changes
+  <span class="warn">git commit -m</span> "msg"   save a snapshot
+  <span class="warn">git push</span>              send it up
+  <span class="warn">git log</span>               history
+  <span class="warn">edit</span> &lt;file&gt;           make a change (simulated)
+  <span class="warn">clear</span>                 clean the screen
+  <span class="dim">Nothing here reaches a real machine. Type anything.</span>`;
+
+function runCmd(raw){
+  const cmd = raw.trim();
+  prompt_echo(cmd);
+  if(!cmd) return;
+  HIST.push(cmd); HI = HIST.length;
+  const [c, ...a] = cmd.split(/\s+/);
+  const cur = FS[path()] || {dirs:[], files:{}};
+
+  switch(c){
+    case 'help': tp(HELP, 'tw'); break;
+    case 'clear': $('#termout').innerHTML = ''; break;
+    case 'pwd': tp(path().replace('~','/home/sandbox')); break;
+    case 'whoami': tp('sandbox'); break;
+
+    case 'ls': {
+      const extra = (path()==='~/projects' && S.cloned) ? ['outreach-tool'] : [];
+      const d = [...cur.dirs, ...extra].map(x=>`<span class="term-path">${x}/</span>`);
+      const f = Object.keys(cur.files).map(x=>x);
+      if(!d.length && !f.length){ tp('<span class="dim">(empty)</span>'); }
+      else tp([...d, ...f].join('   '));
+      if(!S.done.m5 && (d.length + f.length) > 0) checkM5();
+      break;
+    }
+
+    case 'cd': {
+      const t = a[0];
+      if(!t || t === '~'){ S.cwd = ['~']; }
+      else if(t === '..'){ if(S.cwd.length > 1) S.cwd.pop(); }
+      else if(t === 'outreach-tool' && path()==='~/projects' && S.cloned){ S.cwd.push('outreach-tool'); }
+      else if(cur.dirs.includes(t.replace('/',''))){ S.cwd.push(t.replace('/','')); }
+      else { tp(`<span class="err">cd: ${esc(t)}: No such directory</span>`); break; }
+      $('#cwd').textContent = path();
+      checkM5();
+      break;
+    }
+
+    case 'cat': {
+      const f = a[0];
+      if(path().endsWith('outreach-tool') && S.cloned){
+        const rf = {'README.md':'# Outreach Tool\n\nDrafts personalized re-enrollment messages from a roster.\nNOTHING here touches a real student. Synthetic data only.\n\n  npm install\n  npm start','draft.js':'// builds a draft message per student\n// TODO: every date in the template must be verified against the handbook\nfunction draft(student){\n  return `Hi ${student.first}, registration for spring is open.`;\n}'};
+        if(rf[f]){ tp(esc(rf[f]), 'tw'); checkM5(); break; }
+      }
+      if(cur.files[f]){ tp(esc(cur.files[f]), 'tw'); checkM5(); }
+      else tp(`<span class="err">cat: ${esc(f||'')}: No such file</span>`);
+      break;
+    }
+
+    case 'git': {
+      const s = a[0];
+      if(s === 'clone'){
+        if(path() !== '~/projects'){ tp(`<span class="warn">Clone into the projects folder. Try:</span> cd ~/projects`); break; }
+        if(S.cloned){ tp(`<span class="err">fatal: destination path 'outreach-tool' already exists</span>`); break; }
+        S.cloned = true;
+        FS['~/projects/outreach-tool'] = {dirs:[], files:{
+          'README.md':'# Outreach Tool\n\nDrafts personalized re-enrollment messages from a roster.\nNOTHING here touches a real student. Synthetic data only.\n\n  npm install\n  npm start',
+          'draft.js':'// builds a draft message per student\n// TODO: every date in the template must be verified against the handbook\nfunction draft(student){\n  return `Hi ${student.first}, registration for spring is open.`;\n}'
+        }};
+        tp(`Cloning into 'outreach-tool'...
+remote: Enumerating objects: 18, done.
+remote: Counting objects: 100% (18/18), done.
+remote: Compressing objects: 100% (14/14), done.
+Receiving objects: 100% (18/18), 4.21 KiB | 4.21 MiB/s, done.
+<span class="ok">✓ Done.</span> <span class="dim">Now: cd outreach-tool</span>`, 'tw');
+        break;
+      }
+      if(!S.cloned){ tp(`<span class="err">fatal: not a git repository</span>`); break; }
+      if(s === 'status'){
+        tp(`On branch <span class="term-path">main</span>
+${S.staged ? `Changes to be committed:\n  <span class="ok">modified:   draft.js</span>` :
+   S.pushed ? `<span class="dim">nothing to commit, working tree clean</span>` :
+   `Changes not staged for commit:\n  <span class="err">modified:   draft.js</span>\n\n<span class="dim">use "git add ." to stage</span>`}`, 'tw');
+        break;
+      }
+      if(s === 'add'){
+        if(!S.edited){ tp(`<span class="dim">nothing to add — try:</span> edit draft.js`); break; }
+        S.staged = true; tp(`<span class="ok">✓ staged: draft.js</span> <span class="dim">— next: git commit -m "your message"</span>`); break;
+      }
+      if(s === 'commit'){
+        if(!S.staged){ tp(`<span class="err">nothing staged.</span> <span class="dim">run: git add .</span>`); break; }
+        const m = cmd.match(/-m\s+["'](.+?)["']/);
+        if(!m){ tp(`<span class="err">need a message:</span> git commit -m "what you changed"`); break; }
+        S.committed = true; S.staged = false;
+        tp(`[main 4f2a9c1] ${esc(m[1])}\n 1 file changed, 3 insertions(+), 1 deletion(-)\n<span class="ok">✓ committed</span> <span class="dim">— next: git push</span>`, 'tw');
+        break;
+      }
+      if(s === 'push'){
+        if(!S.committed){ tp(`<span class="err">nothing to push</span> <span class="dim">— commit first</span>`); break; }
+        if(!S.connected.github){
+          tp(`<span class="err">remote: Authentication failed</span>\n<span class="dim">GitHub is not connected. Open the Connectors tab and connect it — then try again.</span>`, 'tw');
+          break;
+        }
+        S.pushed = true;
+        tp(`Enumerating objects: 5, done.
+Writing objects: 100% (3/3), 412 bytes | 412.00 KiB/s, done.
+To https://github.com/sccc/outreach-tool.git
+   9c1f2ab..4f2a9c1  main -> main
+<span class="ok">✓ Pushed.</span>`, 'tw');
+        if(!S.done.m6) setTimeout(()=>complete('m6','You shipped something',
+          `<p style="font-size:13px;line-height:1.65">Clone → edit → add → commit → push. That is the loop, and you have now done it end to end.</p>
+           <div class="debrief">Nothing here was real, but the sequence and the muscle memory are. Two things that carried real weight:<br><br>
+           <b>1.</b> The push failed until GitHub was connected. Authorization is not paperwork — it is the thing that makes the work possible.<br>
+           <b>2.</b> Look at the TODO in <code>draft.js</code>: <i>every date in the template must be verified against the handbook.</i> Building the tool is the easy part. Being right is the part that takes work.</div>`), 700);
+        break;
+      }
+      if(s === 'log'){
+        tp(`<span class="warn">commit 4f2a9c1</span> (HEAD -> main)\nAuthor: sandbox &lt;sandbox@sccc.example.edu&gt;\n\n    ${S.committed?'your commit':'(none yet)'}\n\n<span class="warn">commit 9c1f2ab</span>\nAuthor: r.fontaine &lt;fontaine@sccc.example.edu&gt;\n\n    initial outreach draft scaffold`, 'tw');
+        break;
+      }
+      tp(`<span class="err">git: '${esc(s||'')}' is not supported in this sandbox.</span> <span class="dim">try: clone, status, add, commit, push, log</span>`);
+      break;
+    }
+
+    case 'edit': {
+      if(!S.cloned || !path().endsWith('outreach-tool')){ tp(`<span class="dim">Nothing to edit here. Clone the project first.</span>`); break; }
+      S.edited = true;
+      tp(`<span class="dim">opening ${esc(a[0]||'draft.js')}…</span>\n<span class="ok">✓ change made</span> <span class="dim">(simulated) — next: git add .</span>`, 'tw');
+      break;
+    }
+
+    case 'npm': tp(a[0]==='install' ? `added 214 packages in 3s\n<span class="ok">✓</span>` : `<span class="dim">npm: try 'npm install'</span>`, 'tw'); break;
+    case 'python': case 'python3': tp(`<span class="dim">Python REPL is not wired up in this sandbox. The point here is the git loop.</span>`); break;
+    case 'sudo': tp(`<span class="warn">sandbox is not in the sudoers file. This incident will not be reported, because nothing here is real.</span>`); break;
+    case 'rm': tp(`<span class="warn">Nice try. Nothing here can be deleted — that is rather the point of a sandbox.</span>`); break;
+    default: tp(`<span class="err">${esc(c)}: command not found</span> <span class="dim">— type 'help'</span>`);
+  }
+}
+
+let m5c = 0;
+function checkM5(){
+  m5c++;
+  if(m5c >= 3 && !S.done.m5){
+    complete('m5','You found your way around',
+      `<p style="font-size:13px;line-height:1.65">Three commands in and you are navigating. That is genuinely most of what a terminal asks of you.</p>
+       <div class="debrief">The terminal looks intimidating because it gives no hints and no undo. But the working set is small: <b>where am I</b> (<code>pwd</code>), <b>what's here</b> (<code>ls</code>), <b>go there</b> (<code>cd</code>), <b>show me</b> (<code>cat</code>). Everything else is looked up when needed — including by the people who do this for a living.<br><br>Next: <code>cd ~/projects</code> and clone the outreach tool.</div>`);
+  }
+}
+
+/* ============================================================
+   WIRING
+   ============================================================ */
+$$('.tab').forEach(b => b.onclick = () => go(b.dataset.p));
+$('#veil').onclick = e => { if(e.target.id === 'veil') close(); };
+document.addEventListener('keydown', e => { if(e.key === 'Escape') close(); });
+
+$('#send').onclick = () => {
+  const v = $('#chatbox').value.trim();
+  if(v){ ask(v); $('#chatbox').value = ''; }
+};
+$('#chatbox').addEventListener('keydown', e => {
+  if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); $('#send').click(); }
+});
+
+$('#termin').addEventListener('keydown', e => {
+  if(e.key === 'Enter'){ runCmd($('#termin').value); $('#termin').value = ''; }
+  else if(e.key === 'ArrowUp'){ e.preventDefault(); if(HI > 0){ HI--; $('#termin').value = HIST[HI] || ''; } }
+  else if(e.key === 'ArrowDown'){ e.preventDefault(); if(HI < HIST.length-1){ HI++; $('#termin').value = HIST[HI] || ''; } else { HI = HIST.length; $('#termin').value=''; } }
+});
+$('#term').onclick = () => $('#termin').focus();
+
+/* ---------- boot ---------- */
+renderMissions();
+renderFiles();
+renderConns();
+renderChips();
+$('#cwd').textContent = '~';
+tp(`<span class="ok">Sabine Crossing AI Sandbox — simulated shell</span>
+<span class="dim">Nothing here is a real machine. No command can damage anything.</span>
+
+Type <span class="warn">help</span> to see what works.`, 'tw');
+push('a', `I am a scoped assistant for Sabine Crossing Community College. I have been given <b>one document</b>: an excerpt of the student handbook.<div style="margin-top:9px;font-size:11.5px;color:var(--mute)">Ask me something the handbook covers, then ask me something it doesn't. The difference is the lesson.</div>`);
+</script>
+</body>
+</html>
