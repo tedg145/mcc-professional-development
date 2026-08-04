@@ -260,7 +260,9 @@ function load(ci, di, push){
   const pdf = 'files/' + d.id + '.pdf';
   acts.innerHTML = '<a class="btn primary" href="' + pdf + '" target="_blank" rel="noopener">Present full screen &#8599;</a>'
     + '<a class="btn" href="files/' + d.id + '.pptx" download>Download .pptx</a>';
-  frame.innerHTML = '<iframe src="' + pdf + '#view=FitH&toolbar=1" title="' + esc(d.name) + '"></iframe>';
+  // view=Fit shows the WHOLE slide with no scrolling. FitH fits the width, which
+  // pushes the bottom of a 16:9 slide off screen in a short viewer pane.
+  frame.innerHTML = '<iframe src="' + pdf + '#view=Fit&toolbar=1" title="' + esc(d.name) + '"></iframe>';
   document.title = d.name + ' — MCC Presentations';
   if(push !== false) history.replaceState(null, '', '#' + d.id);
   if(window.innerWidth <= 880) document.getElementById('stage').scrollIntoView({behavior:'smooth'});
