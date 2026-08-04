@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build Your Own Tools — MCC Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="A three-hour workshop on building your own software: the tools, localhost, free hosting, safeguards, row-level security, and what to consider before you sell it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A1A2E; --navy:#003366; --orange:#FF6600; --orange-d:#B34A00;
+  --ice:#D6E8EE; --gold:#F9DD56; --teal:#008DA7; --amber:#8F5E08;
+  --green:#1A7F4B; --red:#C0392B;
+  --white:#fff; --paper:#F7F8FA; --mute:#68737F; --dim:#7A8794; --hair:#E6EAEF;
+  --ondk:#A7B7C9; --dimdk:#5C6E82;
+  --sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+  --max:1080px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{font-family:var(--sans);background:var(--white);color:var(--ink);line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+code{font-family:var(--mono);font-size:.88em;background:#EEF1F5;padding:.12em .4em;border-radius:4px}
+a{color:var(--orange-d)}
+
+/* ---------- progress + nav ---------- */
+#bar{position:fixed;top:0;left:0;height:3px;background:var(--orange);width:0;z-index:100;
+  transition:width .1s linear}
+#nav{position:fixed;top:0;left:0;right:0;height:58px;background:rgba(255,255,255,.86);
+  backdrop-filter:saturate(180%) blur(18px);-webkit-backdrop-filter:saturate(180%) blur(18px);
+  border-bottom:1px solid var(--hair);z-index:99;display:flex;align-items:center;
+  padding:0 clamp(16px,4vw,40px);gap:20px}
+#nav .brand{font-weight:600;font-size:14.5px;color:var(--navy);white-space:nowrap}
+#nav .brand span{color:var(--orange);font-weight:700}
+#nav .links{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+#nav .links::-webkit-scrollbar{display:none}
+#nav .links a{font-size:12.5px;color:var(--mute);text-decoration:none;padding:6px 11px;
+  border-radius:20px;white-space:nowrap;transition:.18s;font-weight:500}
+#nav .links a:hover{background:var(--paper);color:var(--navy)}
+#nav .links a.on{background:var(--navy);color:#fff}
+
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.3,1),transform .7s cubic-bezier(.2,.7,.3,1)}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.09s}.rv.d2{transition-delay:.18s}.rv.d3{transition-delay:.27s}
+.rv.d4{transition-delay:.36s}.rv.d5{transition-delay:.45s}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}
+  html{scroll-behavior:auto}}
+
+/* ---------- layout ---------- */
+section{padding:clamp(70px,10vh,120px) clamp(20px,5vw,48px)}
+.wrap{max-width:var(--max);margin:0 auto}
+.dark{background:var(--ink);color:var(--white)}
+.dark h2,.dark h3{color:#fff}
+.dark p{color:var(--ondk)}
+.blue{background:var(--navy);color:#fff}
+.blue h2,.blue h3{color:#fff}.blue p{color:#B7CDE0}
+.paper{background:var(--paper)}
+
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--orange-d);margin-bottom:14px}
+.dark .eyebrow,.blue .eyebrow{color:var(--orange)}
+h1{font-size:clamp(38px,7.2vw,74px);font-weight:700;line-height:1.04;letter-spacing:-.02em}
+h2{font-size:clamp(28px,4.4vw,46px);font-weight:700;line-height:1.12;letter-spacing:-.015em;color:var(--navy)}
+h3{font-size:clamp(19px,2.3vw,25px);font-weight:600;line-height:1.25;color:var(--navy)}
+.lead{font-size:clamp(17px,2vw,21px);color:var(--mute);max-width:62ch;margin-top:20px;line-height:1.62}
+.dark .lead,.blue .lead{color:var(--ondk)}
+.note{font-size:13px;color:var(--dim);margin-top:16px}
+.dark .note{color:var(--dimdk)}
+
+/* ---------- hero ---------- */
+#hero{min-height:100vh;display:flex;align-items:center;background:var(--ink);color:#fff;
+  position:relative;overflow:hidden;padding-top:58px}
+#hero .glow{position:absolute;width:900px;height:900px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,102,0,.16) 0%,rgba(255,102,0,0) 62%);
+  top:-260px;right:-240px;pointer-events:none;animation:drift 22s ease-in-out infinite alternate}
+#hero .glow2{position:absolute;width:760px;height:760px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,141,167,.16) 0%,rgba(0,141,167,0) 62%);
+  bottom:-320px;left:-220px;pointer-events:none;animation:drift 27s ease-in-out infinite alternate-reverse}
+@keyframes drift{to{transform:translate(60px,50px) scale(1.12)}}
+#hero h1{color:#fff}
+#hero .sub{color:var(--ondk);font-size:clamp(17px,2.1vw,22px);margin-top:26px;max-width:56ch;line-height:1.55}
+#hero .meta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.pill{border:1px solid rgba(255,255,255,.22);border-radius:24px;padding:8px 17px;font-size:13px;color:var(--ondk)}
+.pill b{color:var(--gold);font-weight:600}
+.scrollcue{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);color:var(--dimdk);
+  font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);opacity:.55}50%{transform:translateX(-50%) translateY(8px);opacity:1}}
+
+/* ---------- the meta callout ---------- */
+.meta-box{border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:26px 28px;
+  background:rgba(255,255,255,.04);margin-top:38px;max-width:640px}
+.meta-box .t{font-weight:600;color:var(--gold);font-size:14px;margin-bottom:8px;
+  letter-spacing:.05em;text-transform:uppercase}
+.meta-box p{color:var(--ondk);font-size:15.5px;line-height:1.65;margin:0}
+
+/* ---------- cards ---------- */
+.grid{display:grid;gap:clamp(16px,2.4vw,26px);margin-top:clamp(32px,5vw,52px)}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(255px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(215px,1fr))}
+.card{background:var(--white);border:1px solid var(--hair);border-radius:15px;padding:26px;
+  transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .3s}
+.card:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(0,51,102,.10);border-color:#CBD6E2}
+.dark .card{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.11)}
+.dark .card:hover{background:rgba(255,255,255,.075);box-shadow:none}
+.card .k{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:11px}
+.card h3{margin-bottom:9px}
+.card p{font-size:14.5px;color:var(--mute);line-height:1.6}
+.dark .card p{color:var(--ondk)}
+.num{font-family:var(--sans);font-size:34px;font-weight:700;color:var(--orange-d);line-height:1;margin-bottom:12px}
+.dark .num{color:var(--orange)}
+
+/* ---------- stat ---------- */
+.statrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:26px;margin-top:44px}
+.stat .v{font-size:clamp(40px,6vw,62px);font-weight:700;line-height:1;letter-spacing:-.02em}
+.stat .l{font-size:14px;color:var(--mute);margin-top:11px;line-height:1.5}
+.dark .stat .l{color:var(--ondk)}
+
+/* ---------- table ---------- */
+.tw{overflow-x:auto;margin-top:38px;border-radius:14px;border:1px solid var(--hair)}
+table{width:100%;border-collapse:collapse;font-size:14px;background:#fff;min-width:640px}
+th{text-align:left;padding:14px 16px;background:var(--navy);color:#fff;font-weight:600;font-size:12.5px;
+  letter-spacing:.03em;white-space:nowrap}
+td{padding:13px 16px;border-top:1px solid var(--hair);vertical-align:top;color:var(--mute)}
+td:first-child{font-weight:600;color:var(--ink);white-space:nowrap}
+tr:hover td{background:#FAFBFC}
+.yes{color:var(--green);font-weight:600}.no{color:var(--red);font-weight:600}
+.warn-t{color:var(--amber);font-weight:600}
+
+/* ---------- terminal ---------- */
+.term{background:#0d1117;border-radius:13px;overflow:hidden;font-family:var(--mono);font-size:13px;
+  box-shadow:0 20px 60px rgba(0,0,0,.28);margin-top:32px}
+.term .bar{background:#161b22;padding:11px 15px;display:flex;gap:7px;align-items:center;
+  border-bottom:1px solid #21262d}
+.term .dot{width:11px;height:11px;border-radius:50%}
+.term .bar .ttl{margin-left:12px;color:#7d8590;font-size:11.5px}
+.term .body{padding:20px;color:#c9d1d9;min-height:230px;line-height:1.75;white-space:pre-wrap;word-break:break-word}
+.term .p{color:#7ee787}.term .b{color:#79c0ff}.term .d{color:#8b949e}.term .w{color:#e3b341}.term .g{color:#7ee787}
+.cursor{display:inline-block;width:8px;height:15px;background:var(--orange);vertical-align:-2px;
+  animation:blink 1.05s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ---------- localhost diagram ---------- */
+.lh{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:26px;margin-top:44px}
+.lh-box{border-radius:15px;padding:28px;border:1px solid var(--hair);background:#fff;position:relative;overflow:hidden}
+.lh-box.bad{border-color:#F0C2BA;background:#FDF3F1}
+.lh-box.good{border-color:#B6DFC7;background:#F1F9F4}
+.lh-box h3{font-size:19px;margin-bottom:6px}
+.lh-box p{font-size:14.5px;color:var(--mute);margin-top:10px}
+.loopwrap{height:96px;position:relative;margin:22px 0 6px}
+.laptop{position:absolute;left:50%;transform:translateX(-50%);top:26px;width:112px;height:66px;
+  border:2.5px solid var(--navy);border-radius:8px 8px 3px 3px;background:#fff}
+.laptop:after{content:'';position:absolute;bottom:-8px;left:-16px;right:-16px;height:6px;
+  background:var(--navy);border-radius:3px}
+.loop{position:absolute;left:50%;top:22px;width:150px;height:74px;margin-left:-75px;
+  border:2.5px dashed var(--orange);border-radius:50%;animation:spin 4.5s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pkt{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--orange);
+  top:26px;left:50%;animation:fly 2.6s ease-in-out infinite}
+@keyframes fly{0%{transform:translate(-90px,26px);opacity:0}
+  20%{opacity:1}70%{transform:translate(40px,-8px);opacity:1}
+  100%{transform:translate(96px,-14px);opacity:0}}
+.xmark{position:absolute;right:26px;top:36px;font-size:36px;color:var(--red);font-weight:700;
+  animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.35;transform:scale(.92)}50%{opacity:1;transform:scale(1.05)}}
+
+/* ---------- RLS demo ---------- */
+.demo{background:#fff;border:1px solid var(--hair);border-radius:16px;overflow:hidden;margin-top:40px;
+  box-shadow:0 12px 44px rgba(0,51,102,.07)}
+.demo .head{padding:20px 24px;border-bottom:1px solid var(--hair);display:flex;
+  align-items:center;gap:18px;flex-wrap:wrap;background:var(--paper)}
+.demo .head .t{font-weight:600;font-size:15.5px;color:var(--navy)}
+.toggle{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:13.5px;font-weight:600}
+.sw{width:56px;height:30px;border-radius:16px;background:var(--red);position:relative;
+  transition:background .32s cubic-bezier(.2,.7,.3,1);flex-shrink:0}
+.sw:after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;
+  background:#fff;transition:transform .32s cubic-bezier(.2,.7,.3,1);box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.sw.on{background:var(--green)}
+.sw.on:after{transform:translateX(26px)}
+.demo .split{display:grid;grid-template-columns:1fr 1fr;min-height:300px}
+@media(max-width:760px){.demo .split{grid-template-columns:1fr}}
+.demo .pane{padding:22px 24px}
+.demo .pane+.pane{border-left:1px solid var(--hair)}
+@media(max-width:760px){.demo .pane+.pane{border-left:none;border-top:1px solid var(--hair)}}
+.demo .pl{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:16px}
+.row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;padding:9px 0;font-size:13px;
+  border-bottom:1px solid #F0F2F5;align-items:center;transition:opacity .34s,transform .34s}
+.row.hide{opacity:0;transform:translateX(-14px);pointer-events:none}
+.row .nm{font-weight:600;color:var(--ink)}
+.row .em{color:var(--mute);font-family:var(--mono);font-size:11.5px;overflow:hidden;text-overflow:ellipsis}
+.row .tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:#EEF1F5;color:var(--mute)}
+.row.mine .tag{background:#E3F5EA;color:var(--green)}
+.blank{padding:26px 0;color:var(--green);font-size:14px;font-weight:600;display:none}
+.blank.show{display:block;animation:fadein .4s}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.demo .foot{padding:18px 24px;border-top:1px solid var(--hair);font-size:14px;line-height:1.6;
+  background:#FDF3F1;color:#8B2E22;transition:background .32s,color .32s}
+.demo .foot.safe{background:#F1F9F4;color:#186B41}
+.demo .foot b{font-weight:700}
+.qbox{font-family:var(--mono);font-size:12px;background:#0d1117;color:#c9d1d9;padding:13px 15px;
+  border-radius:8px;margin-bottom:16px;overflow-x:auto;white-space:pre}
+
+/* ---------- tasks ---------- */
+.task{border:2px solid var(--orange);border-radius:16px;padding:28px;margin-top:38px;background:#FFF8F3;
+  position:relative}
+.task .lab{position:absolute;top:-13px;left:24px;background:var(--orange);color:#fff;
+  font-size:11px;font-weight:700;letter-spacing:.14em;padding:5px 14px;border-radius:12px;text-transform:uppercase}
+.task h3{margin-bottom:12px;color:var(--navy)}
+.task ol{margin:14px 0 0 20px;font-size:14.5px;color:var(--mute)}
+.task ol li{margin-bottom:9px;padding-left:5px}
+.task .time{font-size:12.5px;color:var(--orange-d);font-weight:700;margin-top:16px;letter-spacing:.05em}
+
+/* ---------- checklist ---------- */
+.check{margin-top:34px}
+.check .grp{margin-bottom:28px}
+.check .grp h3{font-size:16px;margin-bottom:12px;color:var(--navy)}
+.ci{display:flex;gap:13px;padding:11px 14px;border-radius:10px;cursor:pointer;
+  transition:background .2s;align-items:flex-start;font-size:14.5px;color:var(--mute)}
+.ci:hover{background:var(--paper)}
+.ci .bx{width:20px;height:20px;border:2px solid #C3CDD9;border-radius:5px;flex-shrink:0;margin-top:1px;
+  transition:.22s;position:relative}
+.ci.done .bx{background:var(--green);border-color:var(--green)}
+.ci.done .bx:after{content:'✓';position:absolute;inset:0;color:#fff;font-size:13px;font-weight:700;
+  display:grid;place-items:center}
+.ci.done{color:var(--dim);text-decoration:line-through;text-decoration-color:#C3CDD9}
+
+/* ---------- misc ---------- */
+.callout{border-radius:14px;padding:24px 26px;margin-top:34px;font-size:15.5px;line-height:1.65}
+.callout.r{background:#FBE6E3;color:#8B2E22}
+.callout.g{background:#F1F9F4;color:#186B41}
+.callout.a{background:#FDF6E3;color:#6B4A05}
+.callout.n{background:var(--ink);color:var(--ondk)}
+.callout b{font-weight:700}
+.callout.n b{color:var(--gold)}
+.big{font-size:clamp(22px,3.2vw,34px);font-weight:700;line-height:1.28;letter-spacing:-.01em;
+  color:var(--navy);margin-top:30px;max-width:22ch}
+.dark .big,.blue .big{color:#fff}
+.srcs{margin-top:56px;padding-top:26px;border-top:1px solid var(--hair);font-size:12.5px;color:var(--dim);line-height:1.9}
+.srcs a{color:var(--dim)}
+footer{background:var(--ink);color:var(--dimdk);padding:52px clamp(20px,5vw,48px);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+footer b{color:var(--ondk);font-weight:500}
+</style>
+</head>
+<body>
+
+<div id="bar"></div>
+<nav id="nav">
+  <div class="brand">Build Your Own <span>Tools</span></div>
+  <div class="links">
+    <a href="#tools">Tools</a><a href="#local">Localhost</a><a href="#host">Hosting</a>
+    <a href="#gate">Safeguards</a><a href="#rls">Databases</a><a href="#money">Selling it</a>
+    <a href="#checklist">Checklist</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="glow"></div><div class="glow2"></div>
+  <div class="wrap" style="position:relative">
+    <div class="eyebrow rv">McLennan Community College · Professional Development</div>
+    <h1 class="rv d1">You can build<br>your own software.</h1>
+    <p class="sub rv d2">Not "learn to code." Build. Describe what you need in plain English,
+      get a working tool, put it on the internet, and keep it from leaking. Three hours.</p>
+    <div class="meta rv d3">
+      <div class="pill"><b>3 hours</b> · hands-on</div>
+      <div class="pill"><b>4</b> things you build</div>
+      <div class="pill"><b>$0</b> required</div>
+    </div>
+    <div class="meta-box rv d4">
+      <div class="t">Start here</div>
+      <p>This page is the example. It is a single file, it cost nothing to host, and it is
+      served from the same free infrastructure you'll use today. By the end of the session
+      you will know exactly how it got here — and you'll have done it yourself.</p>
+    </div>
+  </div>
+  <div class="scrollcue">Scroll</div>
+</section>
+
+<!-- ============ THE SHIFT ============ -->
+<section class="paper">
+  <div class="wrap">
+    <div class="eyebrow rv">What changed</div>
+    <h2 class="rv d1">The bottleneck moved.</h2>
+    <p class="lead rv d2">Writing software used to require knowing syntax. That was the wall, and it
+      kept almost everyone out. It isn't the wall anymore. The wall now is knowing <em>what to
+      build</em>, and knowing <em>what will go wrong</em> — and you already have the first one.</p>
+    <div class="grid g3">
+      <div class="card rv d1"><div class="num">01</div><h3>Describe</h3>
+        <p>You say what you want in ordinary language. "A form where staff request a room, and I see all the requests in one list."</p></div>
+      <div class="card rv d2"><div class="num">02</div><h3>Get something working</h3>
+        <p>The tool writes it, runs it, and shows you. You look at it, say what's wrong, and it changes. That loop is the whole job.</p></div>
+      <div class="card rv d3"><div class="num">03</div><h3>Be responsible for it</h3>
+        <p>This is the part nobody teaches. It's real software now, on the real internet, possibly holding real data. That's what most of today is about.</p></div>
+    </div>
+    <p class="big rv d2">The skill is no longer typing code. It's judgment about what you've made.</p>
+  </div>
+</section>
+
+<!-- ============ TOOLS ============ -->
+<section id="tools">
+  <div class="wrap">
+    <div class="eyebrow rv">Part one</div>
+    <h2 class="rv d1">What you actually need.</h2>
+    <p class="lead rv d2">There are two roads. One needs nothing but a browser. The other runs on your
+      own machine and gives you more power for more setup. Start on the first road — everyone does.</p>
+
+    <div class="grid g2">
+      <div class="card rv d1">
+        <div class="k" style="color:var(--green)">Road one · start here</div>
+        <h3>The browser builders</h3>
+        <p>You open a tab, type what you want, and a working app appears. Nothing to install, nothing
+        to configure, and they will publish it to a real web address for you. This is where your
+        first thirty minutes should go — and where a locked-down work laptop leaves you no choice anyway.</p>
+      </div>
+      <div class="card rv d2">
+        <div class="k" style="color:var(--teal)">Road two · later today</div>
+        <h3>Agents on your own machine</h3>
+        <p>Tools like Claude Code run on your computer, read and write real files, and run real
+        commands. Far more capable, and the only option once a project gets serious. It needs
+        installing, a paid plan, and a little comfort with a terminal.</p>
+      </div>
+    </div>
+
+    <h3 class="rv" style="margin-top:56px">The browser builders, honestly compared</h3>
+    <p class="note rv">Free-tier limits as of August 2026. These change constantly — re-check the morning you teach or build.</p>
+    <div class="tw rv d1">
+      <table>
+        <thead><tr><th>Tool</th><th>Free tier</th><th>Publishes for you?</th><th>Database?</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td>Bolt.new</td><td>300K tokens/day, 1M/month</td><td class="yes">Yes — free bolt.host URL</td><td>Built-in; Supabase needs paid</td><td><b>Best for a workshop.</b> Most free headroom by far, and you can see the files.</td></tr>
+          <tr><td>Lovable</td><td class="warn-t">5 messages/day, ~30/month</td><td class="yes">Yes — yourapp.lovable.app</td><td>Yes, Supabase-backed</td><td><b>Best demo, worst workshop tool.</b> Everyone hits the wall in the first hour.</td></tr>
+          <tr><td>Vercel v0</td><td class="warn-t">7 messages/day, $5 credits</td><td class="yes">Yes — one-click</td><td>Yes, via integrations</td><td>Great visual editing mode. Daily cap is brutal.</td></tr>
+          <tr><td>Replit</td><td>Daily agent credits, 1 published project</td><td class="yes">Yes</td><td class="yes">Yes — free tier includes one</td><td>Most powerful, most intimidating interface.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout a rv"><b>The constraint nobody plans for is the daily cap, not the difficulty.</b>
+      In a three-hour room, Lovable's five-a-day ceiling stops people mid-build and the session stalls. Demo Lovable from the front — one prompt, one publish, live URL, pass it around — then
+      have everyone build in Bolt.</div>
+
+    <div class="task rv">
+      <div class="lab">Task 1</div>
+      <h3>Ship something in thirty minutes.</h3>
+      <p style="font-size:15px;color:var(--mute);margin-top:8px">Pick one real, small, annoying thing from your actual job. Not a
+      grand idea — a small one. A form. A calculator. A checklist that emails you a summary.</p>
+      <ol>
+        <li>Open <code>bolt.new</code>. You will be asked to sign in — no credit card needed.</li>
+        <li>Describe the tool in three or four sentences. Say who uses it and what they see.</li>
+        <li>When it appears, <b>do not accept the first version</b>. Tell it one specific thing that's wrong. Then another.</li>
+        <li>Click Deploy. Copy the URL. Send it to the person next to you and have them use it.</li>
+      </ol>
+      <div class="time">30 minutes · you leave this step with a working link</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOCALHOST ============ -->
+<section id="local" class="dark">
+  <div class="wrap">
+    <div class="eyebrow rv">Part two</div>
+    <h2 class="rv d1">Your laptop is already a server.</h2>
+    <p class="lead rv d2">Every website you've used lives on someone else's computer. Running something
+      "locally" means it's running on the machine in front of you, and your browser is fetching it
+      from that same machine. Nothing crosses the internet at all.</p>
+
+    <div class="callout n rv d2" style="max-width:720px">
+      <b>The analogy that works:</b> localhost is your office phone extension. From inside the
+      building you dial 3000 and it rings. Nobody outside the building can dial your extension
+      directly — they'd need the main number first. That's not a bug. That's the whole design.
+    </div>
+
+    <div class="lh">
+      <div class="lh-box bad rv d1" style="background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.11)">
+        <h3 style="color:#fff">You, on your laptop</h3>
+        <div class="loopwrap"><div class="laptop"></div><div class="loop"></div></div>
+        <p style="color:var(--ondk)"><code style="background:rgba(255,255,255,.1);color:#fff">localhost:3000</code>
+        works perfectly. The request leaves your browser, loops straight back into your own machine,
+        and never touches the network card.</p>
+      </div>
+      <div class="lh-box rv d2" style="background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.11)">
+        <h3 style="color:#fff">Your director, on hers</h3>
+        <div class="loopwrap"><div class="laptop" style="border-color:#5C6E82"></div><div class="pkt"></div><div class="xmark">✕</div></div>
+        <p style="color:var(--ondk)">She types the same address and reaches <em>her own</em> machine,
+        which is running nothing. <code style="background:rgba(255,255,255,.1);color:#fff">127.0.0.1</code>
+        means "me" on every computer on earth. There is no version of it that means <em>your</em> laptop.</p>
+      </div>
+    </div>
+
+    <div class="callout r rv" style="background:rgba(192,57,43,.14);color:#FFB3A7;margin-top:34px">
+      <b>This is the single most common confusion for first-timers.</b> You build something, it works
+      beautifully, you paste the link into Teams — and everyone reports an error. Nothing is broken.
+      The link is meaningless outside your machine. Getting a shareable address means <em>deploying</em>,
+      which is the next section.
+    </div>
+
+    <h3 class="rv" style="margin-top:60px;color:#fff">What running it locally looks like</h3>
+    <div class="term rv d1">
+      <div class="bar"><span class="dot" style="background:#ff5f57"></span><span class="dot" style="background:#febc2e"></span>
+        <span class="dot" style="background:#28c840"></span><span class="ttl">Terminal — room-booker</span></div>
+      <div class="body" id="tbody"></div>
+    </div>
+    <p class="note rv">Two things trip everyone up. The terminal is now <em>occupied</em> — that isn't
+      frozen, that's the server running; open a second window for anything else. And Ctrl+C stops it,
+      at which point the site instantly stops working.</p>
+
+    <h3 class="rv" style="margin-top:56px;color:#fff">The three things to install</h3>
+    <div class="grid g3">
+      <div class="card rv d1"><div class="k" style="color:var(--orange)">One</div><h3>Node.js 24 LTS</h3>
+        <p>Version <b style="color:#fff">24.19.0</b> as of August 2026 — take the LTS, not the newest.
+        This is the engine that runs the code. From nodejs.org, default installer.</p></div>
+      <div class="card rv d2"><div class="k" style="color:var(--orange)">Two</div><h3>Git</h3>
+        <p>Track Changes for a whole folder, with an undo that reaches back months. From git-scm.com.
+        Add GitHub Desktop if you'd rather click than type.</p></div>
+      <div class="card rv d3"><div class="k" style="color:var(--orange)">Three</div><h3>VS Code</h3>
+        <p>Where you look at the files. Free. You will spend less time here than you expect —
+        the agent does most of the typing.</p></div>
+    </div>
+    <p class="note rv"><b style="color:var(--gold)">Before you plan on any of this:</b> check whether your
+      college laptop lets you install software at all. Many staff machines don't. If yours doesn't,
+      the browser tools aren't the easy path — they're the only path.</p>
+  </div>
+</section>
+
+<!-- ============ HOSTING ============ -->
+<section id="host">
+  <div class="wrap">
+    <div class="eyebrow rv">Part three</div>
+    <h2 class="rv d1">Getting it on the internet, for free.</h2>
+    <p class="lead rv d2">Free hosting is real, not a trial, and not a trick. But each of the big four
+      free tiers has one specific edge that cuts, and they're all different edges.</p>
+
+    <div class="grid g2" style="margin-top:44px">
+      <div class="card rv d1"><div class="k" style="color:var(--teal)">The concept</div>
+        <h3>A static site is a folder of finished files</h3>
+        <p>Handed over exactly as they sit on disk. No thinking per visitor. It's a printed handout in
+        a rack by the door — anyone can take one, the rack does no work, and ten thousand copies cost
+        almost nothing. That's why it's free.</p></div>
+      <div class="card rv d2"><div class="k" style="color:var(--orange-d)">The limit</div>
+        <h3>You outgrow it the moment anything differs per person</h3>
+        <p>Users logging in. A form whose contents must be stored. Anything you must keep secret from
+        the visitor. Then you need a <em>dynamic</em> site — a librarian who looks up your record and
+        prints you a custom page. Someone has to be on duty, and duty costs money.</p></div>
+    </div>
+
+    <div class="tw rv">
+      <table>
+        <thead><tr><th>Host</th><th>Free tier</th><th>Server-side code?</th><th>The edge that cuts</th></tr></thead>
+        <tbody>
+          <tr><td>Cloudflare Pages</td><td>Unmetered bandwidth · 500 builds/mo</td><td class="yes">Yes — 100K requests/day</td><td>That quota is <b>daily</b>, resetting at midnight UTC. One bot afternoon locks your dynamic features until then.</td></tr>
+          <tr><td>GitHub Pages</td><td>100 GB/mo soft · 1 GB site</td><td class="no">No — static only</td><td><b>Always public.</b> No password protection below Enterprise. Commercial transactions and SaaS are prohibited.</td></tr>
+          <tr><td>Netlify</td><td class="warn-t">300 credits/mo (≈20 deploys)</td><td>Yes, metered</td><td>Run out and <b>your site goes offline</b> until the cycle resets. You cannot buy more on free.</td></tr>
+          <tr><td>Vercel</td><td>~100 GB guideline · 1M functions</td><td class="yes">Yes</td><td><b>Commercial use is banned on Hobby</b> — including, by its own wording, a paid employee writing the code.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout r rv"><b>Read Vercel's Hobby terms carefully if you build a work tool.</b> Commercial
+      usage is defined as any deployment "used for the purpose of financial gain of anyone involved in
+      any part of the production of the project, including a paid employee or consultant writing the
+      code." A staff member building on work time is arguably inside that definition. For institutional
+      projects, Cloudflare Pages is the cleaner choice.</div>
+
+    <div class="task rv">
+      <div class="lab">Task 2</div>
+      <h3>Get a real address.</h3>
+      <ol>
+        <li>Push the thing you built in Task 1 to a GitHub repository. Use GitHub Desktop if the command line isn't your thing.</li>
+        <li>Connect that repository to Cloudflare Pages. Accept every default.</li>
+        <li>Wait ninety seconds. You now have a public HTTPS address anyone on earth can reach.</li>
+        <li><b>Sit with that for a second.</b> Anyone on earth can reach it. That's the next section.</li>
+      </ol>
+      <div class="time">20 minutes · you leave this step live on the internet</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SAFEGUARDS ============ -->
+<section id="gate" class="blue">
+  <div class="wrap">
+    <div class="eyebrow rv">Part four</div>
+    <h2 class="rv d1">There is no such thing as a secret in a web page.</h2>
+    <p class="lead rv d2">Not minified. Not obfuscated. Not base64-encoded. Not fetched from a file with
+      an unguessable name. Right-click, View Source — or open the Network tab and watch every request
+      the page makes, then replay it with different values.</p>
+
+    <div class="grid g3">
+      <div class="card rv d1" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15)">
+        <h3 style="color:#fff">Any key in your front-end is published</h3>
+        <p style="color:#B7CDE0">If it shipped to the browser, treat it as compromised and rotate it.
+        Deleting the file does nothing — it's in your Git history and possibly someone's cache.</p></div>
+      <div class="card rv d2" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15)">
+        <h3 style="color:#fff">Hiding a button hides nothing</h3>
+        <p style="color:#B7CDE0">Client-side checks are a courtesy to polite users. Disabling a field
+        stops the field, not the request. Every real check must happen where the user cannot reach it.</p></div>
+      <div class="card rv d3" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15)">
+        <h3 style="color:#fff">So only publish what is safe to publish</h3>
+        <p style="color:#B7CDE0">That's not a limitation — it's the design. It's why the next section
+        matters more than anything else today.</p></div>
+    </div>
+
+    <h3 class="rv" style="margin-top:60px;color:#fff">Two words people use interchangeably, and shouldn't</h3>
+    <div class="grid g2">
+      <div class="card rv d1" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15)">
+        <div class="k" style="color:var(--gold)">Authentication</div>
+        <h3 style="color:#fff">Who are you?</h3>
+        <p style="color:#B7CDE0">The ID check at the door. Login screens, passwords, magic links, SSO.
+        This part almost always works.</p></div>
+      <div class="card rv d2" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15)">
+        <div class="k" style="color:var(--orange)">Authorization</div>
+        <h3 style="color:#fff">What are you allowed to see?</h3>
+        <p style="color:#B7CDE0">Which rooms the badge opens. This is the part that's missing in nearly
+        every breach you'll read about — everyone logged in fine, and then could read everyone else's records.</p></div>
+    </div>
+    <p class="big rv" style="color:#fff">Logging in is not the same as being limited.</p>
+
+    <h3 class="rv" style="margin-top:56px;color:#fff">Put a gate on it while it's young</h3>
+    <p class="lead rv" style="color:#B7CDE0">A prototype's security isn't "probably fine" — it's
+      <em>unknown</em>. A password in front of the whole site converts an unknown-risk public asset
+      into a known-audience internal one. It buys you the right to be wrong.</p>
+    <div class="tw rv d1" style="border-color:rgba(255,255,255,.16)">
+      <table style="background:rgba(255,255,255,.05)">
+        <thead><tr><th>Option</th><th>Cost</th><th>Use it when</th></tr></thead>
+        <tbody style="color:#B7CDE0">
+          <tr><td style="color:#fff">Cloudflare Access</td><td class="yes">Free under 50 users</td><td>Best free option. Sits in front of everything; users verify by emailed PIN. Nothing reaches your app until they pass.</td></tr>
+          <tr><td style="color:#fff">Supabase Auth</td><td class="yes">Free to 50K users</td><td>App-level login. Necessary but <b>not sufficient</b> — it authenticates; something still has to authorize.</td></tr>
+          <tr><td style="color:#fff">Netlify password</td><td class="warn-t">Paid plans</td><td>Simple site-wide password, on paid plans. Confirm what your own plan includes before relying on it.</td></tr>
+          <tr><td style="color:#fff">GitHub Pages</td><td class="no">Not available</td><td>There is no gate. A free GitHub Pages site is public, permanently.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="task rv" style="background:rgba(255,255,255,.07);border-color:var(--orange)">
+      <div class="lab">Task 3</div>
+      <h3 style="color:#fff">Lock the door you just opened.</h3>
+      <ol style="color:#B7CDE0">
+        <li>Put Cloudflare Access in front of the site you deployed in Task 2.</li>
+        <li>Add your own email, and the email of the person next to you.</li>
+        <li>Open it in a private window. Confirm you're stopped.</li>
+        <li>Have someone <em>not</em> on the list try. Confirm they're stopped too.</li>
+      </ol>
+      <div class="time" style="color:var(--gold)">15 minutes</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RLS ============ -->
+<section id="rls">
+  <div class="wrap">
+    <div class="eyebrow rv">Part five · the most important thirty minutes</div>
+    <h2 class="rv d1">When you add a database,<br>the browser talks to it directly.</h2>
+    <p class="lead rv d2">This is the part that surprises people. In the standard no-code stack, your
+      site doesn't ask a server which asks the database. The <em>visitor's own browser</em> asks the
+      database. That's what makes a free static site behave like a real app — and it's why one
+      particular setting is not optional.</p>
+
+    <div class="grid g2" style="margin-top:44px">
+      <div class="card rv d1"><div class="k" style="color:var(--green)">Safe to publish</div>
+        <h3>The publishable key</h3>
+        <p>Formerly called the <code>anon</code> key. It is <b>not a password</b> — it's a return
+        address that tells the database which project you mean. It has to be in the browser, because
+        in this design the browser <em>is</em> the client. Supabase lists it as safe to expose.</p></div>
+      <div class="card rv d2" style="border-color:#F0C2BA;background:#FDF3F1"><div class="k" style="color:var(--red)">Never in a browser</div>
+        <h3>The secret / service_role key</h3>
+        <p>It carries <code>BYPASSRLS</code> — every rule you write simply does not apply to it. If
+        an error got fixed by swapping in this key, you didn't fix the error. You removed the lock.</p></div>
+    </div>
+
+    <div class="callout n rv"><b>So the entire security model rests on one sentence:</b> the public key
+      gets you to the door, and row-level security decides what's behind it. With RLS off, that public
+      key stops being a return address and becomes a master key you have published on the internet.</div>
+
+    <h3 class="rv" style="margin-top:60px">Try it. Flip the switch.</h3>
+    <p class="note rv">This is a simulation — no real database, no real data. The behavior is accurate.</p>
+
+    <div class="demo rv d1">
+      <div class="head">
+        <div class="t">advising_notes</div>
+        <div class="toggle"><span id="swlabel" style="color:var(--red)">RLS OFF</span>
+          <div class="sw" id="sw" role="switch" aria-checked="false" tabindex="0"></div></div>
+      </div>
+      <div class="split">
+        <div class="pane">
+          <div class="pl">What you intended — Marisol's view</div>
+          <div id="mine"></div>
+        </div>
+        <div class="pane">
+          <div class="pl">What a stranger gets with your public key</div>
+          <div class="qbox">curl 'https://xyz.supabase.co/rest/v1/advising_notes' \
+  -H "apikey: sb_publishable_1a2b3c..."</div>
+          <div id="theirs"></div>
+          <div class="blank" id="blank">✓ Empty. The rule ran inside the database and returned nothing.</div>
+        </div>
+      </div>
+      <div class="foot" id="foot"><b>RLS is off.</b> Anyone with the key — which is in your page source —
+        can read every row. They can also insert, update and delete. On the free tier you keep one day
+        of logs, so you will not be able to prove what happened.</div>
+    </div>
+
+    <h3 class="rv" style="margin-top:60px">What RLS actually is</h3>
+    <p class="lead rv">A normal database permission is a key to a filing cabinet — you're either in or
+      out. Row-level security is a rule that says <em>you may open this cabinet, but you only ever see
+      the folders with your name on them.</em> The rule lives in the cabinet, not in the app. That's
+      the part that matters: the app cannot talk its way around it, because the check happens inside
+      the database after the request arrives.</p>
+
+    <h3 class="rv" style="margin-top:52px">The seven ways it goes wrong</h3>
+    <div class="grid g3">
+      <div class="card rv d1"><div class="num">01</div><h3>The table was made in SQL</h3>
+        <p>Tables made in the dashboard's Table Editor get RLS automatically. Tables made in the SQL
+        editor <b>do not</b> — and SQL is exactly what an AI assistant writes. This is the big one.</p></div>
+      <div class="card rv d2"><div class="num">02</div><h3><code>USING (true)</code></h3>
+        <p>A policy that means "everyone, always." It satisfies every "do you have a policy?" checkbox
+        while providing zero protection. It is the most dangerous mistake because it looks like security.</p></div>
+      <div class="card rv d3"><div class="num">03</div><h3>The table you added last month</h3>
+        <p>Month one was locked down. The table added in month three has no policy. Nobody re-audits.</p></div>
+      <div class="card rv d1"><div class="num">04</div><h3>The service key in the browser</h3>
+        <p>Someone hit a permissions error and "fixed" it by swapping keys. It works instantly, which
+        is exactly why it's so seductive.</p></div>
+      <div class="card rv d2"><div class="num">05</div><h3>A security-definer view</h3>
+        <p>Runs with its creator's permissions, not the caller's. RLS is on, the policy is right, and
+        data still leaks straight through the view.</p></div>
+      <div class="card rv d3"><div class="num">06</div><h3>RLS on, no policy — and panic</h3>
+        <p>This blocks everything, which is the <em>correct</em> behavior. But it looks like "my app is
+        broken," and the fix people reach for is turning RLS off. That panic is the actual attack path.</p></div>
+      <div class="card rv d1"><div class="num">07</div><h3><code>USING</code> without <code>WITH CHECK</code></h3>
+        <p><code>USING</code> is which rows you may touch. <code>WITH CHECK</code> is what you may turn
+        them into. It matters the moment the rows you may <em>read</em> are broader than the rows you may
+        <em>write</em> — omit it and Postgres silently reuses <code>USING</code>, so anyone who can see a
+        row can rewrite it.</p></div>
+    </div>
+
+    <div class="callout a rv"><b>Two sentences to take home:</b> open Database → Security Advisor.
+      If it isn't clean, you are not live. The advisors run automatically and email organization
+      owners a weekly summary — it is free, it is already on, and almost nobody opens it.</div>
+
+    <h3 class="rv" style="margin-top:60px">This has already happened, repeatedly</h3>
+    <div class="statrow">
+      <div class="stat rv d1"><div class="v" style="color:var(--red)">10.3%</div>
+        <div class="l">of scanned Lovable projects were exposing data — 170 of 1,645, in one researcher's 2025 scan.</div></div>
+      <div class="stat rv d2"><div class="v" style="color:var(--red)">9.3</div>
+        <div class="l">CVSS score of CVE-2025-48757 per the GitHub advisory: unauthenticated read or write to arbitrary tables of generated sites.</div></div>
+      <div class="stat rv d3"><div class="v" style="color:var(--red)">175</div>
+        <div class="l">instances of real personal data — medical records, bank details, phone numbers — found across vibe-coded apps.</div></div>
+      <div class="stat rv d4"><div class="v" style="color:var(--red)">A01</div>
+        <div class="l">Broken Access Control is the number-one risk on the OWASP Top 10. RLS misconfiguration <em>is</em> A01.</div></div>
+    </div>
+    <div class="callout r rv"><b>The most instructive detail in the whole story:</b> when the platform
+      responded, it shipped a scanner that checked whether a policy existed — not whether the policy
+      was correct. So <code>USING (true)</code> passed the audit with a green checkmark. A tool telling
+      you that you're secure is not the same as being secure.</div>
+
+    <div class="task rv">
+      <div class="lab">Task 4</div>
+      <h3>Break your neighbour's app.</h3>
+      <ol>
+        <li>Add a Supabase database to your project and put two or three fake records in it. <b>Fake. Invent them.</b></li>
+        <li>Turn RLS on. Write one policy so a user sees only their own rows.</li>
+        <li>Open Database → Security Advisor. Fix everything it flags. Re-run until clean.</li>
+        <li>Now swap laptops. Your job is to see data you shouldn't. Open DevTools, find the key, try the URL.</li>
+        <li>Whatever you find, tell them. That's the exercise.</li>
+      </ol>
+      <div class="time">25 minutes · nobody's survives the first time</div>
+    </div>
+
+    <div class="callout g rv"><b>One more thing that will bite this class specifically.</b> Supabase pauses
+      free projects after about a week of inactivity. You'll build something today, come back in two
+      weeks, and find it dead. You didn't break it — click Resume. But put a weekly reminder in your
+      calendar, and export anything you care about before a long break. The free tier has no automatic backups.</div>
+  </div>
+</section>
+
+<!-- ============ MONEY ============ -->
+<section id="money" class="paper">
+  <div class="wrap">
+    <div class="eyebrow rv">Part six</div>
+    <h2 class="rv d1">If you're thinking about selling it.</h2>
+    <p class="lead rv d2">Start here, before anything about payments or pricing. This is the question
+      almost nobody asks, and it is the only decision on this page that is genuinely hard to reverse.</p>
+
+    <div class="callout r rv"><b>Who owns what you build?</b> MCC has a posted intellectual property
+      policy — E-XVII, effective February 2011. It says employees have <em>exclusive</em> rights to
+      what they develop on their own time without substantial institutional resources. It also says
+      anything developed <em>using</em> substantial institutional resources is <b>jointly owned by the
+      College and you</b>. "Substantial" is not defined anywhere in the policy.</div>
+
+    <div class="grid g2" style="margin-top:34px">
+      <div class="card rv d1"><div class="k" style="color:var(--red)">The trap</div>
+        <h3>"Jointly owned" is not a compromise</h3>
+        <p>People hear it and think "we split the money." Under default copyright rules, joint owners each hold
+        an undivided interest — but <b>neither can grant an exclusive license or sell the whole thing
+        without the other</b>. A jointly-owned product is effectively unsellable and un-fundable
+        without the College's signature, and revenue carries a duty to account.</p></div>
+      <div class="card rv d2"><div class="k" style="color:var(--amber)">The other regime</div>
+        <h3>It isn't only an IP question</h3>
+        <p>Texas Penal Code § 39.02 makes it abuse of official capacity for a public servant to misuse
+        government property or services for personal benefit, graded by value. Building a commercial
+        product on the college laptop, on college time, with college data isn't just a policy problem.</p></div>
+    </div>
+
+    <div class="callout g rv"><b>What to do instead, and it is not complicated.</b> Personal device.
+      Personal accounts. Personal software licenses. Nights and weekends. No institutional data, ever
+      — not even scrubbed, not even for testing. And if there's any ambiguity, get a written
+      determination <em>before</em> you build, not after you have a customer. Under E-XVII the path
+      runs supervisor → VP of Instruction & Student Engagement → President.</div>
+    <p class="note rv">The policy also requires disclosure within 60 days after notification of
+      marketability. And note it dates to 2011 — it says nothing about cloud services, institutional
+      software licenses, or the AI tools the College provides. Expect ambiguity; don't expect it to
+      resolve in your favor.</p>
+
+    <h3 class="rv" style="margin-top:60px">Then the ordinary business questions</h3>
+    <div class="grid g3">
+      <div class="card rv d1"><div class="k" style="color:var(--teal)">Payments</div><h3>Stripe, or a middleman</h3>
+        <p>Stripe is 2.9% + 30¢ and every tax obligation stays yours. A merchant-of-record — Paddle,
+        Lemon Squeezy — charges about 5% and becomes the legal seller, which means <em>they</em>
+        register and remit sales tax everywhere. You're paying roughly two points for a compliance
+        department. For a solo project that's cheap.</p></div>
+      <div class="card rv d2"><div class="k" style="color:var(--teal)">Texas sales tax</div><h3>SaaS is taxable here</h3>
+        <p>Texas treats it as a data processing service: 6.25% state plus up to 2% local, but only 80%
+        of the price is taxable — so an effective ceiling of 6.6%. And because you live in Texas,
+        there's no economic-nexus safe harbor. <b>The obligation starts at your first Texas sale.</b></p></div>
+      <div class="card rv d3"><div class="k" style="color:var(--teal)">Structure</div><h3>An LLC is one layer, not a shield</h3>
+        <p>$300 to form in Texas. It protects against contract debts — but not against your own torts,
+        which is exactly what a solo software business gets sued for. Pair it with a limitation-of-liability
+        clause and insurance, or it's doing less than you think.</p></div>
+    </div>
+
+    <div class="callout a rv"><b>The privacy law that actually applies to you.</b> California's CCPA has
+      thresholds a side project will never hit — unless it sells personal data, which has no threshold at all. The <em>Texas</em> Data Privacy and Security Act has
+      <b>no revenue or user-count threshold at all</b> — it applies based on doing business in Texas.
+      Small businesses are exempt from most of it, but not from the rule against selling sensitive
+      personal data without explicit consent. And you need a posted privacy policy the moment you
+      collect an email address.</div>
+
+    <h3 class="rv" style="margin-top:60px">And the number nobody puts on a slide</h3>
+    <div class="statrow">
+      <div class="stat rv d1"><div class="v" style="color:var(--navy)">54%</div>
+        <div class="l">of indie products with verified payment data earn <b>nothing at all</b>.</div></div>
+      <div class="stat rv d2"><div class="v" style="color:var(--navy)">~5%</div>
+        <div class="l">clear roughly $100K a year — measured among people already serious enough to launch publicly.</div></div>
+      <div class="stat rv d3"><div class="v" style="color:var(--navy)">1</div>
+        <div class="l">in every story you've heard. Every "$20K a month solo founder" post is a draw from the far tail.</div></div>
+    </div>
+    <p class="big rv">Treat it as skill acquisition with a lottery ticket attached. The skills transfer
+      to your day job with certainty. The revenue does not.</p>
+    <p class="note rv">Do the IP analysis before you write code — it's free and it's the only irreversible
+      step. Defer the LLC, the trademark and the tax registrations until there's actual revenue. The most
+      common failure is spending three months and $2,000 on formation and branding for a product that
+      never gets a customer.</p>
+  </div>
+</section>
+
+<!-- ============ CHECKLIST ============ -->
+<section id="checklist" class="dark">
+  <div class="wrap">
+    <div class="eyebrow rv">Before you make anything public</div>
+    <h2 class="rv d1">The gate.</h2>
+    <p class="lead rv d2">Work down it. If you can't personally explain what stops a stranger from
+      reading your database, it is not ready.</p>
+    <div class="check" id="cl"></div>
+    <div class="callout n rv" style="background:rgba(255,102,0,.14);color:#FFD0AE;margin-top:40px">
+      <b>The final question, and it's the only one that matters:</b> assume everything in this app
+      becomes public tomorrow. Are you comfortable? If the answer is no, the answer isn't better
+      security — it's different data.
+    </div>
+  </div>
+</section>
+
+<!-- ============ CLOSE ============ -->
+<section class="blue">
+  <div class="wrap">
+    <div class="eyebrow rv">What happens next</div>
+    <h2 class="rv d1">You have a live URL and something that works.</h2>
+    <p class="lead rv d2">That already puts you ahead of most people who've thought about building
+      something. Three things worth doing this month, in order.</p>
+    <div class="grid g3">
+      <div class="card rv d1" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15)">
+        <div class="num" style="color:var(--gold)">01</div><h3 style="color:#fff">File a Tool Charter</h3>
+        <p style="color:#B7CDE0">One page, five questions, ten minutes. What does it do, what data does
+        it touch, who else uses it, who owns it when you leave, and what happens when it's wrong.</p></div>
+      <div class="card rv d2" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15)">
+        <div class="num" style="color:var(--gold)">02</div><h3 style="color:#fff">Show someone</h3>
+        <p style="color:#B7CDE0">A tool nobody else uses is a hobby. A tool one colleague depends on is
+        infrastructure — and needs an owner, documentation and a fallback.</p></div>
+      <div class="card rv d3" style="background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15)">
+        <div class="num" style="color:var(--gold)">03</div><h3 style="color:#fff">Come to the open lab</h3>
+        <p style="color:#B7CDE0">Monthly, no agenda, all tools on the table. Bring the thing that broke.
+        Something always breaks.</p></div>
+    </div>
+    <p class="big rv" style="color:#fff;max-width:26ch">The page you just read is the proof. Now go make yours.</p>
+  </div>
+</section>
+
+<section style="padding-top:52px;padding-bottom:52px">
+  <div class="wrap">
+    <div class="srcs">
+      <b style="color:var(--mute)">Sources and verification.</b> Free-tier limits, prices and version
+      numbers current as of August 4, 2026, checked against vendor documentation where a first-party page
+      states them. They change frequently — re-verify the morning you teach.
+      Node.js LTS 24.19.0 · <a href="https://nodejs.org/en/download">nodejs.org</a>.
+      Tool pricing: <a href="https://bolt.new/pricing">Bolt</a>, <a href="https://v0.app/pricing">v0</a>,
+      <a href="https://replit.com/pricing">Replit</a>, <a href="https://lovable.dev/pricing">Lovable</a>.
+      Hosting: <a href="https://developers.cloudflare.com/pages/platform/limits/">Cloudflare Pages limits</a>
+      and <a href="https://developers.cloudflare.com/workers/platform/pricing/">Workers pricing</a> (egress),
+      <a href="https://www.cloudflare.com/plans/zero-trust-services/">Cloudflare Zero Trust plans</a>,
+      <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits">GitHub Pages limits</a>,
+      <a href="https://docs.netlify.com/manage/accounts-and-billing/billing/billing-for-credit-based-plans/credit-based-pricing-plans/">Netlify credit plans</a>,
+      <a href="https://vercel.com/docs/limits/fair-use-guidelines">Vercel fair use</a>.
+      Database security: <a href="https://supabase.com/docs/guides/database/postgres/row-level-security">Supabase RLS</a>,
+      <a href="https://supabase.com/docs/guides/getting-started/api-keys">API keys</a>,
+      <a href="https://supabase.com/blog/the-vibe-coding-master-checklist">the vibe coding checklist</a>,
+      <a href="https://supabase.com/docs/guides/platform/free-project-pausing">free project pausing</a>.
+      Incidents: <a href="https://github.com/advisories/GHSA-773x-pxjg-gxgx">CVE-2025-48757</a>,
+      <a href="https://mattpalmer.io/posts/statement-on-CVE-2025-48757/">Matt Palmer's disclosure statement</a>,
+      <a href="https://owasp.org/Top10/2025/">OWASP Top 10:2025</a>.
+      Legal: <a href="https://www.mclennan.edu/employees/policy-manual/docs/E-XVII.pdf">MCC Policy E-XVII</a>,
+      <a href="https://texas.public.law/statutes/tex._educ._code_section_51.680">Tex. Educ. Code § 51.680</a>,
+      <a href="https://texas.public.law/statutes/tex._penal_code_section_39.02">Tex. Penal Code § 39.02</a>,
+      <a href="https://texas.public.law/statutes/tex._tax_code_section_151.351">Tex. Tax Code § 151.351</a>,
+      <a href="https://stripe.com/pricing">Stripe pricing</a>.
+      Revenue distribution from Stripe-verified Indie Hackers data (2022) — dated, and subject to
+      survivorship bias. Nothing here is legal advice; MCC policy questions go to General Counsel.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div><b>Build Your Own Tools</b> — McLennan Community College Professional Development</div>
+    <div>© 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+/* ---------- reveal on scroll ---------- */
+const io = new IntersectionObserver((es) => {
+  es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+}, {threshold:0.12, rootMargin:'0px 0px -8% 0px'});
+document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+/* ---------- scroll progress + active nav ---------- */
+const bar = document.getElementById('bar');
+const secs = [...document.querySelectorAll('section[id]')];
+const links = [...document.querySelectorAll('#nav .links a')];
+function onScroll(){
+  const h = document.documentElement;
+  bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+  let cur = '';
+  secs.forEach(s => { if(s.getBoundingClientRect().top <= 130) cur = s.id; });
+  links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + cur));
+}
+addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+/* ---------- terminal typing ---------- */
+const LINES = [
+  {t:'<span class="p">you@laptop</span><span class="d">:</span><span class="b">~/room-booker</span><span class="d">$</span> ', c:'npm install', d:340},
+  {t:'<span class="d">added 214 packages in 3s</span>', d:520},
+  {t:'', d:120},
+  {t:'<span class="p">you@laptop</span><span class="d">:</span><span class="b">~/room-booker</span><span class="d">$</span> ', c:'npm run dev', d:340},
+  {t:'', d:180},
+  {t:'  <span class="w">▲ Next.js 16.3</span>', d:220},
+  {t:'  <span class="d">- Local:</span>   <span class="g">http://localhost:3000</span>', d:220},
+  {t:'  <span class="d">- Network:</span> <span class="d">use --host to expose</span>', d:300},
+  {t:'', d:120},
+  {t:' <span class="g">✓</span> Ready in 1.4s', d:600},
+  {t:'', d:200},
+  {t:'<span class="d">// The server is running. This window is now busy —</span>', d:260},
+  {t:'<span class="d">// that is not frozen, that is the server working.</span>', d:900},
+];
+const tb = document.getElementById('tbody');
+let started = false;
+const tio = new IntersectionObserver(es => {
+  es.forEach(e => { if(e.isIntersecting && !started){ started = true; runTerm(); tio.disconnect(); } });
+}, {threshold:0.3});
+tio.observe(tb);
+
+async function runTerm(){
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  for(const ln of LINES){
+    const el = document.createElement('div');
+    el.innerHTML = ln.t;
+    tb.appendChild(el);
+    if(ln.c){
+      const span = document.createElement('span');
+      const cur = document.createElement('span');
+      cur.className = 'cursor';
+      el.appendChild(span); el.appendChild(cur);
+      for(const ch of ln.c){ span.textContent += ch; await sleep(46); }
+      cur.remove();
+    }
+    tb.scrollTop = tb.scrollHeight;
+    await sleep(ln.d);
+  }
+  const cur = document.createElement('span');
+  cur.className = 'cursor'; tb.appendChild(cur);
+}
+
+/* ---------- RLS demo ---------- */
+const ROWS = [
+  {n:'Marisol Alcaraz', e:'note: work schedule changed to nights', mine:true},
+  {n:'Devonte Whitfield', e:'note: financial aid hold, called 10/2', mine:false},
+  {n:'Priya Okonkwo', e:'note: third attempt, aid may not cover', mine:false},
+  {n:'Tomas Brannigan', e:'note: caring for a parent, missed 2 wks', mine:false},
+  {n:'Shanice Vasquez', e:'note: background check fee is the problem', mine:false},
+];
+function paint(all){
+  return ROWS.filter(r => all || r.mine).map(r =>
+    `<div class="row ${r.mine?'mine':''}"><span class="nm">${r.n}</span><span class="em">${r.e}</span><span class="tag">${r.mine?'yours':'not yours'}</span></div>`
+  ).join('');
+}
+document.getElementById('mine').innerHTML = paint(false)
+  + '<div style="padding:18px 0;font-size:13px;color:var(--dim)">One row. That is what the policy says she should see.</div>';
+const theirs = document.getElementById('theirs');
+const foot = document.getElementById('foot');
+const sw = document.getElementById('sw');
+const swl = document.getElementById('swlabel');
+const blank = document.getElementById('blank');
+let rls = false;
+function render(){
+  theirs.innerHTML = rls ? '' : paint(true);
+  blank.classList.toggle('show', rls);
+  sw.classList.toggle('on', rls);
+  sw.setAttribute('aria-checked', String(rls));
+  swl.textContent = rls ? 'RLS ON' : 'RLS OFF';
+  swl.style.color = rls ? 'var(--green)' : 'var(--red)';
+  foot.classList.toggle('safe', rls);
+  foot.innerHTML = rls
+    ? '<b>RLS is on.</b> The same key, the same request — and the database returns nothing, because the rule ran inside the database after the request arrived. The app cannot talk its way around it. Neither can anyone else.'
+    : '<b>RLS is off.</b> Anyone with the key — which is in your page source — can read every row. They can also insert, update and delete. On the free tier you keep one day of logs, so you will not be able to prove what happened.';
+}
+sw.addEventListener('click', () => { rls = !rls; render(); });
+sw.addEventListener('keydown', e => { if(e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); rls = !rls; render(); } });
+render();
+
+/* ---------- checklist ---------- */
+const CHECK = [
+  ['Before you write anything', [
+    'I know exactly what data this holds — and whether any of it is about a real person.',
+    'If it touches student, employee or health data, I have talked to IT or compliance first.',
+    'I am comfortable with everything in it becoming public tomorrow.'
+  ]],
+  ['The database', [
+    'RLS is enabled on every single table. Not most of them. Every one.',
+    'Security Advisor is clean. I ran it, and I re-ran it after my last change.',
+    'No policy anywhere says USING (true).',
+    'Every update and insert policy has a WITH CHECK clause, not just USING.',
+    'I logged in as two different test users and confirmed one cannot see the other.',
+    'I logged out entirely and reloaded. I know exactly what is still visible.'
+  ]],
+  ['Keys and secrets', [
+    'I searched my code for the service_role and secret keys. Zero results in anything the browser downloads.',
+    'Every other API key lives in an environment variable or a server function, not the page.',
+    'Any secret that was ever committed or deployed has been rotated — not just deleted.'
+  ]],
+  ['Access and limits', [
+    'If this only needs 30 colleagues, it is gated. It is not sitting open on the internet.',
+    'Two-factor is on for my database, my code host and my hosting account.',
+    'I know my free-tier ceiling and exactly what happens when I hit it.',
+    'I checked the commercial-use terms of my host against what this tool actually is.'
+  ]],
+  ['Living with it', [
+    'There is a named owner who is not only me.',
+    'I have a weekly reminder so the free database does not pause itself.',
+    'I have exported the data at least once, because the free tier has no backups.'
+  ]]
+];
+const cl = document.getElementById('cl');
+cl.innerHTML = CHECK.map(([g, items], gi) => `
+  <div class="grp rv"><h3 style="color:#fff">${g}</h3>
+    ${items.map((t, i) => `<div class="ci" data-k="${gi}-${i}"><div class="bx"></div><div>${t}</div></div>`).join('')}
+  </div>`).join('');
+cl.querySelectorAll('.ci').forEach(el => {
+  el.addEventListener('click', () => el.classList.toggle('done'));
+});
+cl.querySelectorAll('.rv').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
