@@ -10,23 +10,20 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#0A1A2E;--navy:#003366;--orange:#FF6600;--orange-d:#B34A00;--gold:#F9DD56;
-  --teal:#008DA7;--green:#1A7F4B;--ondk:#A7B7C9;--dimdk:#5C6E82;--hair:#E6EAEF;
-  --mute:#68737F;--dim:#7A8794;--paper:#F7F8FA;
+:root{--ink:#0A1A2E;--navy:#003366;--orange:#FF6600;--gold:#F9DD56;--teal:#008DA7;
+  --green:#1A7F4B;--ondk:#A7B7C9;--dimdk:#5C6E82;
   --sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--sans);background:var(--ink);color:#fff;min-height:100vh;
   display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
-button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit;text-align:left}
 a{color:inherit;text-decoration:none}
 
-/* ---------- top bar ---------- */
 header{background:rgba(10,26,46,.9);backdrop-filter:saturate(180%) blur(18px);
   -webkit-backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid rgba(255,255,255,.09);
   padding:0 clamp(16px,4vw,36px);height:60px;display:flex;align-items:center;gap:18px;
   position:sticky;top:0;z-index:40}
-header .home{font-weight:600;font-size:14.5px;color:#fff;white-space:nowrap;opacity:.85;
-  transition:opacity .2s}
+header .home{font-weight:600;font-size:14.5px;color:#fff;white-space:nowrap;opacity:.85;transition:opacity .2s}
 header .home:hover{opacity:1}
 header .home span{color:var(--orange)}
 header .sep{width:1px;height:22px;background:rgba(255,255,255,.14)}
@@ -38,24 +35,43 @@ header .right{margin-left:auto;display:flex;gap:8px;align-items:center}
 .btn.primary{background:var(--orange);border-color:var(--orange)}
 .btn.primary:hover{background:#e35c00;border-color:#e35c00}
 
-/* ---------- layout ---------- */
 main{flex:1;display:flex;min-height:0}
-#rail{width:310px;flex-shrink:0;border-right:1px solid rgba(255,255,255,.09);
-  overflow-y:auto;padding:22px 16px 30px}
+#rail{width:322px;flex-shrink:0;border-right:1px solid rgba(255,255,255,.09);
+  overflow-y:auto;padding:18px 14px 30px}
 #rail .lbl{font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--dimdk);padding:0 12px 12px}
-.deck{display:block;width:100%;text-align:left;padding:14px;border-radius:12px;margin-bottom:6px;
-  border:1px solid transparent;transition:.18s;cursor:pointer}
-.deck:hover{background:rgba(255,255,255,.06)}
-.deck.on{background:rgba(255,102,0,.14);border-color:rgba(255,102,0,.5)}
-.deck .tier{font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
-  color:var(--orange);margin-bottom:5px}
-.deck .nm{font-size:14.5px;font-weight:600;line-height:1.32;color:#fff}
-.deck .meta{font-size:11.5px;color:var(--dimdk);margin-top:6px}
-.deck .dsc{font-size:12px;color:var(--ondk);margin-top:8px;line-height:1.5;display:none}
-.deck.on .dsc{display:block}
+  color:var(--dimdk);padding:6px 12px 12px}
 
-/* ---------- stage ---------- */
+/* ---------- category accordion ---------- */
+.cat{margin-bottom:8px;border-radius:13px;overflow:hidden;border:1px solid rgba(255,255,255,.09);
+  background:rgba(255,255,255,.03)}
+.cat.open{border-color:rgba(255,102,0,.34);background:rgba(255,102,0,.05)}
+.cathead{width:100%;padding:15px 16px;display:flex;align-items:center;gap:12px;transition:background .2s}
+.cathead:hover{background:rgba(255,255,255,.05)}
+.cathead .chev{width:16px;flex-shrink:0;color:var(--orange);font-size:12px;
+  transition:transform .28s cubic-bezier(.3,.7,.3,1)}
+.cat.open .cathead .chev{transform:rotate(90deg)}
+.cathead .nm{flex:1;font-size:15px;font-weight:600;letter-spacing:.01em}
+.cathead .ct{font-size:11px;color:var(--dimdk);background:rgba(255,255,255,.08);
+  padding:3px 9px;border-radius:10px;font-weight:600}
+.catwho{font-size:11.5px;color:var(--dimdk);padding:0 16px 13px 44px;margin-top:-6px;line-height:1.45}
+.catbody{max-height:0;overflow:hidden;transition:max-height .34s cubic-bezier(.3,.7,.3,1)}
+.cat.open .catbody{max-height:1400px}
+.catinner{padding:0 8px 8px}
+
+.deck{display:block;width:100%;padding:13px 14px;border-radius:10px;margin-bottom:4px;
+  border:1px solid transparent;transition:.18s;cursor:pointer}
+.deck:hover{background:rgba(255,255,255,.07)}
+.deck.on{background:rgba(255,102,0,.17);border-color:rgba(255,102,0,.55)}
+.deck .tier{font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--orange);margin-bottom:4px}
+.deck .nm{font-size:13.8px;font-weight:600;line-height:1.34;color:#fff}
+.deck .meta{font-size:11px;color:var(--dimdk);margin-top:5px}
+.deck .dsc{font-size:11.8px;color:var(--ondk);margin-top:7px;line-height:1.5;display:none}
+.deck.on .dsc{display:block}
+.empty{padding:14px;font-size:12.3px;color:var(--dimdk);line-height:1.6;
+  border:1px dashed rgba(255,255,255,.16);border-radius:10px;margin:0 6px 6px}
+.empty b{color:var(--gold);font-weight:600}
+
 #stage{flex:1;display:flex;flex-direction:column;min-width:0;background:#0d1520}
 #stagebar{padding:14px 22px;border-bottom:1px solid rgba(255,255,255,.09);display:flex;
   align-items:center;gap:14px;flex-wrap:wrap}
@@ -64,17 +80,16 @@ main{flex:1;display:flex;min-height:0}
 #stagebar .acts{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
 #frame{flex:1;min-height:0;position:relative;background:#0a1119}
 #frame iframe{width:100%;height:100%;border:0;display:block}
-#empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:30px}
-#empty p{color:var(--dimdk);font-size:14.5px;max-width:36ch;line-height:1.6}
+#empty0{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:30px}
+#empty0 p{color:var(--dimdk);font-size:14.5px;max-width:38ch;line-height:1.6}
 
-/* ---------- add-a-deck note ---------- */
 #howto{border-top:1px solid rgba(255,255,255,.09);padding:18px 22px;background:rgba(0,0,0,.22)}
 #howto summary{font-size:12.5px;color:var(--ondk);cursor:pointer;font-weight:500;
   list-style:none;display:flex;align-items:center;gap:8px}
 #howto summary::-webkit-details-marker{display:none}
 #howto summary:before{content:'+';color:var(--orange);font-weight:700;font-size:15px}
-#howto[open] summary:before{content:'–'}
-#howto .body{font-size:13px;color:var(--ondk);line-height:1.7;margin-top:14px;max-width:78ch}
+#howto[open] summary:before{content:'\2013'}
+#howto .body{font-size:13px;color:var(--ondk);line-height:1.7;margin-top:14px;max-width:80ch}
 #howto code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;
   background:rgba(255,255,255,.09);padding:2px 6px;border-radius:4px;color:#fff}
 #howto pre{background:#070d14;border:1px solid rgba(255,255,255,.1);border-radius:9px;
@@ -87,13 +102,11 @@ main{flex:1;display:flex;min-height:0}
 footer{padding:16px clamp(16px,4vw,36px);border-top:1px solid rgba(255,255,255,.09);
   font-size:11.5px;color:var(--dimdk);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 
-/* ---------- mobile ---------- */
-#railtoggle{display:none}
-@media(max-width:860px){
+@media(max-width:880px){
   main{flex-direction:column}
   #rail{width:100%;border-right:none;border-bottom:1px solid rgba(255,255,255,.09);
-    max-height:44vh;padding:16px 12px}
-  #frame{min-height:62vh}
+    max-height:none;padding:14px 12px}
+  #frame{min-height:64vh}
   #stagebar .acts{width:100%;margin-left:0}
 }
 </style>
@@ -101,7 +114,7 @@ footer{padding:16px clamp(16px,4vw,36px);border-top:1px solid rgba(255,255,255,.
 <body>
 
 <header>
-  <a class="home" href="../">AI Professional <span>Development</span></a>
+  <a class="home" href="../#hub">AI Professional <span>Development</span></a>
   <div class="sep"></div>
   <div class="crumb">Presentations</div>
   <div class="right">
@@ -113,120 +126,161 @@ footer{padding:16px clamp(16px,4vw,36px);border-top:1px solid rgba(255,255,255,.
 <main>
   <nav id="rail">
     <div class="lbl">Choose a deck</div>
-    <div id="decks"></div>
+    <div id="cats"></div>
   </nav>
 
   <section id="stage">
     <div id="stagebar">
       <div>
         <div class="t" id="ttl">Select a presentation</div>
-        <div class="m" id="mta">Pick one from the list to load it here</div>
+        <div class="m" id="mta">Open a category, then pick a deck</div>
       </div>
       <div class="acts" id="acts"></div>
     </div>
     <div id="frame">
-      <div id="empty"><p>Choose a deck on the left. It opens right here — no download, no PowerPoint needed, on any computer you happen to be standing at.</p></div>
+      <div id="empty0"><p>Open a category on the left and choose a deck. It loads right here — no download, no PowerPoint needed, on any computer you happen to be standing at.</p></div>
     </div>
   </section>
 </main>
 
 <details id="howto">
-  <summary>How to add another presentation</summary>
+  <summary>How to add a presentation, or a whole new category</summary>
   <div class="body">
-    <p>Two steps, both in the browser. No software, no command line.</p>
+    <p>Everything below happens in the browser. No software, no command line.</p>
     <ol>
-      <li><b>Upload the files.</b> In your repository, open <code>presentations/files/</code> → <b>Add file</b> → <b>Upload files</b>. Add the <code>.pdf</code> (what people view) and the <code>.pptx</code> (what you edit). Give them the same short lowercase name with no spaces, e.g. <code>advising-track.pdf</code> and <code>advising-track.pptx</code>.</li>
-      <li><b>Add one entry to the list.</b> Open <code>presentations/index.html</code>, click the pencil, and add a block to <code>DECKS</code> near the bottom:</li>
+      <li><b>Upload the files.</b> In the repository, open <code>presentations/files/</code> &rarr; <b>Add file</b> &rarr; <b>Upload files</b>. Add the <code>.pdf</code> (what people view) and the <code>.pptx</code> (what you edit). Give both the same short lowercase name with no spaces, e.g. <code>assignment-redesign.pdf</code> and <code>assignment-redesign.pptx</code>. <b>Wait for the file list to appear before clicking Commit</b> — large files take a few seconds to upload.</li>
+      <li><b>Add one entry.</b> Open <code>presentations/index.html</code>, click the pencil, and drop a block into the right category's <code>decks</code> list near the bottom:</li>
     </ol>
 <pre>{
-  id:    'advising-track',
+  id:    'assignment-redesign',
   tier:  'Tier 2',
-  name:  'Advising & Student-Facing Track',
-  slides: 24,
+  name:  'Redesigning One Assignment',
+  slides: 22,
   time:  '90 minutes',
   desc:  'One sentence about who it is for.'
 },</pre>
-    <p>Commit, wait about a minute, refresh. It appears in the list.</p>
-    <p><b>To get a PDF from PowerPoint:</b> File → Save a Copy (or Export) → choose PDF. Keep the <code>.pptx</code> too — that is the one you can still edit, and the one with the Morph animations.</p>
+    <p><b>To add a whole new category</b> — Advising, Leadership, Adjuncts — copy a category block:</p>
+<pre>{
+  id:    'advising',
+  name:  'Advising',
+  who:   'Student-facing staff and early-alert teams.',
+  decks: [ ]
+},</pre>
+    <p>Commit, wait about a minute, refresh. An empty category shows a friendly placeholder until you add the first deck to it.</p>
+    <p><b>Getting a PDF out of PowerPoint:</b> File &rarr; Export (or Save a Copy) &rarr; choose PDF. Keep the <code>.pptx</code> too — that's the editable one, and the one carrying the Morph animations a PDF can't hold.</p>
   </div>
 </details>
 
 <footer>
   <div>Ted Gonzalez, JD/MBA</div>
-  <div>© 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
+  <div>&copy; 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
 </footer>
 
 <script>
 /* ============================================================
-   THE DECK LIST — this is the only part you edit to add a deck.
-   `id` must match the filenames in presentations/files/
-   (id.pdf for viewing, id.pptx for downloading).
+   THE LIBRARY — categories, each holding decks.
+   `id` on a deck must match the filenames in presentations/files/
+   (id.pdf to view, id.pptx to download).
    ============================================================ */
-const DECKS = [
+const LIBRARY = [
   {
-    id:     'foundations',
-    tier:   'Tier 1',
-    name:   'Leveraging AI at MCC — Foundations',
-    slides: 26,
-    time:   '3 sessions × 90 minutes',
-    desc:   'For everyone, wherever they are starting from. Mental model, verification, prompting, and the MCC data line.'
+    id:   'staff',
+    name: 'Staff',
+    who:  'Administrative, operations and student-services staff.',
+    decks: [
+      { id:'foundations', tier:'Tier 1',
+        name:'Leveraging AI at MCC — Foundations',
+        slides:26, time:'3 sessions × 90 minutes',
+        desc:'For everyone, wherever they are starting from. Mental model, verification, prompting, and the MCC data line.' },
+
+      { id:'build-something', tier:'Tier 3',
+        name:'Build Something — the MCC AI Sandbox',
+        slides:31, time:'4 sessions × 2 hours',
+        desc:'For people who already use these tools. Governance first, then the sandbox, then build.' },
+
+      { id:'build-your-own-tools', tier:'Workshop',
+        name:'Build Your Own Tools',
+        slides:40, time:'3 hours, one sitting',
+        desc:'The toolchain, localhost, free hosting, safeguards, row-level security, and what to consider before you sell it.' }
+    ]
   },
   {
-    id:     'build-something',
-    tier:   'Tier 3',
-    name:   'Build Something — the MCC AI Sandbox',
-    slides: 31,
-    time:   '4 sessions × 2 hours',
-    desc:   'For people who already use these tools. Governance first, then the sandbox, then build.'
-  },
-  {
-    id:     'build-your-own-tools',
-    tier:   'Workshop',
-    name:   'Build Your Own Tools',
-    slides: 40,
-    time:   '3 hours, one sitting',
-    desc:   'The toolchain, localhost, free hosting, safeguards, row-level security, and what to consider before you sell it.'
+    id:   'faculty',
+    name: 'Faculty',
+    who:  'Instructional faculty — assignment design, rubrics, and academic integrity.',
+    decks: [
+      /* Faculty decks go here. Copy the shape of a Staff deck above. */
+    ]
   }
 ];
 
 /* ---------- render ---------- */
-const railEl = document.getElementById('decks');
-const ttl = document.getElementById('ttl');
-const mta = document.getElementById('mta');
-const acts = document.getElementById('acts');
-const frame = document.getElementById('frame');
-const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const catsEl = document.getElementById('cats');
+const ttl = document.getElementById('ttl'), mta = document.getElementById('mta');
+const acts = document.getElementById('acts'), frame = document.getElementById('frame');
 
-railEl.innerHTML = DECKS.map((d, i) => `
-  <button class="deck" data-i="${i}">
-    <div class="tier">${esc(d.tier)}</div>
-    <div class="nm">${esc(d.name)}</div>
-    <div class="meta">${d.slides} slides · ${esc(d.time)}</div>
-    <div class="dsc">${esc(d.desc)}</div>
-  </button>`).join('');
+catsEl.innerHTML = LIBRARY.map(function(c, ci){
+  const body = c.decks.length
+    ? c.decks.map(function(d, di){
+        return '<button class="deck" data-c="' + ci + '" data-d="' + di + '">'
+          + '<div class="tier">' + esc(d.tier) + '</div>'
+          + '<div class="nm">' + esc(d.name) + '</div>'
+          + '<div class="meta">' + d.slides + ' slides &middot; ' + esc(d.time) + '</div>'
+          + '<div class="dsc">' + esc(d.desc) + '</div>'
+          + '</button>';
+      }).join('')
+    : '<div class="empty">Nothing here yet. <b>' + esc(c.name) + '</b> decks appear once they are '
+      + 'uploaded and added to the list — see <i>How to add a presentation</i> at the bottom of this page.</div>';
+  return '<div class="cat" data-cat="' + ci + '">'
+    + '<button class="cathead"><span class="chev">&#9654;</span>'
+    + '<span class="nm">' + esc(c.name) + '</span>'
+    + '<span class="ct">' + c.decks.length + '</span></button>'
+    + '<div class="catbody"><div class="catwho">' + esc(c.who) + '</div>'
+    + '<div class="catinner">' + body + '</div></div></div>';
+}).join('');
 
-function load(i, push){
-  const d = DECKS[i];
-  document.querySelectorAll('.deck').forEach((el, n) => el.classList.toggle('on', n === i));
+function toggleCat(ci, force){
+  const el = catsEl.querySelector('[data-cat="' + ci + '"]');
+  const open = force === undefined ? !el.classList.contains('open') : force;
+  el.classList.toggle('open', open);
+}
+catsEl.querySelectorAll('.cathead').forEach(function(h, ci){
+  h.addEventListener('click', function(){ toggleCat(ci); });
+});
+
+function load(ci, di, push){
+  const d = LIBRARY[ci].decks[di];
+  catsEl.querySelectorAll('.deck').forEach(function(el){
+    el.classList.toggle('on', +el.dataset.c === ci && +el.dataset.d === di);
+  });
   ttl.textContent = d.name;
-  mta.textContent = `${d.tier} · ${d.slides} slides · ${d.time}`;
-  const pdf = `files/${d.id}.pdf`;
-  acts.innerHTML = `
-    <a class="btn primary" href="${pdf}" target="_blank" rel="noopener">Present full screen ↗</a>
-    <a class="btn" href="files/${d.id}.pptx" download>Download .pptx</a>`;
-  frame.innerHTML = `<iframe src="${pdf}#view=FitH&toolbar=1" title="${esc(d.name)}"></iframe>`;
+  mta.textContent = LIBRARY[ci].name + ' · ' + d.tier + ' · ' + d.slides + ' slides · ' + d.time;
+  const pdf = 'files/' + d.id + '.pdf';
+  acts.innerHTML = '<a class="btn primary" href="' + pdf + '" target="_blank" rel="noopener">Present full screen &#8599;</a>'
+    + '<a class="btn" href="files/' + d.id + '.pptx" download>Download .pptx</a>';
+  frame.innerHTML = '<iframe src="' + pdf + '#view=FitH&toolbar=1" title="' + esc(d.name) + '"></iframe>';
   document.title = d.name + ' — MCC Presentations';
   if(push !== false) history.replaceState(null, '', '#' + d.id);
-  if(window.innerWidth <= 860) document.getElementById('stage').scrollIntoView({behavior:'smooth'});
+  if(window.innerWidth <= 880) document.getElementById('stage').scrollIntoView({behavior:'smooth'});
 }
 
-document.querySelectorAll('.deck').forEach(el =>
-  el.addEventListener('click', () => load(+el.dataset.i)));
+catsEl.querySelectorAll('.deck').forEach(function(el){
+  el.addEventListener('click', function(){ load(+el.dataset.c, +el.dataset.d); });
+});
 
-/* deep link: /presentations/#build-something opens that deck directly */
+/* open the first category that has decks; deep-link …/#deck-id still works */
 const hash = location.hash.replace('#','');
-const start = DECKS.findIndex(d => d.id === hash);
-if(start >= 0) load(start, false);
+let opened = false;
+LIBRARY.forEach(function(c, ci){
+  c.decks.forEach(function(d, di){
+    if(d.id === hash){ toggleCat(ci, true); load(ci, di, false); opened = true; }
+  });
+});
+if(!opened){
+  const first = LIBRARY.findIndex(function(c){ return c.decks.length > 0; });
+  toggleCat(first < 0 ? 0 : first, true);
+}
 </script>
 </body>
 </html>
