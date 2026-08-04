@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metadata Inspector — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="Look inside a file and see what it is carrying. Everything runs in your browser — nothing is uploaded.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A1A2E; --navy:#003366; --orange:#FF6600; --gold:#F9DD56; --teal:#008DA7;
+  --ondk:#A7B7C9; --dimdk:#5C6E82; --line:rgba(255,255,255,.12);
+  --panel:rgba(255,255,255,.045);
+  --sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--ink);color:#fff;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;min-height:100vh}
+a{color:inherit}
+button{font:inherit;cursor:pointer}
+
+/* ---------- top bar ---------- */
+.bar{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,30px);
+  border-bottom:1px solid var(--line);background:rgba(6,16,30,.9);position:sticky;top:0;z-index:40;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);flex-wrap:wrap}
+.bar .home{font-size:14.5px;font-weight:700;text-decoration:none;white-space:nowrap}
+.bar .home span{color:var(--orange)}
+.bar .sep{width:1px;height:20px;background:var(--line)}
+.bar .where{font-size:13.5px;color:var(--ondk)}
+.bar .right{margin-left:auto;display:flex;gap:8px}
+.bar .right a{font-size:12.5px;text-decoration:none;border:1px solid var(--line);
+  border-radius:9px;padding:7px 13px;color:var(--ondk);transition:background .2s,color .2s}
+.bar .right a:hover{background:rgba(255,255,255,.08);color:#fff}
+
+main{flex:1;width:100%;max-width:1180px;margin:0 auto;padding:clamp(24px,5vw,48px) clamp(16px,4vw,30px) 60px}
+
+/* ---------- hero ---------- */
+.kicker{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--orange)}
+h1{font-size:clamp(28px,5vw,46px);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:12px}
+h1 span{color:var(--dimdk)}
+.lede{color:var(--ondk);font-size:clamp(15px,1.8vw,18px);line-height:1.65;margin-top:18px;max-width:62ch}
+
+.privacy{display:flex;gap:13px;align-items:flex-start;margin-top:22px;padding:15px 17px;
+  border:1px solid rgba(111,215,155,.4);background:rgba(111,215,155,.09);border-radius:13px;max-width:62ch}
+.privacy svg{flex-shrink:0;width:20px;height:20px;color:#6FD79B;margin-top:1px}
+.privacy p{font-size:13.5px;line-height:1.6;color:#CFE9DA}
+.privacy strong{color:#8FE3B4}
+
+/* ---------- drop zone ---------- */
+.drop{margin-top:30px;border:2px dashed rgba(255,255,255,.24);border-radius:20px;
+  padding:clamp(30px,6vw,54px) 24px;text-align:center;background:var(--panel);
+  transition:border-color .22s,background .22s,transform .22s;position:relative}
+.drop.over{border-color:var(--orange);background:rgba(255,102,0,.11);transform:scale(1.01)}
+.drop .icon{width:52px;height:52px;margin:0 auto 16px;color:var(--dimdk)}
+.drop h2{font-size:19px;font-weight:600}
+.drop p{font-size:14px;color:var(--ondk);margin-top:8px}
+.drop .pick{margin-top:20px;display:inline-flex;align-items:center;gap:9px;
+  background:var(--orange);color:#fff;border:none;border-radius:12px;padding:13px 26px;
+  font-size:14.5px;font-weight:600;transition:background .2s}
+.drop .pick:hover{background:#e25c00}
+.drop .pick:focus-visible,.drop input:focus-visible+.pick{outline:3px solid #fff;outline-offset:3px}
+.drop .types{margin-top:16px;font-size:12px;color:var(--dimdk)}
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- samples ---------- */
+.samples{margin-top:22px}
+.samples h3{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dimdk);margin-bottom:12px}
+.samplerow{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:11px}
+.samplerow button{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;
+  background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px 15px;
+  color:#fff;transition:background .2s,border-color .2s,transform .2s}
+.samplerow button:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.28);transform:translateY(-2px)}
+.samplerow button:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.samplerow .sicon{width:30px;height:30px;flex-shrink:0;border-radius:8px;display:flex;
+  align-items:center;justify-content:center;background:rgba(255,102,0,.16);color:var(--orange)}
+.samplerow .sicon svg{width:16px;height:16px}
+.samplerow .st{font-size:13.5px;font-weight:600;line-height:1.3}
+.samplerow .sd{font-size:11.5px;color:var(--dimdk);margin-top:4px;line-height:1.45}
+
+/* ---------- results ---------- */
+#results{margin-top:38px}
+#results:empty{display:none}
+.rhead{display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+  padding:18px 20px;border:1px solid var(--line);border-radius:16px 16px 0 0;
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03));border-bottom:none}
+.rhead .fi{width:44px;height:44px;border-radius:11px;background:rgba(0,141,167,.2);color:#5FC8DE;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rhead .fi svg{width:22px;height:22px}
+.rhead .fn{font-size:16px;font-weight:600;word-break:break-all;line-height:1.35}
+.rhead .fm{font-size:12.5px;color:var(--dimdk);margin-top:3px}
+.rhead .act{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.rhead .act button{background:transparent;border:1px solid var(--line);border-radius:9px;
+  padding:8px 13px;font-size:12.5px;color:var(--ondk);transition:background .2s,color .2s}
+.rhead .act button:hover{background:rgba(255,255,255,.09);color:#fff}
+.rhead .act button:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+
+.rbody{border:1px solid var(--line);border-radius:0 0 16px 16px;padding:8px 20px 22px;
+  background:rgba(255,255,255,.025)}
+
+.flag{display:flex;gap:12px;align-items:flex-start;margin:16px 0 0;padding:14px 16px;border-radius:12px;
+  font-size:13.5px;line-height:1.6}
+.flag.high{background:rgba(255,138,120,.12);border:1px solid rgba(255,138,120,.42);color:#FFD5CD}
+.flag.note{background:rgba(167,183,201,.09);border:1px solid rgba(167,183,201,.26);color:var(--ondk)}
+.flag svg{width:18px;height:18px;flex-shrink:0;margin-top:1px}
+.flag.high svg{color:#FF8A78}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:18px}
+.group{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03);overflow:hidden}
+.group h3{display:flex;align-items:center;gap:9px;font-size:11.5px;font-weight:700;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--gold);padding:13px 16px;border-bottom:1px solid var(--line);
+  background:rgba(255,255,255,.03)}
+.group h3 svg{width:15px;height:15px;color:var(--gold)}
+.group dl{padding:4px 16px 12px}
+.group .row{padding:11px 0;border-bottom:1px dashed rgba(255,255,255,.09)}
+.group .row:last-child{border-bottom:none}
+.group dt{font-size:11.5px;color:var(--dimdk);letter-spacing:.03em}
+.group dd{font-size:14px;margin-top:3px;word-break:break-word;line-height:1.45;font-family:var(--mono)}
+.group .note{font-size:11.5px;color:#9FB2C6;margin-top:6px;line-height:1.5;font-family:var(--sans);font-style:italic}
+
+.mapwrap{margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:rgba(255,255,255,.03)}
+.mapwrap h3{display:flex;align-items:center;gap:9px;font-size:11.5px;font-weight:700;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--gold);padding:13px 16px;border-bottom:1px solid var(--line)}
+.mapwrap h3 svg{width:15px;height:15px}
+.mapwrap iframe{width:100%;height:300px;border:0;display:block;background:#12263d}
+.mapwrap .mfoot{padding:12px 16px;font-size:12.5px;color:var(--ondk);display:flex;
+  justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+.mapwrap .mfoot a{color:var(--orange);font-weight:600;text-decoration:none}
+.mapwrap .mfoot a:hover{text-decoration:underline}
+
+.empty{padding:26px 4px;color:var(--ondk);font-size:14px;line-height:1.6}
+
+/* ---------- teaching notes ---------- */
+.teach{margin-top:52px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:rgba(255,255,255,.03)}
+.teach summary{padding:18px 22px;font-size:15px;font-weight:600;cursor:pointer;display:flex;
+  align-items:center;gap:11px;list-style:none}
+.teach summary::-webkit-details-marker{display:none}
+.teach summary .chev{color:var(--orange);transition:transform .2s;display:inline-block}
+.teach[open] summary .chev{transform:rotate(90deg)}
+.teach .tbody{padding:0 22px 24px;font-size:14px;line-height:1.72;color:var(--ondk);max-width:74ch}
+.teach .tbody h4{color:#fff;font-size:13.5px;margin:20px 0 7px;font-weight:600}
+.teach .tbody ul{margin:8px 0 0;padding-left:20px}
+.teach .tbody li{margin:6px 0}
+.teach .tbody code{font-family:var(--mono);font-size:12.5px;background:rgba(255,255,255,.09);
+  padding:2px 6px;border-radius:5px;color:#fff}
+.teach .tbody strong{color:#fff}
+
+footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-size:12.5px;color:var(--dimdk)}
+
+@media (max-width:640px){
+  .rhead .act{margin-left:0;width:100%}
+  .group dd{font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{
+  body{background:#fff;color:#000}
+  .bar,.drop,.samples,footer,.rhead .act,.teach{display:none}
+  .group,.rbody,.rhead{border-color:#bbb}
+  .group h3{color:#333}
+  .group dd,.rhead .fn{color:#000}
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <a class="home" href="../">AI Professional <span>Development</span></a>
+  <div class="sep" aria-hidden="true"></div>
+  <div class="where">Metadata Inspector</div>
+  <div class="right">
+    <a href="../scenarios/">Scenarios</a>
+    <a href="../sandbox/">Sandbox</a>
+    <a href="../workshop/">Workshop</a>
+  </div>
+</div>
+
+<main>
+  <div class="kicker">Hands-on lab</div>
+  <h1>Metadata Inspector<br><span>See what your files are carrying</span></h1>
+  <p class="lede">Every file you send holds more than what is on the page. Drop one in and
+    look at what travels with it — who made it, when, with what, on which device, and
+    sometimes exactly where they were standing.</p>
+
+  <div class="privacy">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>
+    </svg>
+    <p><strong>Nothing leaves this computer.</strong> The file is read in your browser and
+      never uploaded. You can disconnect from wifi and this page still works — which is worth
+      doing once in front of a room, because it makes the point better than saying it.</p>
+  </div>
+
+  <div class="drop" id="drop">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5-5 5 5"/><path d="M12 5v13"/>
+    </svg>
+    <h2>Drop a file here</h2>
+    <p>or choose one from your computer</p>
+    <label>
+      <input type="file" id="file" class="visually-hidden">
+      <span class="pick" role="button" tabindex="0">Choose a file</span>
+    </label>
+    <p class="types">Photos (JPEG, PNG) · PDFs · Word, Excel and PowerPoint files</p>
+  </div>
+
+  <div class="samples">
+    <h3>No file handy? Try one of these</h3>
+    <div class="samplerow" id="samples"></div>
+  </div>
+
+  <div id="results" aria-live="polite"></div>
+
+  <details class="teach">
+    <summary><span class="chev">&#9654;</span> Teaching notes — how to run this in a session</summary>
+    <div class="tbody">
+      <h4>The opening that works</h4>
+      <p>Do not explain metadata first. Ask one person to drop in a photo they took on their
+        phone, on their own screen, and read the location out loud. Then explain. The order
+        matters — the concept lands in about four seconds once they have seen their own
+        coordinates, and not before.</p>
+
+      <h4>The four questions to ask</h4>
+      <ul>
+        <li><strong>Who does this file say made it?</strong> Office documents keep the original
+          author and the last person to save, and they are often different people.</li>
+        <li><strong>When does it say it was made?</strong> Compare the internal dates to the
+          story the document tells. A brief created three days after the event it describes is
+          a question worth asking.</li>
+        <li><strong>What made it?</strong> The producing software reveals the path a file
+          took — scanned, exported, converted, or edited.</li>
+        <li><strong>What is still in there that you did not mean to send?</strong> Tracked
+          changes, comments, embedded files, earlier saved revisions.</li>
+      </ul>
+
+      <h4>The points worth making out loud</h4>
+      <ul>
+        <li>A <strong>screenshot of a document is not the document</strong>. It is clean, which is
+          sometimes what you want and sometimes destroys the thing that mattered.</li>
+        <li><strong>Accepting all tracked changes is not removing them.</strong> Use the document
+          inspector in Word, or produce a PDF.</li>
+        <li><strong>Producing a PDF is not automatically safe.</strong> A PDF saved repeatedly can
+          carry earlier revisions of its own content inside the same file.</li>
+        <li><strong>Metadata cuts both ways.</strong> It is a disclosure risk on the way out and
+          evidence on the way in. The same field that embarrasses you can authenticate a timeline.</li>
+      </ul>
+
+      <h4>A five-minute exercise</h4>
+      <p>Hand out the sample files above. Ask each table to answer: <em>if this file arrived in
+        discovery, what is the first question you would ask about it?</em> Then have them compare
+        answers. Tables reliably find different things, which is the actual lesson — one person
+        reading a file is not a review.</p>
+
+      <h4>Where it fits</h4>
+      <p>This pairs with the <em>Understanding Metadata</em> visual aid and with the evidence and
+        e-discovery portion of the courtroom material. It also sets up the redaction discussion,
+        because both are the same underlying idea: what you can see is not all that is there.</p>
+
+      <h4>If you want to push it further</h4>
+      <p>Use the <strong>Strip metadata</strong> button on a photo, download the cleaned copy, then
+        drop that copy straight back in. The room watches the fields disappear. Teaching the fix
+        immediately after the problem is what makes it stick.</p>
+    </div>
+  </details>
+</main>
+
+<footer>
+  <div>Ted Gonzalez, JD/MBA</div>
+  <div>&copy; 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
+</footer>
+
+<script src="../assets/mcc-meta.js"></script>
+<script src="../assets/mcc-qr.js" defer></script>
+<script>
+(function () {
+  'use strict';
+
+  var ICONS = {
+    camera: '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
+    clock:  '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+    pin:    '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+    pen:    '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+    chip:   '<rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/>',
+    doc:    '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h8"/>',
+    file:   '<path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M13 2v7h7"/>',
+    zip:    '<path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/>',
+    alert:  '<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/>'
+  };
+
+  function svg(name, cls) {
+    return '<svg ' + (cls ? 'class="' + cls + '" ' : '') +
+      'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+      'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      (ICONS[name] || ICONS.file) + '</svg>';
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  var dropEl = document.getElementById('drop');
+  var fileEl = document.getElementById('file');
+  var resultsEl = document.getElementById('results');
+  var pickEl = dropEl.querySelector('.pick');
+  var currentFile = null;
+
+  /* The visible button is a span so it can be styled; wire up keyboard use. */
+  pickEl.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileEl.click(); }
+  });
+
+  fileEl.addEventListener('change', function () {
+    if (fileEl.files && fileEl.files[0]) handle(fileEl.files[0]);
+  });
+
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    dropEl.addEventListener(ev, function (e) { e.preventDefault(); dropEl.classList.add('over'); });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    dropEl.addEventListener(ev, function (e) { e.preventDefault(); dropEl.classList.remove('over'); });
+  });
+  dropEl.addEventListener('drop', function (e) {
+    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) handle(f);
+  });
+  window.addEventListener('paste', function (e) {
+    var items = e.clipboardData && e.clipboardData.files;
+    if (items && items[0]) handle(items[0]);
+  });
+
+  /* ---------------- sample files ---------------- */
+  var SAMPLES = [
+    { file: 'field-photo.jpg', icon: 'camera', title: 'Site photograph',
+      desc: 'A phone photo with camera details and GPS still attached.' },
+    { file: 'settlement-draft.docx', icon: 'doc', title: 'Draft agreement',
+      desc: 'A Word file that has been through two people, with tracked changes.' },
+    { file: 'filed-motion.pdf', icon: 'file', title: 'Filed motion',
+      desc: 'A PDF showing its authoring path and save history.' },
+    { file: 'screenshot.png', icon: 'chip', title: 'Screenshot',
+      desc: 'Almost nothing inside. Useful as the counter-example.' }
+  ];
+
+  document.getElementById('samples').innerHTML = SAMPLES.map(function (s) {
+    return '<button type="button" data-f="' + esc(s.file) + '">' +
+      '<span class="sicon">' + svg(s.icon) + '</span>' +
+      '<span><span class="st">' + esc(s.title) + '</span>' +
+      '<span class="sd">' + esc(s.desc) + '</span></span></button>';
+  }).join('');
+
+  document.getElementById('samples').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-f]');
+    if (!b) return;
+    var name = b.getAttribute('data-f');
+    b.disabled = true;
+    fetch('samples/' + name)
+      .then(function (r) {
+        if (!r.ok) throw new Error('sample not found');
+        return r.blob();
+      })
+      .then(function (blob) { handle(new File([blob], name, { type: blob.type })); })
+      .catch(function () {
+        resultsEl.innerHTML = '<div class="flag note">' + svg('alert') +
+          '<div>That sample could not be loaded. If you are opening this page straight from ' +
+          'a folder rather than over the web, use <strong>Choose a file</strong> instead.</div></div>';
+      })
+      .then(function () { b.disabled = false; });
+  });
+
+  /* ---------------- render ---------------- */
+  function handle(file) {
+    currentFile = file;
+    resultsEl.innerHTML = '<div class="empty">Reading ' + esc(file.name) + '…</div>';
+    MCCMeta.read(file).then(render).catch(function (err) {
+      resultsEl.innerHTML = '<div class="flag high">' + svg('alert') +
+        '<div>Something went wrong reading that file: ' + esc(err.message) + '</div></div>';
+    });
+  }
+
+  function render(r) {
+    var isImage = r.kind === 'jpeg' || r.kind === 'png';
+
+    var head =
+      '<div class="rhead">' +
+        '<div class="fi">' + svg(r.kind === 'pdf' ? 'file' : r.kind === 'office' ? 'doc' : 'camera') + '</div>' +
+        '<div><div class="fn">' + esc(r.file.name) + '</div>' +
+        '<div class="fm">' + esc(r.file.sizeLabel) + ' · ' + esc(r.file.type) + '</div></div>' +
+        '<div class="act">' +
+          (isImage ? '<button type="button" data-a="strip">Strip metadata</button>' : '') +
+          '<button type="button" data-a="copy">Copy report</button>' +
+          '<button type="button" data-a="print">Print</button>' +
+          '<button type="button" data-a="clear">Clear</button>' +
+        '</div>' +
+      '</div>';
+
+    var body = '<div class="rbody">';
+
+    if (r.error) {
+      body += '<div class="flag high">' + svg('alert') + '<div>' + esc(r.error) + '</div></div>';
+    }
+
+    r.flags.forEach(function (f) {
+      body += '<div class="flag ' + f.level + '">' + svg('alert') + '<div>' + esc(f.text) + '</div></div>';
+    });
+
+    if (r.gps) {
+      var d = 0.004;
+      var bbox = [r.gps.lon - d, r.gps.lat - d, r.gps.lon + d, r.gps.lat + d].join('%2C');
+      body +=
+        '<div class="mapwrap">' +
+          '<h3>' + svg('pin') + 'Where this file says it was made</h3>' +
+          '<iframe title="Map of the location stored in this file" loading="lazy" ' +
+            'src="https://www.openstreetmap.org/export/embed.html?bbox=' + bbox +
+            '&amp;layer=mapnik&amp;marker=' + r.gps.lat + '%2C' + r.gps.lon + '"></iframe>' +
+          '<div class="mfoot"><span>' + esc(r.gps.label) + ' &nbsp;·&nbsp; ' +
+            '<em style="color:var(--dimdk);font-style:normal">read on this device; only the map tiles come from openstreetmap.org</em></span>' +
+            '<a href="https://www.openstreetmap.org/?mlat=' + r.gps.lat + '&amp;mlon=' + r.gps.lon +
+            '#map=17/' + r.gps.lat + '/' + r.gps.lon + '" target="_blank" rel="noopener">' +
+            'Open the full map &rarr;</a></div>' +
+        '</div>';
+    }
+
+    var real = r.groups.filter(function (g) { return g.rows && g.rows.length; });
+    body += '<div class="grid">';
+    real.forEach(function (g) {
+      body += '<div class="group"><h3>' + svg(g.icon) + esc(g.name) + '</h3><dl>';
+      g.rows.forEach(function (row) {
+        body += '<div class="row"><dt>' + esc(row.k) + '</dt><dd>' + esc(row.v) + '</dd>' +
+          (row.note ? '<div class="note">' + esc(row.note) + '</div>' : '') + '</div>';
+      });
+      body += '</dl></div>';
+    });
+    body += '</div></div>';
+
+    resultsEl.innerHTML = head + body;
+    resultsEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    window.__lastReport = r;
+  }
+
+  resultsEl.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-a]');
+    if (!b) return;
+    var act = b.getAttribute('data-a');
+
+    if (act === 'clear') {
+      resultsEl.innerHTML = '';
+      fileEl.value = '';
+      currentFile = null;
+
+    } else if (act === 'print') {
+      window.print();
+
+    } else if (act === 'copy') {
+      var r = window.__lastReport;
+      if (!r) return;
+      var lines = ['Metadata report — ' + r.file.name, r.file.sizeLabel + ' · ' + r.file.type, ''];
+      r.groups.forEach(function (g) {
+        if (!g.rows.length) return;
+        lines.push(g.name.toUpperCase());
+        g.rows.forEach(function (row) { lines.push('  ' + row.k + ': ' + row.v); });
+        lines.push('');
+      });
+      if (r.gps) lines.push('COORDINATES: ' + r.gps.label, '');
+      var text = lines.join('\n');
+      var done = function () {
+        var old = b.textContent; b.textContent = 'Copied';
+        setTimeout(function () { b.textContent = old; }, 1400);
+      };
+      if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, done);
+
+    } else if (act === 'strip') {
+      if (!currentFile) return;
+      b.disabled = true;
+      var label = b.textContent;
+      b.textContent = 'Working…';
+      MCCMeta.stripImage(currentFile).then(function (blob) {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = currentFile.name.replace(/\.[^.]+$/, '') + '-cleaned.jpg';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+        b.textContent = 'Downloaded — now drop it back in';
+        setTimeout(function () { b.textContent = label; b.disabled = false; }, 4200);
+      }).catch(function () {
+        b.textContent = 'Could not strip this one';
+        setTimeout(function () { b.textContent = label; b.disabled = false; }, 2600);
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>
