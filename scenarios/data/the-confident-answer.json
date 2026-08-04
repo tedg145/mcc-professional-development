@@ -1,0 +1,120 @@
+{
+  "id": "the-confident-answer",
+  "title": "The Confident Answer",
+  "subtitle": "It sounded like policy because it was written like policy",
+  "audience": "Staff",
+  "minutes": 9,
+  "summary": "A student asks a straightforward question. The assistant gives a straightforward answer, in the register of an official document. Neither the question nor the answer is the problem.",
+  "takeaway": "A tool that has no information about your policy will still answer questions about your policy, in the voice of someone who does. Confidence is a writing style, not a signal. Ask where the answer came from before you ask whether it sounds right.",
+  "steps": [
+    {
+      "type": "brief",
+      "title": "A normal Tuesday question",
+      "body": "A student emails asking whether they can get a refund after withdrawing in week six. You have the assistant open already, so you ask it.",
+      "artifact": {
+        "kind": "chat",
+        "label": "Campus assistant",
+        "aiName": "Assistant",
+        "turns": [
+          { "who": "you", "text": "What is the refund policy for a student who withdraws in week six of a sixteen-week term?" },
+          { "who": "ai", "text": "Students who withdraw after the fifth week of a sixteen-week term receive a prorated refund of 40% of tuition, less a $75 administrative processing fee. Refunds are issued to the original payment method within 21 business days. Students receiving financial aid should be aware that a withdrawal after week five may trigger a Return of Title IV Funds calculation, which is handled separately by the Financial Aid Office.\n\nThis is set out in the Student Financial Responsibility section of the Student Handbook." }
+        ]
+      },
+      "cta": "Consider the answer"
+    },
+    {
+      "type": "choice",
+      "title": "Before you forward it",
+      "body": "The answer is specific, well organised, and correctly worried about the right adjacent issue. It even cites a handbook section.",
+      "shuffle": true,
+      "prompt": "What is the strongest reason to stop here?",
+      "options": [
+        {
+          "text": "Nothing in the answer tells you where any of those numbers came from.",
+          "correct": true,
+          "feedback": "This is it. Forty percent, seventy-five dollars, twenty-one business days and a named handbook section are four separate factual claims, and the response contains no indication of a source for any of them. The handbook reference reads like a citation but functions as a sentence."
+        },
+        {
+          "text": "The tone is too formal for an email to a student.",
+          "correct": false,
+          "feedback": "Tone is a real editing question and it is not the problem here. You could rewrite this warmly and still send incorrect figures."
+        },
+        {
+          "text": "Refund questions should always be routed to another office.",
+          "correct": false,
+          "feedback": "Often good practice, but it sidesteps the lesson. If you can only be safe by never answering anything, the tool has taught you nothing."
+        },
+        {
+          "text": "The answer is too long.",
+          "correct": false,
+          "feedback": "Length is not the issue. The Title IV point is genuinely relevant and a shorter answer that omitted it would be worse."
+        }
+      ]
+    },
+    {
+      "type": "reveal",
+      "title": "So you look it up",
+      "body": "You open the actual handbook and find the section the assistant named.",
+      "prompt": "Open the Student Handbook to the section it cited.",
+      "action": "Open the handbook",
+      "actionDone": "Opened",
+      "revealTitle": "The section exists. The content does not match.",
+      "reveal": "The refund schedule is real. The numbers are not the ones you were given, the fee does not exist in that form, and the section says something the assistant did not mention at all — which is the part that would have mattered most to this student.\n\nNotice what did **not** happen. The assistant did not refuse, hedge, or flag uncertainty. It had no access to this document and produced a confident answer about its contents anyway, because producing plausible text is the entire operation. There is no separate step where it checks.",
+      "revealArtifact": {
+        "kind": "doc",
+        "label": "Student Handbook §9.4 — Withdrawal and Refunds (actual text)",
+        "lines": [
+          { "heading": "9.4 Withdrawal and Refunds" },
+          "Refunds for withdrawal from a sixteen-week term are calculated on the following schedule: 100% through the end of the first week; 50% through the end of the third week; **no refund after the third week**.",
+          "No administrative processing fee is assessed on withdrawal refunds.",
+          "Refunds are processed within thirty (30) days of the effective date of withdrawal.",
+          "**Students should be advised that this schedule does not apply to students enrolled in eight-week or flex-term sections, which follow the schedule in §9.5.**"
+        ]
+      }
+    },
+    {
+      "type": "choice",
+      "title": "The detail that changes the answer",
+      "body": "Look at the last line of the actual section.",
+      "shuffle": true,
+      "prompt": "Why does that final sentence matter more than the wrong percentages?",
+      "options": [
+        {
+          "text": "Because you never asked what kind of section the student was enrolled in, and the answer changes entirely if it is a flex term.",
+          "correct": true,
+          "feedback": "Yes. The assistant answered the question as asked and never surfaced the thing that determines which rule applies. A wrong number gets corrected when someone notices. A missing question gets answered wrongly and confidently, and nobody notices at all."
+        },
+        {
+          "text": "Because it proves the handbook is badly organised.",
+          "correct": false,
+          "feedback": "Perhaps, but that is a documentation critique and it does not help this student today."
+        },
+        {
+          "text": "Because it means the assistant was partly right.",
+          "correct": false,
+          "feedback": "Partly right is the most dangerous kind of wrong here, because it is the kind that survives a skim."
+        },
+        {
+          "text": "Because it shows the policy had recently changed.",
+          "correct": false,
+          "feedback": "Nothing in the material suggests a change. Reaching for that explanation is a way of avoiding the simpler one — the answer was generated rather than retrieved."
+        }
+      ]
+    },
+    {
+      "type": "multi",
+      "title": "What would have made this safe",
+      "body": "You are not going to stop using the tool. So the question is what changes.",
+      "prompt": "Select every practice that would genuinely have prevented this.",
+      "options": [
+        { "text": "Ask the tool to quote the source text rather than summarise it, then check the quote against the document.", "correct": true },
+        { "text": "Give the tool the actual handbook section and ask it to answer only from what you provided.", "correct": true },
+        { "text": "Treat any answer containing a specific number, date or fee as unverified until you have opened the source.", "correct": true },
+        { "text": "Ask the follow-up question the tool did not ask you — what kind of section, what term length.", "correct": true },
+        { "text": "Ask the tool whether it is confident in its answer.", "correct": false },
+        { "text": "Use a tool that is marketed for higher education.", "correct": false }
+      ],
+      "explain": "The first four all work by changing where the answer comes from, or by forcing a check against something real. The last two only change how the answer feels. **Asking a model whether it is sure produces a sentence about being sure.**"
+    }
+  ]
+}

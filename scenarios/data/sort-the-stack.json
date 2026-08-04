@@ -1,0 +1,110 @@
+{
+  "id": "sort-the-stack",
+  "title": "Sort the Stack",
+  "subtitle": "Before you paste it, decide what it is",
+  "audience": "All",
+  "minutes": 10,
+  "summary": "Ten things that cross a desk in a normal week. Put each one in the right tier before it goes anywhere near a tool you did not buy.",
+  "takeaway": "The classification decision happens before the tool decision, not after it. If you cannot say out loud which tier something is in, that is the answer — it is not GREEN.",
+  "steps": [
+    {
+      "type": "brief",
+      "title": "Three tiers, one habit",
+      "body": "The point of a tier system is not the labels. It is that you pause for two seconds and name the thing before you move it.\n\n**GREEN** — already public, or built to be. No restriction on where it goes.\n\n**YELLOW** — internal. Not secret, but it belongs inside the institution and inside approved systems.\n\n**RED** — identifiable information about a specific person, or anything protected by law, contract or privilege. Approved systems only, and often not even those without a reason.",
+      "cta": "Start sorting"
+    },
+    {
+      "type": "sort",
+      "title": "Ten items from an ordinary week",
+      "body": "Classify each one. Some are deliberately close to the line.",
+      "prompt": "Put each item in a tier.",
+      "buckets": [
+        { "id": "green", "name": "GREEN — public", "short": "GREEN", "color": "#6FD79B" },
+        { "id": "yellow", "name": "YELLOW — internal", "short": "YELLOW", "color": "#F9DD56" },
+        { "id": "red", "name": "RED — protected", "short": "RED", "color": "#FF8A78" }
+      ],
+      "items": [
+        {
+          "text": "The published academic calendar for the coming term.",
+          "bucket": "green",
+          "why": "Already on the public website. Nothing is added by protecting it, and treating it as sensitive makes the whole system less credible."
+        },
+        {
+          "text": "A spreadsheet of student names, ID numbers and course grades.",
+          "bucket": "red",
+          "why": "Education records tied to identifiable students. This is the clearest RED in the set and the one most likely to be pasted into something by accident because it looks like an ordinary spreadsheet."
+        },
+        {
+          "text": "A draft memo about a reorganisation that has not been announced.",
+          "bucket": "yellow",
+          "why": "Nothing legally protected, but it is unannounced and internal. The harm here is disclosure timing rather than privacy."
+        },
+        {
+          "text": "Aggregate enrollment counts by department, with no individual identified.",
+          "bucket": "green",
+          "why": "Aggregated and non-identifying. Worth a moment's thought when the counts get very small — a department with two students in a category can identify them — but as stated this is public-grade."
+        },
+        {
+          "text": "A student's email describing a medical situation and asking for an extension.",
+          "bucket": "red",
+          "why": "Identifiable, and the content is the sensitive part. The fact that it arrived informally in your inbox does not lower its tier."
+        },
+        {
+          "text": "The vendor contract for the campus print management system.",
+          "bucket": "yellow",
+          "why": "Institutional business record. Often subject to confidentiality terms, and pricing in particular tends to be restricted by the contract itself."
+        },
+        {
+          "text": "A press release that goes out tomorrow morning.",
+          "bucket": "yellow",
+          "why": "It becomes GREEN tomorrow. Today it is embargoed internal material, and the tier follows the clock rather than the content."
+        },
+        {
+          "text": "Your own notes summarising a conversation with a named employee about a complaint.",
+          "bucket": "red",
+          "why": "Identifiable and about a personnel matter. That you wrote it yourself, in your own words, changes nothing about what it contains."
+        },
+        {
+          "text": "The course catalogue description for an introductory statistics class.",
+          "bucket": "green",
+          "why": "Published to recruit students. Written specifically to be distributed."
+        },
+        {
+          "text": "A screenshot of an error in a records system, showing one student's record in the background.",
+          "bucket": "red",
+          "why": "This is the one that catches people. The purpose of the screenshot is the error message, but what the file contains is an identifiable record — and purpose does not determine tier, contents do."
+        }
+      ],
+      "explain": "The two worth arguing about are the press release and the screenshot. The press release shows that a tier can be a function of time. The screenshot shows that a tier is a function of what is in the file, not what you meant to capture."
+    },
+    {
+      "type": "choice",
+      "title": "The one that comes up every time",
+      "body": "Someone says: *I only pasted a small part of it, and I took the names out first.*",
+      "shuffle": true,
+      "prompt": "What is the most useful response?",
+      "options": [
+        {
+          "text": "Ask whether the remaining details could still identify someone in a small population.",
+          "correct": true,
+          "feedback": "This is the right question. In a community of a few thousand, a programme, a term and a circumstance can identify one person as reliably as a name. Removing the name field is not the same as de-identifying, and the smaller the population the less it takes."
+        },
+        {
+          "text": "It is fine — removing names is what de-identification means.",
+          "correct": false,
+          "feedback": "Names are one identifier among many. Re-identification from a handful of ordinary attributes is well documented and does not require any special capability."
+        },
+        {
+          "text": "It is fine as long as it was a small excerpt.",
+          "correct": false,
+          "feedback": "Volume is not the measure. One record about one person is a disclosure about that person."
+        },
+        {
+          "text": "Nothing may ever be pasted into any tool under any circumstances.",
+          "correct": false,
+          "feedback": "This sounds safe and it fails in practice — a rule nobody can follow gets quietly ignored, and then you have no rule at all. Approved tools exist so there is somewhere for the work to go."
+        }
+      ]
+    }
+  ]
+}

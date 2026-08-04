@@ -1,0 +1,139 @@
+{
+  "id": "redaction-trap",
+  "title": "The Redaction Trap",
+  "subtitle": "A black box is a drawing, not a deletion",
+  "audience": "Staff",
+  "minutes": 8,
+  "summary": "You are asked to produce a document with one name removed. You remove it. Then you find out what removed actually means.",
+  "takeaway": "A black rectangle is a picture drawn on top of a page. The words underneath are still in the file, still selectable, still searchable. Redaction is a thing you do to the text, not to the appearance of the text.",
+  "steps": [
+    {
+      "type": "brief",
+      "title": "A small favour, quickly",
+      "body": "It is 4:40 on a Thursday. The request is narrow and it sounds easy.",
+      "artifact": {
+        "kind": "email",
+        "label": "Inbox",
+        "from": "P. Nakamura, Associate Dean",
+        "to": "You",
+        "date": "Thursday, 4:41 PM",
+        "subject": "Incident summary for the Renner matter — one edit",
+        "body": "Attached is the incident summary. Counsel needs it tonight.\n\nPlease take out the reporting student's name before it goes. Everything else stays as written. Thanks — I know it is late."
+      },
+      "cta": "Open the document"
+    },
+    {
+      "type": "choice",
+      "title": "How do you take a name out?",
+      "body": "You have the PDF open. Four ways to do this, and every one of them is something people actually do.",
+      "shuffle": true,
+      "prompt": "Which one actually removes the name from the file?",
+      "options": [
+        {
+          "text": "Draw a filled black rectangle over the name in a PDF viewer, then save.",
+          "correct": false,
+          "feedback": "This is the trap, and it is the most common way it happens. The rectangle is a new object drawn on the page. The name is still underneath it — unchanged, selectable, and searchable."
+        },
+        {
+          "text": "Highlight the name in Word and set the text colour and highlight to black, then export a PDF.",
+          "correct": false,
+          "feedback": "Black text on a black background is still text. Select it, paste it anywhere, and it comes back. Copying the page into any text field reveals the whole thing."
+        },
+        {
+          "text": "Use the redaction tool in a PDF editor, then apply the redactions so the underlying content is deleted.",
+          "correct": true,
+          "feedback": "Correct — and note the second half. Marking a redaction is not the same as applying it. Until you apply, the tool is only holding a list of intentions. Applying is the step that rewrites the file."
+        },
+        {
+          "text": "Print the page, put tape over the name, and scan it back in.",
+          "correct": false,
+          "feedback": "This does genuinely destroy the text, which is why it survived as long as it did. But it also destroys every other useful property of the document, produces a file nobody can search, and tends to leave the name faintly legible through the tape. It is a workaround, not a method."
+        }
+      ]
+    },
+    {
+      "type": "brief",
+      "title": "What you sent",
+      "body": "Say you took the first option — the black rectangle. Here is the page that left the building.",
+      "artifact": {
+        "kind": "doc",
+        "label": "Incident summary — as produced",
+        "lines": [
+          { "heading": "INCIDENT SUMMARY — INTERNAL" },
+          "On 14 February, a report was received concerning conduct in the East Annex parking structure.",
+          { "text": "The reporting party was identified as:" },
+          { "redacted": true, "under": "Marisol Herrera-Quintanilla, student ID 4471902", "after": "" },
+          "The report was routed to Student Conduct the same afternoon. No further action was taken pending review.",
+          "This summary is provided in response to a request from counsel dated 20 February."
+        ]
+      },
+      "cta": "Counsel opens it"
+    },
+    {
+      "type": "reveal",
+      "title": "Counsel opens the file",
+      "body": "Opposing counsel receives the PDF, selects the whole page, and pastes it into an email to check something unrelated.",
+      "prompt": "Select all and copy — the same thing anybody would do without thinking about it.",
+      "action": "Select the whole page and copy",
+      "actionDone": "Pasted",
+      "revealTitle": "The name came with it",
+      "reveal": "The rectangle stayed behind in the PDF. The text did not.\n\nThis is not a subtle failure that needs forensic tooling. It takes one keyboard shortcut, and it has happened in filings by government agencies, national law firms, and at least one court. The person who does it never finds out until somebody else does.",
+      "revealArtifact": {
+        "kind": "terminal",
+        "label": "Pasted into a plain text field",
+        "lines": [
+          "INCIDENT SUMMARY - INTERNAL",
+          "On 14 February, a report was received concerning conduct in the",
+          "East Annex parking structure.",
+          "The reporting party was identified as:",
+          "Marisol Herrera-Quintanilla, student ID 4471902",
+          "The report was routed to Student Conduct the same afternoon."
+        ]
+      }
+    },
+    {
+      "type": "choice",
+      "title": "It has already gone out",
+      "body": "You realise on Friday morning. The file was sent Thursday night.",
+      "shuffle": true,
+      "prompt": "What is the first thing you do?",
+      "options": [
+        {
+          "text": "Tell your supervisor and counsel immediately, in writing, with the time it was sent and who received it.",
+          "correct": true,
+          "feedback": "Yes. The disclosure already happened; the only variable left is how fast the people who can act on it find out. Put the timeline in writing while you still remember it precisely."
+        },
+        {
+          "text": "Quietly send a corrected version and ask them to use that one instead.",
+          "correct": false,
+          "feedback": "The first file is still in their inbox, their backups, and possibly their filing. A replacement does not retract anything, and handling it quietly turns a mistake into a decision."
+        },
+        {
+          "text": "Wait to see whether anyone noticed.",
+          "correct": false,
+          "feedback": "The disclosure is not conditional on someone mentioning it. Waiting only removes the window in which something could still be done."
+        },
+        {
+          "text": "Recall the email.",
+          "correct": false,
+          "feedback": "Recall works inside one organisation's mail system and almost never outside it. Treat it as unavailable, and if it does happen to work, it is a bonus rather than a plan."
+        }
+      ]
+    },
+    {
+      "type": "multi",
+      "title": "The same failure wearing different clothes",
+      "body": "Redaction is one instance of a wider pattern: what is displayed is not the same as what is stored.",
+      "prompt": "Select every one of these that has the same underlying problem.",
+      "options": [
+        { "text": "Hiding rows or columns in a spreadsheet before sending it.", "correct": true },
+        { "text": "Cropping a photograph in a document — the cropped area is often retained.", "correct": true },
+        { "text": "Accepting all tracked changes and assuming the earlier text is gone.", "correct": true },
+        { "text": "Setting a slide element to fully transparent instead of deleting it.", "correct": true },
+        { "text": "Deleting a paragraph, saving, and closing the document.", "correct": false },
+        { "text": "Exporting a spreadsheet to CSV, which keeps only the visible cell values.", "correct": false }
+      ],
+      "explain": "The first four all leave the content in the file and change only how it is presented. The last two genuinely remove it. The test to carry with you is simple: **did I change what is stored, or only what is shown?**"
+    }
+  ]
+}

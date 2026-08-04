@@ -1,0 +1,132 @@
+{
+  "id": "citation-check",
+  "title": "Eight Citations, Three Problems",
+  "subtitle": "The draft is well written. That is the difficulty.",
+  "audience": "All",
+  "minutes": 12,
+  "summary": "An assistant produces a clean, confident passage with authority for every proposition. Some of that authority does not exist. Fluent writing is not evidence of anything.",
+  "takeaway": "A language model produces text that resembles correct text. Resemblance is the product. Every citation has to be opened and read — not searched for, not recognised, opened. The failure mode is not that the writing looks wrong; it is that it looks exactly right.",
+  "steps": [
+    {
+      "type": "brief",
+      "title": "A note about this exercise",
+      "body": "**Every case name, reporter citation and docket number in this scenario is invented for teaching.** None of them refer to real decisions, including the ones the exercise treats as genuine. That is deliberate — the skill being practised is the checking process, and using real citations here would teach people to recognise names instead of verify them."
+    },
+    {
+      "type": "brief",
+      "title": "Twenty minutes before you wanted it",
+      "body": "You asked for a first pass at a section on spoliation sanctions. It came back quickly and it reads well.",
+      "artifact": {
+        "kind": "chat",
+        "label": "Drafting assistant",
+        "aiName": "Assistant",
+        "turns": [
+          { "who": "you", "text": "Draft a short section on the standard for spoliation sanctions where electronically stored information is lost. Include supporting authority." },
+          { "who": "ai", "text": "Here is a draft section with supporting authority throughout. I have included both the controlling standard and two illustrative applications. Let me know if you would like it expanded." }
+        ]
+      },
+      "cta": "Read the draft"
+    },
+    {
+      "type": "inspect",
+      "title": "Read it the way you would check it",
+      "body": "The passage below is what came back. Three things in it should stop you before this goes anywhere near a filing. Click on anything that gives you pause.",
+      "prompt": "Find the three real problems. There are also things here that look suspicious and are fine — clicking those costs you the clean run, which is rather the point.",
+      "text": "Where electronically stored information is lost because a party failed to take reasonable steps to preserve it, the court may impose sanctions upon a finding of prejudice. {{a|Halvorsen v. Bridgeline Freight Sys., 812 F.4th 1140 (9th Cir. 2023)}}. The severest measures require an additional finding that the party {{b|acted with the intent to deprive another party of the information's use}}.\n\nCourts have applied this framework with some consistency. In {{c|Ortiz-Mendel v. Cascade Diagnostics, Inc., 2022 WL 8841203 (N.D. Ill. Mar. 14, 2022)}}, the court declined to give an adverse inference instruction where the loss resulted from an automatic retention policy that predated the litigation. By contrast, in {{d|Whitfield Holdings LLC v. Arrowpoint Capital, 655 F. Supp. 3d 219 (S.D.N.Y. 2023)}}, the court found the requisite intent where the custodian {{e|reinstalled the operating system on a laptop two days after receiving a litigation hold notice}}.\n\nThe Fifth Circuit has expressly held that {{f|a party's negligence alone can never support any sanction under this rule}}. See {{g|Delacroix-Ammons v. Gulf Rail Partners, 947 F.4th 88 (5th Cir. 2024)}}. Accordingly, the movant here must establish intent, and the record contains {{h|no evidence of deliberate conduct}}.",
+      "spans": [
+        {
+          "id": "a",
+          "target": false,
+          "label": "The lead citation",
+          "note": "Nothing on the face of this one is wrong. The format is right and the proposition matches the rule. It still has to be opened and read — but it is not what is broken here."
+        },
+        {
+          "id": "b",
+          "target": false,
+          "label": "The intent standard",
+          "note": "This is an accurate statement of the heightened showing required for the most severe measures. Correct as written."
+        },
+        {
+          "id": "c",
+          "target": false,
+          "label": "The Northern District of Illinois case",
+          "note": "An unreported decision cited to a database number. Unremarkable, and consistent with the proposition it supports."
+        },
+        {
+          "id": "d",
+          "target": true,
+          "label": "Wrong reporter for the court",
+          "note": "A district court decision is being cited to **F. Supp. 3d**, which is right, but check the pairing every time: F.4th is for the courts of appeals, F. Supp. 3d for the district courts, and a mismatch between the reporter and the deciding court is one of the most reliable signals that a citation was assembled rather than looked up. Here the volume and page also place it years outside the range that reporter had reached."
+        },
+        {
+          "id": "e",
+          "target": false,
+          "label": "The laptop facts",
+          "note": "A specific, plausible fact pattern. Suspicious-sounding specificity is not itself a defect — this one is fine."
+        },
+        {
+          "id": "f",
+          "target": true,
+          "label": "An overstated holding",
+          "note": "\"Can never support any sanction\" is the kind of absolute a court almost never writes, and it does more work than the rule allows. Negligence forecloses the *severest* measures, not every measure. When a sentence is doing exactly the work your argument needs and states it in absolute terms, that is the sentence to open first."
+        },
+        {
+          "id": "g",
+          "target": true,
+          "label": "The citation that does not exist",
+          "note": "This is the fabricated one. It is formatted perfectly, the court is plausible, the year is current, and the case name sounds like a real case. That is precisely why it survives a skim. Nothing about a fabricated citation looks wrong — it looks finished."
+        },
+        {
+          "id": "h",
+          "target": false,
+          "label": "The conclusion",
+          "note": "This is an assertion about your own record, not a statement of law. It needs support from the file, but it is not a citation problem."
+        }
+      ]
+    },
+    {
+      "type": "choice",
+      "title": "How you would actually catch this",
+      "body": "Suppose you have eight citations and twenty minutes.",
+      "shuffle": true,
+      "prompt": "Which approach reliably catches a fabricated citation?",
+      "options": [
+        {
+          "text": "Open each citation in a research database and read enough of the decision to confirm it says what the draft claims.",
+          "correct": true,
+          "feedback": "This is the only one that works, and it is slower than everyone wants it to be. Note the second half — confirming a case exists is not the same as confirming it holds what the sentence says it holds. Both failures show up in sanctioned filings."
+        },
+        {
+          "text": "Ask the assistant to double-check its own citations and confirm they are real.",
+          "correct": false,
+          "feedback": "It will confirm them. It has no mechanism for checking and no access to a reporter — it produces the text that a confirmation would look like. Asking a second time mostly produces a more confident version of the same answer."
+        },
+        {
+          "text": "Search the case names in a general web search engine and see whether results come back.",
+          "correct": false,
+          "feedback": "Better than nothing and genuinely catches some fabrications, but a plausible name will often surface unrelated results, secondary discussion, or another case with a similar caption — any of which reads as confirmation when you are moving quickly."
+        },
+        {
+          "text": "Check that every citation is correctly formatted and internally consistent.",
+          "correct": false,
+          "feedback": "Formatting is the one thing a language model reliably gets right. A well-formed citation is weak evidence of existence, and treating tidy formatting as a signal is backwards — it is what makes fabrications survive review."
+        }
+      ]
+    },
+    {
+      "type": "multi",
+      "title": "Where the responsibility sits",
+      "body": "Courts that have addressed this have not been especially interested in how the draft was produced.",
+      "prompt": "Select every statement you would be comfortable defending.",
+      "options": [
+        { "text": "The person who signs or submits the document is responsible for its contents.", "correct": true },
+        { "text": "Using an assistant to draft is not itself improper.", "correct": true },
+        { "text": "Verification has to happen before filing, not after someone objects.", "correct": true },
+        { "text": "A tool that sounds certain is providing no information about whether it is correct.", "correct": true },
+        { "text": "Disclosing that a draft was AI-assisted substitutes for checking the citations.", "correct": false },
+        { "text": "If the tool is marketed for legal work, its output can be relied on without checking.", "correct": false }
+      ],
+      "explain": "The first four hold up. The last two are the arguments that have gone badly for the people making them. **Disclosure is not verification, and neither is the price of the subscription.**"
+    }
+  ]
+}
