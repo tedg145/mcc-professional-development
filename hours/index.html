@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find Your Ten Hours — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="List the work you repeat every week. See where the hours are, which pattern each task is, and what to do first.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A1A2E; --navy:#003366; --orange:#FF6600; --gold:#F9DD56; --teal:#008DA7;
+  --ondk:#A7B7C9; --dimdk:#5C6E82; --line:rgba(255,255,255,.12);
+  --green:#6FD79B; --red:#FF8A78;
+  --sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--ink);color:#fff;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;min-height:100vh}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select{font:inherit}
+a{color:inherit}
+
+.bar{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,30px);
+  border-bottom:1px solid var(--line);background:rgba(6,16,30,.92);position:sticky;top:0;z-index:40;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);flex-wrap:wrap}
+.bar .home{font-size:14.5px;font-weight:700;text-decoration:none;white-space:nowrap}
+.bar .home span{color:var(--orange)}
+.bar .sep{width:1px;height:20px;background:var(--line)}
+.bar .where{font-size:13.5px;color:var(--ondk)}
+.bar .right{margin-left:auto;display:flex;gap:8px}
+.bar .right a{font-size:12.5px;text-decoration:none;border:1px solid var(--line);border-radius:9px;
+  padding:7px 13px;color:var(--ondk);transition:background .2s,color .2s}
+.bar .right a:hover{background:rgba(255,255,255,.08);color:#fff}
+
+main{flex:1;width:100%;max-width:1120px;margin:0 auto;padding:clamp(22px,5vw,44px) clamp(16px,4vw,30px) 60px}
+.kicker{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--orange)}
+h1{font-size:clamp(27px,5vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:12px}
+h1 span{color:var(--dimdk)}
+.lede{color:var(--ondk);font-size:clamp(15px,1.8vw,18px);line-height:1.65;margin-top:18px;max-width:64ch}
+.lede strong{color:#fff}
+
+.privacy{display:flex;gap:12px;align-items:flex-start;margin-top:20px;padding:14px 16px;
+  border:1px solid rgba(111,215,155,.38);background:rgba(111,215,155,.08);border-radius:12px;max-width:64ch}
+.privacy svg{flex-shrink:0;width:19px;height:19px;color:var(--green);margin-top:1px}
+.privacy p{font-size:13px;line-height:1.6;color:#CFE9DA}
+.privacy strong{color:#8FE3B4}
+
+h2.sec{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold);margin:38px 0 14px;display:flex;align-items:center;gap:10px}
+h2.sec::after{content:'';flex:1;height:1px;background:var(--line)}
+
+/* ---------- entry form ---------- */
+.entry{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04);padding:20px}
+.frow{display:grid;grid-template-columns:1fr 118px 128px 168px auto;gap:11px;align-items:end}
+.f label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--dimdk);margin-bottom:6px}
+.f input,.f select{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--line);
+  border-radius:10px;padding:11px 12px;color:#fff;font-size:14px}
+.f input:focus,.f select:focus{outline:none;border-color:var(--orange);background:rgba(255,255,255,.09)}
+.f select option{background:#12233a;color:#fff}
+.addbtn{background:var(--orange);border-radius:10px;padding:12px 22px;font-size:14px;font-weight:600;
+  white-space:nowrap;transition:background .2s}
+.addbtn:hover{background:#e25c00}
+.addbtn:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.hintrow{margin-top:12px;font-size:12.5px;color:var(--dimdk);line-height:1.6}
+.hintrow b{color:var(--ondk);font-weight:600}
+.quick{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.quick button{border:1px solid var(--line);border-radius:18px;padding:6px 13px;font-size:12px;
+  color:var(--ondk);transition:background .2s,color .2s}
+.quick button:hover{background:rgba(255,255,255,.09);color:#fff}
+
+/* ---------- task list ---------- */
+.tasks{margin-top:16px;display:flex;flex-direction:column;gap:9px}
+.task{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;
+  border:1px solid var(--line);border-radius:13px;padding:14px 16px;background:rgba(255,255,255,.035)}
+.task.red{border-color:rgba(255,138,120,.5);background:rgba(255,138,120,.08)}
+.tname{font-size:14.5px;font-weight:600;line-height:1.35}
+.tmeta{font-size:12px;color:var(--dimdk);margin-top:5px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.pat{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.09);color:var(--ondk)}
+.pat[data-p="draft"]{background:rgba(0,51,102,.5);color:#9DBEE4}
+.pat[data-p="transform"]{background:rgba(0,141,167,.22);color:#5FC8DE}
+.pat[data-p="extract"]{background:rgba(111,215,155,.18);color:var(--green)}
+.pat[data-p="summarize"]{background:rgba(255,138,120,.2);color:var(--red)}
+.pat[data-p="check"]{background:rgba(255,102,0,.2);color:#FFB37A}
+.pat[data-p="judgement"]{background:rgba(167,183,201,.16);color:var(--ondk)}
+.flag{font-size:11.5px;font-weight:600;color:var(--red);display:flex;align-items:center;gap:5px}
+.flag svg{width:13px;height:13px}
+.thours{text-align:right;white-space:nowrap}
+.thours .n{font-size:22px;font-weight:700;color:var(--gold);line-height:1}
+.thours .u{font-size:10.5px;color:var(--dimdk);margin-top:3px}
+.del{border:none;background:none;color:var(--dimdk);font-size:19px;line-height:1;padding:4px 7px;
+  border-radius:7px;transition:background .2s,color .2s}
+.del:hover{background:rgba(255,138,120,.16);color:var(--red)}
+.empty{border:1px dashed var(--line);border-radius:13px;padding:26px;text-align:center;
+  color:var(--dimdk);font-size:14px;line-height:1.6}
+
+/* ---------- totals ---------- */
+.totals{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:14px;margin-top:20px}
+.tot{border:1px solid var(--line);border-radius:14px;padding:18px;background:rgba(255,255,255,.04)}
+.tot .k{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dimdk)}
+.tot .v{font-size:32px;font-weight:700;margin-top:8px;line-height:1;color:#fff}
+.tot .d{font-size:12.5px;color:var(--ondk);margin-top:8px;line-height:1.5}
+.tot.hero{border-color:rgba(255,102,0,.5);background:rgba(255,102,0,.1)}
+.tot.hero .v{color:var(--orange)}
+
+/* ---------- plan ---------- */
+.plan{margin-top:20px;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  background:rgba(255,255,255,.03)}
+.plan h3{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);
+  padding:15px 20px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.03)}
+.plan .pbody{padding:18px 20px}
+.pstep{display:grid;grid-template-columns:34px 1fr;gap:14px;padding:13px 0;
+  border-bottom:1px dashed rgba(255,255,255,.1)}
+.pstep:last-child{border-bottom:none}
+.pstep .pn{font-size:19px;font-weight:700;color:var(--orange);line-height:1.2}
+.pstep .pt{font-size:15px;font-weight:600;line-height:1.4}
+.pstep .pd{font-size:13.5px;color:var(--ondk);margin-top:6px;line-height:1.6}
+.pstep .pd b{color:#fff}
+
+.acts{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.acts button{border:1px solid var(--line);border-radius:11px;padding:12px 20px;font-size:13.5px;
+  color:var(--ondk);transition:background .2s,color .2s}
+.acts button:hover{background:rgba(255,255,255,.08);color:#fff}
+.acts button.primary{background:var(--orange);border-color:var(--orange);color:#fff;font-weight:600}
+.acts button.primary:hover{background:#e25c00}
+.acts button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+
+details.notes{margin-top:44px;border:1px solid var(--line);border-radius:17px;
+  background:rgba(255,255,255,.03);overflow:hidden}
+details.notes summary{padding:17px 21px;font-size:15px;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;gap:11px;list-style:none}
+details.notes summary::-webkit-details-marker{display:none}
+details.notes summary .chev{color:var(--orange);transition:transform .2s;display:inline-block}
+details.notes[open] summary .chev{transform:rotate(90deg)}
+details.notes .nbody{padding:0 21px 24px;font-size:14px;line-height:1.72;color:var(--ondk);max-width:76ch}
+details.notes h4{color:#fff;font-size:13.5px;margin:19px 0 7px;font-weight:600}
+details.notes ul{margin:8px 0 0;padding-left:20px}
+details.notes li{margin:6px 0}
+details.notes strong{color:#fff}
+
+footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--dimdk)}
+
+@media (max-width:860px){ .frow{grid-template-columns:1fr 1fr;gap:12px} .frow .f.wide{grid-column:1/-1}
+  .addbtn{grid-column:1/-1;width:100%} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  body{background:#fff;color:#000}
+  .bar,.entry,.acts,details.notes,footer,.del,.hintrow,.quick,.privacy{display:none!important}
+  .task,.tot,.plan{border-color:#bbb;background:#fff;break-inside:avoid}
+  .tname,.tot .v,.pstep .pt{color:#000}
+  .tmeta,.tot .d,.pstep .pd,.tot .k{color:#333}
+  h1,h2.sec,.plan h3{color:#000}
+  .thours .n{color:#b34a00}
+  main{padding:0}
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <a class="home" href="../">AI Professional <span>Development</span></a>
+  <div class="sep" aria-hidden="true"></div>
+  <div class="where">Find Your Ten Hours</div>
+  <div class="right">
+    <a href="../scenarios/">Scenarios</a>
+    <a href="../inbox/">Inbox Hour</a>
+    <a href="../tools/">Tool Bench</a>
+  </div>
+</div>
+
+<main>
+  <div class="kicker">Personal lab</div>
+  <h1>Find Your Ten Hours<br><span>The work you already repeat</span></h1>
+  <p class="lede">Every other page here teaches something general. This one is about
+    <strong>your</strong> week. List the things you do over and over, and it will tell you where the
+    hours actually are, which of the five patterns each task is, and what to do first.</p>
+
+  <div class="privacy">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>
+    </svg>
+    <p><strong>Stays in this browser.</strong> Nothing is uploaded and nothing is saved to a server.
+      Print or save the plan at the end — closing the tab is enough to clear it.</p>
+  </div>
+
+  <h2 class="sec">Add what you repeat</h2>
+  <div class="entry">
+    <div class="frow">
+      <div class="f wide">
+        <label for="tname">The task</label>
+        <input id="tname" type="text" placeholder="Deadline reminder emails to students" autocomplete="off">
+      </div>
+      <div class="f">
+        <label for="tmins">Minutes</label>
+        <input id="tmins" type="number" min="1" max="480" value="20">
+      </div>
+      <div class="f">
+        <label for="tfreq">How often</label>
+        <select id="tfreq">
+          <option value="5">Every day</option>
+          <option value="3" selected>A few times a week</option>
+          <option value="1">Once a week</option>
+          <option value="0.5">Every other week</option>
+          <option value="0.25">Monthly</option>
+        </select>
+      </div>
+      <div class="f">
+        <label for="tdata">Involves student or staff records?</label>
+        <select id="tdata">
+          <option value="no" selected>No</option>
+          <option value="yes">Yes — names, IDs, grades, files</option>
+        </select>
+      </div>
+      <button class="addbtn" id="add" type="button">Add task</button>
+    </div>
+    <div class="hintrow">
+      <b>Where to look:</b> open last week's sent folder, not your calendar. Anything you have written
+      more than twice belongs on this list.
+    </div>
+    <div class="quick" id="quick"></div>
+  </div>
+
+  <h2 class="sec">Your week</h2>
+  <div class="tasks" id="tasks"></div>
+
+  <div id="results" hidden>
+    <div class="totals" id="totals"></div>
+    <div class="plan" id="plan"></div>
+    <div class="acts">
+      <button class="primary" type="button" id="print">Print my plan</button>
+      <button type="button" id="clear">Start over</button>
+    </div>
+  </div>
+
+  <details class="notes">
+    <summary><span class="chev">&#9654;</span> Teaching notes — running this in a session</summary>
+    <div class="nbody">
+      <h4>Where it goes</h4>
+      <p>Twenty minutes, immediately after the five patterns. People have just learned the taxonomy in
+        the abstract; this is where they apply it to their own week, which is the only step that
+        produces behaviour change after the room empties.</p>
+
+      <h4>Get them started with a real one</h4>
+      <p>Ask the room for a task out loud, type it in on the projector, and let them watch the annual
+        number appear. The arithmetic is more persuasive in somebody's own numbers than in any slide.
+        The quick-add buttons exist for people who freeze — do not let anyone sit there empty-handed.</p>
+
+      <h4>The number that does the work</h4>
+      <p>Most people are surprised by the annual total and unsurprised by the weekly one. That gap is
+        the point of the exercise. Twenty-five minutes, four times a week, does not feel like anything.
+        Seventy-five hours a year does.</p>
+
+      <h4>The red flags are not a scolding</h4>
+      <p>Tasks marked as touching student or staff records get flagged, and they still count toward the
+        total — deliberately. The message is not <em>do not automate this</em>, it is <em>this one has
+        to happen inside an approved system.</em> If people feel told off, they stop declaring it, and
+        then you have lost the visibility that made the exercise worth running.</p>
+
+      <h4>Make them leave with one</h4>
+      <p>Have everyone print the plan, or photograph the top of it, before they leave the room.
+        A plan that exists only in a browser tab is a plan that ends when the tab closes.</p>
+
+      <h4>Do it again in a month</h4>
+      <p>The second pass is more accurate than the first, because by then people have noticed
+        repetition they missed. It also takes about six minutes.</p>
+    </div>
+  </details>
+</main>
+
+<footer>
+  <div>Ted Gonzalez, JD/MBA</div>
+  <div>&copy; 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
+</footer>
+
+<script src="../assets/mcc-qr.js" defer></script>
+<script>
+(function () {
+  'use strict';
+
+  var WEEKS = 45; /* working weeks in an academic year, less breaks */
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  /* ---- pattern classifier ----
+     Keyword scoring, not cleverness. Judgement is checked first because those
+     tasks must never be classified as automatable. */
+  var PATTERNS = {
+    judgement: { name: 'Judgement', savingFactor: 0,
+      words: ['decide','decision','evaluate','negotiate','discipline','counsel','advise','recommend',
+              'appeal','complaint','grievance','interview','hire','fire','terminate','evaluation',
+              'appraisal','mediate','conflict','difficult conversation'] },
+    summarize: { name: 'Summarize', savingFactor: 0.45,
+      words: ['summar','digest','brief','recap','board packet','packet','minutes of','read through',
+              'skim','condense','overview of','tl;dr','abstract'] },
+    extract: { name: 'Extract', savingFactor: 0.6,
+      words: ['extract','pull','compile','collect','gather','enter','data entry','transcribe',
+              'list of','roster','spreadsheet','tally','log','record the','copy from'] },
+    transform: { name: 'Transform', savingFactor: 0.65,
+      words: ['minutes','notes into','convert','reformat','rewrite','translate','plain language',
+              'faq','one-pager','format','turn into','adapt','clean up','tidy'] },
+    check: { name: 'Check', savingFactor: 0.5,
+      words: ['check','verify','proof','review','audit','reconcile','compare','cross-reference',
+              'complete','missing','confirm','validate'] },
+    draft: { name: 'Draft', savingFactor: 0.7,
+      words: ['email','write','draft','letter','memo','reminder','notice','announce','post','agenda',
+              'reply','respond','correspondence','message','newsletter','description','posting'] }
+  };
+  var ORDER = ['judgement', 'summarize', 'extract', 'transform', 'check', 'draft'];
+
+  function classify(text) {
+    var t = ' ' + text.toLowerCase() + ' ';
+    var best = null, bestScore = 0;
+    ORDER.forEach(function (k) {
+      var score = 0;
+      PATTERNS[k].words.forEach(function (w) { if (t.indexOf(w) > -1) score += w.length > 6 ? 2 : 1; });
+      if (score > bestScore) { bestScore = score; best = k; }
+    });
+    return best || 'draft';
+  }
+
+  var NOTE = {
+    draft:     'Read every word before it goes out — and that is exactly why this one is safe to hand over.',
+    transform: 'The original sits next to the result, so a mistake is visible. A good place to start.',
+    extract:   'Spot-check against the source. Errors here are findable if you look.',
+    check:     'It raises a hand and you decide. A wrong flag costs you a minute.',
+    summarize: 'The risky pattern. Use it to decide what to read, never to avoid reading.',
+    judgement: 'This is thinking time. Nothing here helps, and that is the correct answer.'
+  };
+
+  var tasks = [];
+  var el = function (id) { return document.getElementById(id); };
+
+  /* quick-add examples for people who freeze in front of a blank field */
+  var QUICK = [
+    ['Deadline reminder emails to students', 20, 3, 'no'],
+    ['Turning meeting notes into minutes', 40, 1, 'no'],
+    ['Reading long reports to find what matters', 45, 1, 'no'],
+    ['Pulling names and dates out of email threads', 25, 3, 'yes'],
+    ['Answering the same student questions', 15, 5, 'no'],
+    ['Checking a form or list is complete', 20, 1, 'no']
+  ];
+  el('quick').innerHTML = '<span style="font-size:12px;color:var(--dimdk);align-self:center">Common ones:</span>' +
+    QUICK.map(function (q, i) { return '<button type="button" data-q="' + i + '">' + esc(q[0]) + '</button>'; }).join('');
+  el('quick').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-q]');
+    if (!b) return;
+    var q = QUICK[+b.dataset.q];
+    el('tname').value = q[0]; el('tmins').value = q[1];
+    el('tfreq').value = String(q[2]); el('tdata').value = q[3];
+    el('tname').focus();
+  });
+
+  function addTask() {
+    var name = el('tname').value.trim();
+    if (!name) { el('tname').focus(); return; }
+    var mins = Math.max(1, Math.min(480, parseInt(el('tmins').value, 10) || 20));
+    var freq = parseFloat(el('tfreq').value);
+    var red = el('tdata').value === 'yes';
+    tasks.push({ name: name, mins: mins, freq: freq, red: red, pattern: classify(name) });
+    el('tname').value = '';
+    el('tmins').value = 20;
+    el('tname').focus();
+    render();
+  }
+  el('add').addEventListener('click', addTask);
+  ['tname', 'tmins'].forEach(function (id) {
+    el(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); addTask(); } });
+  });
+
+  function hoursPerYear(t) { return (t.mins * t.freq * WEEKS) / 60; }
+
+  function render() {
+    var list = el('tasks');
+    if (!tasks.length) {
+      list.innerHTML = '<div class="empty">Nothing yet. Add the thing you did three times last week ' +
+        'and did not think of as a task.</div>';
+      el('results').hidden = true;
+      return;
+    }
+
+    list.innerHTML = tasks.map(function (t, i) {
+      var hy = hoursPerYear(t);
+      return '<div class="task' + (t.red ? ' red' : '') + '">' +
+        '<div><div class="tname">' + esc(t.name) + '</div>' +
+          '<div class="tmeta">' +
+            '<span class="pat" data-p="' + t.pattern + '">' + esc(PATTERNS[t.pattern].name) + '</span>' +
+            '<span>' + t.mins + ' min · ' + freqLabel(t.freq) + '</span>' +
+            (t.red ? '<span class="flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+              'stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>' +
+              '<path d="M12 9v4M12 17h.01"/></svg>Approved system only</span>' : '') +
+          '</div></div>' +
+        '<div style="display:flex;align-items:center;gap:12px">' +
+          '<div class="thours"><div class="n">' + hy.toFixed(0) + '</div><div class="u">hrs/year</div></div>' +
+          '<button class="del" type="button" data-i="' + i + '" aria-label="Remove ' + esc(t.name) + '">&times;</button>' +
+        '</div></div>';
+    }).join('');
+
+    var totalHrs = tasks.reduce(function (a, t) { return a + hoursPerYear(t); }, 0);
+    var savable = tasks.reduce(function (a, t) {
+      return a + hoursPerYear(t) * PATTERNS[t.pattern].savingFactor * (t.red ? 0 : 1);
+    }, 0);
+    var redCount = tasks.filter(function (t) { return t.red; }).length;
+
+    el('totals').innerHTML =
+      card('On these tasks', totalHrs.toFixed(0) + ' hrs', 'Every year, across ' + WEEKS + ' working weeks.') +
+      card('Realistically recoverable', savable.toFixed(0) + ' hrs', 'After checking time, and excluding anything needing an approved system.', true) +
+      card('That is about', (savable / 8).toFixed(1) + ' days', 'Full working days handed back to you.') +
+      (redCount ? card('Needs an approved system', String(redCount), redCount === 1 ? 'One task touches protected records.' : redCount + ' tasks touch protected records.') : '');
+
+    buildPlan(savable);
+    el('results').hidden = false;
+  }
+
+  function card(k, v, d, hero) {
+    return '<div class="tot' + (hero ? ' hero' : '') + '"><div class="k">' + esc(k) + '</div>' +
+      '<div class="v">' + esc(v) + '</div><div class="d">' + esc(d) + '</div></div>';
+  }
+
+  function freqLabel(f) {
+    return { 5: 'every day', 3: 'a few times a week', 1: 'weekly', 0.5: 'every other week', 0.25: 'monthly' }[f] || 'weekly';
+  }
+
+  function buildPlan(savable) {
+    /* Rank by recoverable hours, ignoring anything that must stay in an approved
+       system and anything classified as judgement. */
+    var ranked = tasks.map(function (t) {
+      return { t: t, gain: hoursPerYear(t) * PATTERNS[t.pattern].savingFactor * (t.red ? 0 : 1) };
+    }).filter(function (r) { return r.gain > 0.5; })
+      .sort(function (a, b) { return b.gain - a.gain; });
+
+    var steps = [];
+
+    if (ranked.length) {
+      var first = ranked[0];
+      steps.push({
+        t: 'Start here — ' + first.t.name,
+        d: '<b>' + first.gain.toFixed(0) + ' hours a year.</b> This is a <b>' +
+           PATTERNS[first.t.pattern].name.toLowerCase() + '</b> task. ' + NOTE[first.t.pattern] +
+           ' Build one saved prompt for it this week and use it every time.'
+      });
+    } else {
+      steps.push({
+        t: 'Nothing here is a good first candidate',
+        d: 'Everything you listed is either judgement work or has to stay inside an approved system. ' +
+           'That is a legitimate result — but add a few more ordinary tasks before you conclude it. ' +
+           'The repetitive ones are easy to forget precisely because they are repetitive.'
+      });
+    }
+
+    if (ranked[1]) {
+      steps.push({
+        t: 'Then — ' + ranked[1].t.name,
+        d: '<b>' + ranked[1].gain.toFixed(0) + ' hours a year.</b> ' + NOTE[ranked[1].t.pattern] +
+           ' Do not start this one until the first is a habit.'
+      });
+    }
+
+    var sums = tasks.filter(function (t) { return t.pattern === 'summarize'; });
+    if (sums.length) {
+      steps.push({
+        t: 'Be careful with ' + (sums.length === 1 ? 'one of these' : sums.length + ' of these'),
+        d: sums.map(function (t) { return '<b>' + esc(t.name) + '</b>'; }).join(', ') +
+           ' — summarising is the pattern where mistakes are invisible, because you are handed what was ' +
+           'kept and nothing represents what was dropped. Use it to decide <b>where to read</b>, never ' +
+           'to avoid reading. The Summarizer\'s Blind Spot scenario is fifteen minutes and worth it.'
+      });
+    }
+
+    var reds = tasks.filter(function (t) { return t.red; });
+    if (reds.length) {
+      steps.push({
+        t: 'Keep ' + (reds.length === 1 ? 'one task' : reds.length + ' tasks') + ' inside approved systems',
+        d: reds.map(function (t) { return '<b>' + esc(t.name) + '</b>'; }).join(', ') +
+           ' — these involve identifiable records. The work is still worth automating; it just has to ' +
+           'happen somewhere the College has approved. Ask before you assume the answer is no.'
+      });
+    }
+
+    var judg = tasks.filter(function (t) { return t.pattern === 'judgement'; });
+    if (judg.length) {
+      steps.push({
+        t: 'Leave the judgement work alone',
+        d: judg.map(function (t) { return '<b>' + esc(t.name) + '</b>'; }).join(', ') +
+           ' — this is thinking time, and protecting it is the actual goal. The point of recovering ' +
+           'the other hours is to have more of them for this.'
+      });
+    }
+
+    steps.push({
+      t: 'Fifteen minutes, once a week',
+      d: 'Look at what you did more than twice. Turn the most frequent into a saved prompt. Delete the ' +
+         'ones you never used. Tell one colleague what worked. That last one is how a department improves ' +
+         'rather than one person getting faster.'
+    });
+
+    el('plan').innerHTML =
+      '<h3>Your plan &mdash; ' + savable.toFixed(0) + ' hours to aim at</h3><div class="pbody">' +
+      steps.map(function (s, i) {
+        return '<div class="pstep"><div class="pn">' + (i + 1) + '</div>' +
+          '<div><div class="pt">' + esc(s.t) + '</div><div class="pd">' + s.d + '</div></div></div>';
+      }).join('') + '</div>';
+  }
+
+  el('tasks').addEventListener('click', function (e) {
+    var b = e.target.closest('.del');
+    if (!b) return;
+    tasks.splice(+b.dataset.i, 1);
+    render();
+  });
+
+  el('print').addEventListener('click', function () { window.print(); });
+  el('clear').addEventListener('click', function () {
+    tasks = [];
+    render();
+    el('tname').focus();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
