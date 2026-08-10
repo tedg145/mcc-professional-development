@@ -1,0 +1,108 @@
+{
+  "_comment": "Add a tool by copying a block. 'keep' is one of: forever | while-enrolled | subscription. Prices decay — the 'checked' date at the bottom of the page comes from meta.checked below.",
+  "meta": {
+    "checked": "August 2026",
+    "note": "Every price here was read off the vendor's own page on the date above. Check them again the morning you teach — six of these changed within the last year."
+  },
+  "categories": [
+    { "id": "reason", "name": "Reasoning and review", "color": "#8FA8FF" },
+    { "id": "primary", "name": "Primary sources", "color": "#6FD79B" },
+    { "id": "scholar", "name": "Scholarship", "color": "#F9DD56" },
+    { "id": "manage", "name": "Keeping track of it", "color": "#5FC8DE" }
+  ],
+  "tools": [
+    {
+      "id": "exmultis",
+      "name": "EX MULTIS",
+      "category": "reason",
+      "url": "https://exmultis.com",
+      "what": "Runs one question through several AI models given different jobs — analyst, critic, evidence researcher — then shows you where they agreed, where they split, and how the final answer was assembled.",
+      "cost": "Free tier; $9.99/mo student with verified status; $24/mo Essential",
+      "keep": "subscription",
+      "strength": "The output is a record rather than an answer. Disagreement between models is preserved instead of smoothed away, and that disagreement is the useful part — it tells you exactly where to go and check.",
+      "fails": "Agreement is not verification. Models train on heavily overlapping data, so several can be confidently wrong in the same direction, and a council format makes that convergence *look* like corroboration when no new evidence entered the room. Treat a split as a signal to investigate. Treat agreement as almost no information at all.",
+      "classroom": "Run it immediately after the citation scenario. Show the split, then point out that the propositions all the models agreed on still have citations nobody has opened."
+    },
+    {
+      "id": "notebooklm",
+      "name": "NotebookLM",
+      "category": "reason",
+      "url": "https://notebooklm.google.com",
+      "what": "Upload your own documents and ask questions about them. It answers only from what you gave it and points back to the passage it used.",
+      "cost": "Free tier; paid tiers through Google Workspace",
+      "keep": "forever",
+      "strength": "It is the structural opposite of an assistant inventing a policy. Ask it something the sources do not cover and it will tell you the sources do not cover it — which is the behaviour we spend the whole course wishing for.",
+      "fails": "It cannot tell you what you failed to upload. Give it four of five relevant policies and it will answer confidently from the four. The blind spot moves from the model to your own document collection, which is better but not nothing.",
+      "classroom": "The fix half of *The Confident Answer*. Run the scenario, then upload the real handbook section and ask the same refund question."
+    },
+    {
+      "id": "courtlistener",
+      "name": "CourtListener and RECAP",
+      "category": "primary",
+      "url": "https://www.courtlistener.com",
+      "what": "A free archive of American case law run by the non-profit Free Law Project: millions of opinions across hundreds of jurisdictions, plus the RECAP archive of federal court filings, oral argument recordings and a judges database.",
+      "cost": "Free",
+      "keep": "forever",
+      "strength": "This is where you go to check whether a case exists and says what somebody claims it says. It is primary material, it is free permanently, and it does not expire when you graduate the way a school research account does.",
+      "fails": "Coverage is uneven — state court holdings vary in depth, and RECAP only contains federal documents somebody has already pulled from PACER. A gap here means 'nobody has fetched it yet', not 'it does not exist'.",
+      "classroom": "Install the RECAP browser extension in class. Five minutes, and every PACER document a student later opens quietly joins the public archive."
+    },
+    {
+      "id": "govinfo",
+      "name": "govinfo and the Federal Register",
+      "category": "primary",
+      "url": "https://www.govinfo.gov",
+      "what": "The government's own publishing systems: the United States Code, the Code of Federal Regulations, the Federal Register, congressional material and federal court opinions, straight from the source.",
+      "cost": "Free",
+      "keep": "forever",
+      "strength": "There is no closer thing to authoritative. When a model quotes a statute or a regulation, this is the text you hold it against, and it costs nothing forever.",
+      "fails": "It gives you the text and very little help with it — no annotations, no citing references, no editorial history. Finding the right provision still takes you knowing roughly where to look.",
+      "classroom": "Pair with any exercise where a tool cites a statute. Reading the actual section is usually shorter than arguing about it."
+    },
+    {
+      "id": "scholar",
+      "name": "Google Scholar",
+      "category": "primary",
+      "url": "https://scholar.google.com",
+      "what": "Free search across scholarly writing, and a surprisingly usable case law search for federal and state opinions.",
+      "cost": "Free",
+      "keep": "forever",
+      "strength": "The fastest way to find out whether something exists at all, and the case law side handles citation lookup better than people expect for a free tool.",
+      "fails": "It tells you a case was cited, not how — nothing distinguishes a court following a decision from a court overruling it. It is not a citator and using it as one is how people cite bad law with confidence."
+    },
+    {
+      "id": "consensus",
+      "name": "Consensus",
+      "category": "scholar",
+      "url": "https://consensus.app",
+      "what": "Searches a very large body of research papers and reports what the studies actually concluded, with the papers attached.",
+      "cost": "Free tier of 10 analyses a month; $8.99/mo premium; 40% student discount on a .edu address",
+      "keep": "subscription",
+      "strength": "It answers with findings rather than prose, and every claim carries the paper it came from — so checking it is a click rather than a project.",
+      "fails": "A summary of the literature is not a reading of the literature. Study quality, sample size and methodology all flatten into the same sentence shape, and a weak paper reads exactly like a strong one."
+    },
+    {
+      "id": "openalex",
+      "name": "OpenAlex",
+      "category": "scholar",
+      "url": "https://openalex.org",
+      "what": "An open catalogue of the world's research — papers, authors, institutions, citations — with broader coverage than the traditional commercial indexes, especially for non-English work.",
+      "cost": "Free",
+      "keep": "forever",
+      "strength": "The data is released under CC0, meaning genuinely public domain. Nobody can take it away, meter it, or change the terms on you later.",
+      "fails": "Coverage that broad includes material nobody has screened. Breadth and quality control pull in opposite directions and this one chose breadth."
+    },
+    {
+      "id": "zotero",
+      "name": "Zotero",
+      "category": "manage",
+      "url": "https://www.zotero.org",
+      "what": "Free, open-source citation manager from a non-profit. Collects sources, stores the PDFs, and generates citations in thousands of styles inside Word or Google Docs.",
+      "cost": "Free; optional paid storage for syncing",
+      "keep": "forever",
+      "strength": "Open source and run by an organisation with no interest in your data. Students keep it for their whole career, and it is the one tool here that quietly saves hours every single week.",
+      "fails": "It builds citations out of a document's metadata — so when that metadata is wrong, the citation is wrong, and it is wrong in a tidy, professional-looking way that survives review.",
+      "classroom": "Direct callback to the Metadata Inspector. Drop a file in the inspector, look at the fields, then watch Zotero build a citation out of exactly those fields."
+    }
+  ]
+}
