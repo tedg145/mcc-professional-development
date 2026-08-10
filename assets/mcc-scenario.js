@@ -481,6 +481,110 @@
     this.wireCont(inter);
   };
 
+  /* ---- omission: what did the summary leave out? ----
+     Like inspect, but the learner hunts the SOURCE for material that never
+     made it into the summary shown above it. Findings are ranked by how much
+     the omission changes the meaning, because that ranking is the lesson. */
+  Runner.prototype.step_omission = function (inter, step) {
+    var self = this;
+    var spans = step.spans || [];
+    var targets = spans.filter(function (s) { return s.target; });
+
+    var SEV = {
+      trivial:      { label: 'Trivial',                 rank: 3, cls: 'sev-low' },
+      consequential:{ label: 'Consequential',           rank: 2, cls: 'sev-mid' },
+      reversing:    { label: 'Reverses the meaning',    rank: 1, cls: 'sev-high' }
+    };
+
+    function markup(text) {
+      return fmt(text).replace(/\{\{([a-z0-9_-]+)\|([^}]*)\}\}/gi, function (_, id, label) {
+        return '<button type="button" class="spot" data-id="' + esc(id) + '">' + label + '</button>';
+      });
+    }
+
+    inter.innerHTML =
+      '<div class="sumwrap"><div class="sumhead">' +
+        esc(step.summaryLabel || 'The summary you were handed') + '</div>' +
+        '<div class="sumbody">' + para(step.summary) + '</div></div>' +
+      (step.prompt ? '<div class="prompt">' + fmt(step.prompt) + '</div>' : '') +
+      '<div class="srchead">' + esc(step.sourceLabel || 'The document it was made from') + '</div>' +
+      '<div class="inspectdoc">' + markup(step.text || '') + '</div>' +
+      '<div class="found"><span class="fcount">0</span> of ' + targets.length + ' found</div>' +
+      '<div class="fblist"></div>' +
+      '<div class="acts"><button class="ghost" type="button" data-give>Show me what was dropped</button>' +
+      '<button class="primary" type="button" data-cont hidden>Continue</button></div>';
+
+    var got = {}, wrongClicks = 0;
+    var countEl = inter.querySelector('.fcount');
+    var listEl = inter.querySelector('.fblist');
+    var contEl = inter.querySelector('[data-cont]');
+    var giveEl = inter.querySelector('[data-give]');
+
+    function reveal(id, viaGiveUp) {
+      var sp = spans.filter(function (s) { return s.id === id; })[0];
+      if (!sp || got[id]) return;
+      got[id] = true;
+      inter.querySelectorAll('.spot[data-id="' + id + '"]').forEach(function (b) {
+        b.classList.add('hit'); b.disabled = true;
+      });
+      var sev = SEV[sp.severity] || SEV.consequential;
+      listEl.appendChild(el(
+        '<div class="fitem' + (viaGiveUp ? ' missed' : '') + '" data-rank="' + sev.rank + '">' +
+          '<span class="sev ' + sev.cls + '">' + esc(sev.label) + '</span>' +
+          '<strong>' + esc(sp.label || 'Left out') + '</strong>' + para(sp.note) + '</div>'));
+
+      /* keep the list ordered by how badly the omission matters */
+      var items = Array.prototype.slice.call(listEl.children);
+      items.sort(function (a, b) {
+        return (+a.getAttribute('data-rank') || 9) - (+b.getAttribute('data-rank') || 9);
+      });
+      items.forEach(function (n) { listEl.appendChild(n); });
+
+      countEl.textContent = String(targets.filter(function (t) { return got[t.id]; }).length);
+      finishIfDone();
+    }
+
+    function finishIfDone() {
+      if (targets.filter(function (t) { return got[t.id]; }).length === targets.length) {
+        contEl.hidden = false;
+        giveEl.hidden = true;
+        if (!self.answers[self.i]) {
+          self.score.asked++;
+          if (!wrongClicks) self.score.right++;
+          self.answers[self.i] = { correct: !wrongClicks, detail: targets.length + '/' + targets.length };
+        }
+      }
+    }
+
+    inter.querySelectorAll('.spot').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var id = b.dataset.id;
+        var sp = spans.filter(function (s) { return s.id === id; })[0];
+        if (sp && sp.target) { reveal(id); }
+        else {
+          wrongClicks++;
+          b.classList.add('miss');
+          b.disabled = true;
+          listEl.appendChild(el('<div class="fitem neutral" data-rank="9"><strong>' +
+            esc((sp && sp.label) || 'This one made it in') + '</strong>' +
+            para((sp && sp.note) || 'This does appear in the summary. Keep looking.') + '</div>'));
+        }
+      });
+    });
+
+    giveEl.addEventListener('click', function () {
+      if (!self.answers[self.i]) {
+        self.score.asked++;
+        self.answers[self.i] = { correct: false, detail: 'revealed' };
+      }
+      targets.forEach(function (t) { reveal(t.id, true); });
+      contEl.hidden = false;
+      giveEl.hidden = true;
+    });
+
+    this.wireCont(inter);
+  };
+
   /* ---- terminal ---- */
   Runner.prototype.step_terminal = function (inter, step) {
     var self = this;
