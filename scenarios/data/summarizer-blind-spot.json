@@ -1,0 +1,118 @@
+{
+  "id": "summarizer-blind-spot",
+  "title": "The Summarizer's Blind Spot",
+  "subtitle": "The summary is accurate. That is not the same as complete.",
+  "audience": "Staff",
+  "minutes": 12,
+  "summary": "A board packet, and a clean summary of it. Nothing in the summary is false. Four things are missing, and one of them reverses what the document actually recommends.",
+  "takeaway": "Every other use of these tools produces an error you can see. Summarising produces an error shaped exactly like nothing — the sentence that was dropped leaves no gap, no seam, and no signal. Summarise to decide where to read. Never to avoid reading.",
+  "steps": [
+    {
+      "type": "brief",
+      "title": "Twenty minutes before the meeting",
+      "body": "You have the packet for Thursday's Facilities and Technology Committee. It is long, you are not, and the item you actually care about is the classroom technology refresh.\n\nSo you summarise it.",
+      "artifact": {
+        "kind": "email",
+        "label": "Inbox",
+        "from": "Committee Services",
+        "to": "Distribution list",
+        "date": "Tuesday, 4:12 PM",
+        "subject": "Packet — Facilities & Technology Committee, Thursday 10:00",
+        "body": "Attached: agenda, minutes, and the Item 4 staff report on the classroom technology refresh.\n\nMembers are asked to come prepared to vote on the staff recommendation under Item 4."
+      },
+      "cta": "Read the summary"
+    },
+    {
+      "type": "omission",
+      "title": "What the summary left behind",
+      "body": "Read the summary. Then read the source underneath it. **Nothing in the summary is untrue** — every sentence in it is supported by the document.",
+      "summaryLabel": "The summary you were handed",
+      "summary": "**Item 4 — Classroom Technology Refresh.** Staff recommend proceeding with the refresh of 42 classrooms in the Science and Humanities buildings, at a total cost of $410,000, funded from the technology reserve. Equipment would be replaced over two phases beginning in the spring term, with Phase 1 covering 18 rooms. The vendor evaluation scored Meridian AV highest on total cost and service response time. Staff note that the current equipment is between seven and nine years old and increasingly difficult to service. The committee is asked to approve the recommendation.",
+      "prompt": "Four passages in the source never made it into that summary. One barely matters, two change the picture, and one reverses the recommendation entirely. Click what you think was dropped — some passages that look missing are in fact represented, and clicking those costs you the clean run.",
+      "sourceLabel": "The document it was made from",
+      "text": "**ITEM 4 — CLASSROOM TECHNOLOGY REFRESH · STAFF REPORT**\n\nStaff have completed the evaluation of the proposed classroom technology refresh covering 42 instructional spaces in the Science and Humanities buildings. {{a|Total project cost is estimated at $410,000, to be drawn from the technology reserve.}} Replacement would proceed in two phases beginning in the spring term, {{b|with Phase 1 covering 18 rooms in the Science building.}}\n\nThe existing equipment was installed between seven and nine years ago. {{c|Service calls on these units have risen by roughly a third over the last two years,}} and replacement parts for the projection units are no longer manufactured.\n\nThree vendors were evaluated. {{d|Meridian AV scored highest on combined total cost and service response time.}} {{e|Meridian AV is also the only one of the three vendors that does not currently hold a state contract, which means selection would require a separate competitive solicitation and adds an estimated ten to fourteen weeks before any equipment could be ordered.}}\n\n{{f|The technology reserve currently holds $455,000. Drawing $410,000 would leave the reserve at approximately $45,000 against a stated floor of $150,000, and staff note this would leave no capacity for emergency replacement during the next two fiscal years.}}\n\nStaff further note that {{g|the Humanities building is included in the deferred maintenance study currently underway, with preliminary findings expected in April.}}\n\n{{h|Accordingly, staff recommend that the committee defer action on the full refresh and instead approve Phase 1 only, at a cost of $175,000, pending the outcome of the deferred maintenance study and confirmation of the reserve floor with Finance.}}\n\n{{i|A full refresh in a single phase is not recommended at this time.}}",
+      "spans": [
+        {
+          "id": "a", "target": false, "label": "The cost figure",
+          "note": "$410,000 from the technology reserve. This is in the summary, and it is accurate. It is also the number that makes the summary feel complete."
+        },
+        {
+          "id": "b", "target": false, "label": "Phase 1 scope",
+          "note": "Eighteen rooms in Phase 1. Present in the summary, correctly."
+        },
+        {
+          "id": "c", "target": true, "severity": "trivial", "label": "Service calls up by a third",
+          "note": "A supporting detail that strengthens the case for replacing something. Losing it costs you almost nothing — you would ask about it in the meeting and get the answer in ten seconds.\n\nThis is what most people expect a missing piece to look like. It is worth seeing one, so you know that the other two do not look any different."
+        },
+        {
+          "id": "d", "target": false, "label": "Vendor scoring",
+          "note": "Meridian AV scoring highest is in the summary. Note how the summary reports the score without the sentence that immediately follows it."
+        },
+        {
+          "id": "e", "target": true, "severity": "consequential", "label": "No state contract — adds three months",
+          "note": "The top-scoring vendor cannot simply be selected. A separate competitive solicitation is required, adding ten to fourteen weeks.\n\nThe summary told you Meridian scored highest. It did not tell you that choosing them delays the project by a quarter. A committee reading only the summary approves a timeline that does not exist."
+        },
+        {
+          "id": "f", "target": true, "severity": "consequential", "label": "The reserve falls below its own floor",
+          "note": "Spending $410,000 leaves roughly $45,000 against a stated floor of $150,000, with no emergency replacement capacity for two years.\n\nThe summary said the project is funded from the technology reserve, which is true. Whether the reserve can *afford* it is a different question, and it was not asked."
+        },
+        {
+          "id": "g", "target": false, "label": "Deferred maintenance study",
+          "note": "Not in the summary either — but it is context for the recommendation rather than a finding of its own. Reasonable to compress. Keep looking for the one that changes the decision."
+        },
+        {
+          "id": "h", "target": true, "severity": "reversing", "label": "Staff recommend DEFERRING — the opposite of the summary",
+          "note": "This is the one.\n\nThe summary ends: *\"Staff recommend proceeding with the refresh of 42 classrooms... The committee is asked to approve the recommendation.\"*\n\nThe document says staff recommend **deferring** the full refresh and approving Phase 1 only, at $175,000.\n\nThe summary did not invent anything. It described the proposal accurately and then attached the wrong recommendation to it — because the proposal occupies most of the document and the recommendation is one paragraph near the end. A committee member who read only the summary walks in prepared to vote for a $410,000 project that the staff report advises against."
+        },
+        {
+          "id": "i", "target": false, "label": "The closing line",
+          "note": "Also absent, and it restates the recommendation you have hopefully already found. On its own it would be a repeat."
+        }
+      ]
+    },
+    {
+      "type": "choice",
+      "title": "Why this one is different",
+      "body": "Compare it to the other ways these tools fail.",
+      "shuffle": true,
+      "prompt": "What makes an omission harder to catch than a fabrication?",
+      "options": [
+        {
+          "text": "A fabrication puts something on the page you can check. An omission leaves nothing on the page at all.",
+          "correct": true,
+          "feedback": "Exactly. A made-up citation is a string you can look up. A dropped recommendation is not represented anywhere — there is no sentence to be suspicious of, no seam in the prose, nothing to check. The summary reads perfectly, because it *is* perfectly written."
+        },
+        {
+          "text": "Omissions happen more often than fabrications.",
+          "correct": false,
+          "feedback": "Frequency is not the issue, and you would have no reliable way to measure it. Detectability is the issue."
+        },
+        {
+          "text": "Summaries are usually produced by weaker models.",
+          "correct": false,
+          "feedback": "The opposite, if anything — this failure gets harder to spot as the writing improves, because a fluent summary of the wrong subset reads more convincingly than a clumsy one."
+        },
+        {
+          "text": "Omissions only occur in long documents.",
+          "correct": false,
+          "feedback": "Length raises the odds, but the mechanism is compression, and compression starts on the first page. Anything shortened has had something removed."
+        }
+      ]
+    },
+    {
+      "type": "multi",
+      "title": "What you actually do about it",
+      "body": "You are not going to stop summarising. Nobody has time to stop summarising.",
+      "prompt": "Select every practice that genuinely reduces this risk.",
+      "options": [
+        { "text": "Use the summary to decide which pages to read, then read those pages yourself.", "correct": true },
+        { "text": "Ask specifically for the recommendation, the decision requested, and any conditions on it — separately from the summary.", "correct": true },
+        { "text": "Read the last page of any document that ends in a recommendation, whatever the summary said.", "correct": true },
+        { "text": "Ask what a reader would miss if they only read the summary.", "correct": true },
+        { "text": "Ask the tool whether its summary was complete.", "correct": false },
+        { "text": "Use a longer summary.", "correct": false }
+      ],
+      "explain": "The first four work by putting your eyes on the source, or by asking for the high-risk element on its own. The last two do not: a model cannot report what it dropped, because dropping it is the operation, and **a longer summary is still a choice about what to leave out** — just a slower one."
+    }
+  ]
+}

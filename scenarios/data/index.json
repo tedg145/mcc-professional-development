@@ -2,6 +2,8 @@
   "_comment": "The order below is the order the scenarios appear on the page. To add one, drop a new file in this folder and put its id in this list.",
   "scenarios": [
     "the-confident-answer",
+    "summarizer-blind-spot",
+    "delegation-line",
     "citation-check",
     "redaction-trap",
     "sort-the-stack"

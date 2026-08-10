@@ -1,0 +1,121 @@
+{
+  "id": "delegation-line",
+  "title": "The Delegation Line",
+  "subtitle": "Not what it can do — what you should let it do",
+  "audience": "Staff",
+  "minutes": 12,
+  "summary": "Twelve things that land on a desk in a normal week. For each one, decide how much of it you are willing to hand over.",
+  "takeaway": "The question was never whether the tool is capable. It is whether a mistake would be visible to you before it reached somebody else. Where errors are obvious, delegate freely. Where errors are silent, do it yourself.",
+  "steps": [
+    {
+      "type": "brief",
+      "title": "Four positions on one line",
+      "body": "This is not a question about capability. A model will attempt all twelve of these and produce something plausible every time. The question is what happens to a mistake.\n\n**Do it myself** — the work is the judgement, and there is nothing to hand over.\n\n**Draft and review** — it produces a first version, you read every word before it goes anywhere.\n\n**It does it, I spot-check** — you look at a sample rather than the whole thing, because an error would be obvious if it were there.\n\n**Never** — the material is protected, or a mistake would be silent and expensive.",
+      "cta": "Start sorting"
+    },
+    {
+      "type": "sort",
+      "title": "Twelve things from an ordinary week",
+      "body": "Some of these are close calls, and a couple are close calls in a direction people usually get wrong.",
+      "prompt": "Decide how far across the line each one goes.",
+      "buckets": [
+        { "id": "self",  "name": "Do it myself",           "short": "MYSELF",  "color": "#FF8A78" },
+        { "id": "draft", "name": "Draft and review",       "short": "DRAFT",   "color": "#6FD79B" },
+        { "id": "spot",  "name": "It does it, I spot-check","short": "SPOT",    "color": "#5FC8DE" },
+        { "id": "never", "name": "Never",                  "short": "NEVER",   "color": "#F9DD56" }
+      ],
+      "items": [
+        {
+          "text": "Write the reminder email that goes out before every registration deadline.",
+          "bucket": "draft",
+          "why": "Repetitive, low stakes, and you were going to proofread it anyway. This is the pattern that pays for itself — the same message, forty times a year."
+        },
+        {
+          "text": "Tell a student their financial aid appeal was denied.",
+          "bucket": "self",
+          "why": "The work here is not the words. Somebody is about to have a bad afternoon, and how it is delivered is the entire job. Use a template if you like, but write this one."
+        },
+        {
+          "text": "Turn twelve pages of committee notes into draft minutes.",
+          "bucket": "draft",
+          "why": "A transform, with the original sitting right next to it. You can see what changed, which is exactly the condition that makes delegation safe."
+        },
+        {
+          "text": "Summarise a ninety-page board packet so your director can skip reading it.",
+          "bucket": "never",
+          "why": "Not because summarising is forbidden — because of what this one is *for*. A summary that decides where you read is useful. A summary that replaces reading puts a silent omission into somebody else's decision."
+        },
+        {
+          "text": "Reformat a messy roster export into the columns your system expects.",
+          "bucket": "never",
+          "why": "It contains identifiable student records. The task is mundane and the tool is capable, and neither of those facts changes where the data may go. Use an approved system."
+        },
+        {
+          "text": "Draft a job posting for an open advising position.",
+          "bucket": "draft",
+          "why": "Public-facing, non-confidential, and heavily patterned. Read it before it posts — job postings carry legal weight and inherited boilerplate is where trouble hides."
+        },
+        {
+          "text": "Rewrite the withdrawal policy at an eighth-grade reading level for the website.",
+          "bucket": "draft",
+          "why": "An excellent use, and one that genuinely helps students. Review closely: plain-language rewrites drop qualifiers, and in policy the qualifiers are frequently the point."
+        },
+        {
+          "text": "Check whether a 40-item event checklist has any blank fields.",
+          "bucket": "spot",
+          "why": "A mechanical completeness check where you can verify the answer in seconds. Spot-check a few and move on."
+        },
+        {
+          "text": "Write your own performance self-evaluation.",
+          "bucket": "self",
+          "why": "It will write you a fluent one. It will also be generic in a way your supervisor recognises immediately, and you will have handed away the one document that is supposed to be your account of your own year."
+        },
+        {
+          "text": "Answer an email from a parent asking about their adult child's grades.",
+          "bucket": "self",
+          "why": "The trap is that this looks like routine correspondence. It is a FERPA question about what you may disclose and to whom, and the answer depends on facts a tool does not have."
+        },
+        {
+          "text": "Draft the agenda for next week's staff meeting from last month's action items.",
+          "bucket": "spot",
+          "why": "Internal, low stakes, and errors are visible to everyone in the room within a minute. If an item is missing, somebody says so."
+        },
+        {
+          "text": "Write a memo recommending which of three vendors to select.",
+          "bucket": "self",
+          "why": "The recommendation is the work. It can help you organise the comparison once you have decided, but if it makes the decision you cannot defend it when procurement asks why."
+        }
+      ],
+      "explain": "The board packet and the roster are the two most people place too far to the right. Both are ordinary tasks a tool handles well — and both fail silently, one by dropping something nobody notices and the other by moving protected data somewhere it should not be."
+    },
+    {
+      "type": "choice",
+      "title": "The rule underneath all twelve",
+      "body": "Look back at where the line fell.",
+      "shuffle": true,
+      "prompt": "What actually separates the left of the line from the right?",
+      "options": [
+        {
+          "text": "Whether a mistake would be visible to me before it reached anyone else.",
+          "correct": true,
+          "feedback": "That is the rule. Drafting an email, reformatting notes, checking a list — you see the error while it is still yours. Summaries and reformatted records fail quietly, and by the time anyone notices, it is in somebody else's hands."
+        },
+        {
+          "text": "How difficult the task is.",
+          "correct": false,
+          "feedback": "Difficulty barely correlates. The self-evaluation is easy and belongs to you; the plain-language rewrite is harder and delegates well."
+        },
+        {
+          "text": "How long the task takes.",
+          "correct": false,
+          "feedback": "The board packet summary is the fastest item on the list and the most dangerous. Time saved is what makes a bad delegation tempting, not what makes it safe."
+        },
+        {
+          "text": "Whether the tool is good at that kind of work.",
+          "correct": false,
+          "feedback": "It is good at all twelve. That is precisely why capability is useless as a decision rule — if you sort by what it can do, everything ends up on the right."
+        }
+      ]
+    }
+  ]
+}
