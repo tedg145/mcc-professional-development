@@ -299,29 +299,42 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
               'appeal','complaint','grievance','interview','hire','fire','terminate','evaluation',
               'appraisal','mediate','conflict','difficult conversation'] },
     summarize: { name: 'Summarize', savingFactor: 0.45,
-      words: ['summar','digest','brief','recap','board packet','packet','minutes of','read through',
-              'skim','condense','overview of','tl;dr','abstract'] },
+      words: ['summar','digest','recap','board packet','packet','minutes of','read through',
+              'skim','condense','overview of','tl;dr','abstract','reading','read the','read a',
+              'go through','wade through','what matters','key points','takeaway','get the gist',
+              'catch up on','brief for','briefing'] },
     extract: { name: 'Extract', savingFactor: 0.6,
-      words: ['extract','pull','compile','collect','gather','enter','data entry','transcribe',
-              'list of','roster','spreadsheet','tally','log','record the','copy from'] },
+      words: ['extract','pull','compile','collect','gather','data entry','transcribe',
+              'list of','tally','record the','copy from','key in','type up the'] },
     transform: { name: 'Transform', savingFactor: 0.65,
       words: ['minutes','notes into','convert','reformat','rewrite','translate','plain language',
               'faq','one-pager','format','turn into','adapt','clean up','tidy'] },
     check: { name: 'Check', savingFactor: 0.5,
-      words: ['check','verify','proof','review','audit','reconcile','compare','cross-reference',
-              'complete','missing','confirm','validate'] },
+      words: ['check','verify','proofread','proof','review','audit','reconcile','compare',
+              'cross-reference','complete','missing','confirm','validate','matches'] },
     draft: { name: 'Draft', savingFactor: 0.7,
       words: ['email','write','draft','letter','memo','reminder','notice','announce','post','agenda',
               'reply','respond','correspondence','message','newsletter','description','posting'] }
   };
   var ORDER = ['judgement', 'summarize', 'extract', 'transform', 'check', 'draft'];
 
+  /* Match on a word boundary at the START of the keyword only, so prefixes like
+     "summar" still catch summarise/summary while "log" stops matching inside
+     "catalogue". Substring matching produced exactly that collision. */
+  var reCache = {};
+  function hits(word, text) {
+    if (!reCache[word]) {
+      reCache[word] = new RegExp('\\b' + word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    }
+    return reCache[word].test(text);
+  }
+
   function classify(text) {
     var t = ' ' + text.toLowerCase() + ' ';
     var best = null, bestScore = 0;
     ORDER.forEach(function (k) {
       var score = 0;
-      PATTERNS[k].words.forEach(function (w) { if (t.indexOf(w) > -1) score += w.length > 6 ? 2 : 1; });
+      PATTERNS[k].words.forEach(function (w) { if (hits(w, t)) score += w.length > 5 ? 2 : 1; });
       if (score > bestScore) { bestScore = score; best = k; }
     });
     return best || 'draft';
