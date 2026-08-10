@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tool Bench — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="Tools worth knowing, what they cost, whether you keep them after graduation, and how each one fails.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A1A2E; --navy:#003366; --orange:#FF6600; --gold:#F9DD56; --teal:#008DA7;
+  --ondk:#A7B7C9; --dimdk:#5C6E82; --line:rgba(255,255,255,.12);
+  --green:#6FD79B; --red:#FF8A78;
+  --sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--ink);color:#fff;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;min-height:100vh}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit}
+
+.bar{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,30px);
+  border-bottom:1px solid var(--line);background:rgba(6,16,30,.92);position:sticky;top:0;z-index:40;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);flex-wrap:wrap}
+.bar .home{font-size:14.5px;font-weight:700;text-decoration:none;white-space:nowrap}
+.bar .home span{color:var(--orange)}
+.bar .sep{width:1px;height:20px;background:var(--line)}
+.bar .where{font-size:13.5px;color:var(--ondk)}
+.bar .right{margin-left:auto;display:flex;gap:8px}
+.bar .right a{font-size:12.5px;text-decoration:none;border:1px solid var(--line);border-radius:9px;
+  padding:7px 13px;color:var(--ondk);transition:background .2s,color .2s}
+.bar .right a:hover{background:rgba(255,255,255,.08);color:#fff}
+
+main{flex:1;width:100%;max-width:1180px;margin:0 auto;padding:clamp(22px,5vw,44px) clamp(16px,4vw,30px) 60px}
+
+.kicker{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--orange)}
+h1{font-size:clamp(27px,5vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:12px}
+h1 span{color:var(--dimdk)}
+.lede{color:var(--ondk);font-size:clamp(15px,1.8vw,18px);line-height:1.65;margin-top:18px;max-width:66ch}
+.lede strong{color:#fff}
+
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin-top:28px;align-items:center}
+.filters .flabel{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dimdk);margin-right:4px}
+.chip{border:1px solid var(--line);border-radius:20px;padding:8px 16px;font-size:12.5px;
+  color:var(--ondk);transition:background .2s,color .2s,border-color .2s}
+.chip:hover{background:rgba(255,255,255,.07);color:#fff}
+.chip.on{background:var(--orange);border-color:var(--orange);color:#fff;font-weight:600}
+.chip:focus-visible{outline:3px solid #fff;outline-offset:2px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(370px,1fr));gap:18px;margin-top:26px}
+.tool{border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.035);
+  padding:24px;display:flex;flex-direction:column;gap:14px}
+.tool.hide{display:none}
+.thead{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.thead h2{font-size:20px;font-weight:600;line-height:1.25;flex:1;min-width:0}
+.thead h2 a{text-decoration:none}
+.thead h2 a:hover{color:var(--orange)}
+.cat{font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  padding:5px 10px;border-radius:20px;white-space:nowrap;
+  background:color-mix(in srgb, var(--cc) 18%, transparent);color:var(--cc);flex-shrink:0}
+@supports not (background:color-mix(in srgb,red 18%,transparent)){
+  .cat{background:rgba(255,255,255,.1)}
+}
+.what{font-size:14.5px;line-height:1.65;color:var(--ondk)}
+
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fact{border:1px solid var(--line);border-radius:11px;padding:11px 13px;background:rgba(255,255,255,.03)}
+.fact .fl{font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--dimdk)}
+.fact .fv{font-size:13px;margin-top:5px;line-height:1.45}
+.keep-forever{color:var(--green)}
+.keep-subscription{color:var(--gold)}
+.keep-while-enrolled{color:var(--red)}
+
+.block{border-radius:12px;padding:14px 16px;font-size:13.5px;line-height:1.68}
+.block .bl{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  margin-bottom:6px;display:block}
+.block.good{background:rgba(111,215,155,.09);border:1px solid rgba(111,215,155,.32);color:#CFE9DA}
+.block.good .bl{color:var(--green)}
+.block.bad{background:rgba(255,138,120,.09);border:1px solid rgba(255,138,120,.34);color:#FFD8D0}
+.block.bad .bl{color:var(--red)}
+.block.use{background:rgba(0,141,167,.1);border:1px solid rgba(0,141,167,.34);color:#C7E7F0}
+.block.use .bl{color:#5FC8DE}
+.block strong{color:#fff}
+.block em{font-style:italic}
+
+.note{margin-top:34px;border:1px solid rgba(249,221,86,.34);background:rgba(249,221,86,.07);
+  border-radius:15px;padding:18px 20px;font-size:13.5px;line-height:1.68;color:#F3E6B4;max-width:80ch}
+.note strong{color:#fff}
+
+.legend{margin-top:26px;display:flex;gap:20px;flex-wrap:wrap;font-size:12px;color:var(--dimdk)}
+.legend span b{font-weight:600}
+
+footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--dimdk)}
+
+@media (max-width:520px){ .facts{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  body{background:#fff;color:#000}
+  .bar,.filters,footer{display:none}
+  .tool{break-inside:avoid;border-color:#bbb}
+  .what,.fact .fv{color:#000}
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <a class="home" href="../">AI Professional <span>Development</span></a>
+  <div class="sep" aria-hidden="true"></div>
+  <div class="where">Tool Bench</div>
+  <div class="right">
+    <a href="../scenarios/">Scenarios</a>
+    <a href="../inspector/">Inspector</a>
+    <a href="../workshop/">Workshop</a>
+  </div>
+</div>
+
+<main>
+  <div class="kicker">Reference</div>
+  <h1>Tool Bench<br><span>And how each one fails</span></h1>
+  <p class="lede">There is no shortage of lists of AI tools. This one has a column the others do not:
+    <strong>how this one fails.</strong> Every tool here is worth using and every tool here will let you
+    down in a specific, predictable way. Knowing which way is the difference between using a tool and
+    trusting one.</p>
+
+  <div class="filters" id="filters" role="group" aria-label="Filter tools by category"></div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="legend">
+    <span><b class="keep-forever">Yours permanently</b> — free or open, no expiry</span>
+    <span><b class="keep-subscription">Paid</b> — stops when you stop paying</span>
+    <span><b class="keep-while-enrolled">While enrolled</b> — school access ends at graduation</span>
+  </div>
+
+  <div class="note" id="pricenote"></div>
+</main>
+
+<footer>
+  <div>Ted Gonzalez, JD/MBA</div>
+  <div>&copy; 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
+</footer>
+
+<script src="../assets/mcc-qr.js" defer></script>
+<script>
+(function () {
+  'use strict';
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  /* Same tiny formatter as the scenarios page: **bold** and *italic*, escaped first. */
+  function fmt(s) {
+    return esc(s)
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/(^|[\s(])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+  }
+
+  var KEEP = {
+    'forever':        { label: 'Yours permanently', cls: 'keep-forever' },
+    'subscription':   { label: 'While you pay',     cls: 'keep-subscription' },
+    'while-enrolled': { label: 'While enrolled',    cls: 'keep-while-enrolled' }
+  };
+
+  var gridEl = document.getElementById('grid');
+  var filtersEl = document.getElementById('filters');
+  var noteEl = document.getElementById('pricenote');
+
+  fetch('data/tools.json')
+    .then(function (r) { if (!r.ok) throw new Error('no data'); return r.json(); })
+    .then(render)
+    .catch(function () {
+      gridEl.innerHTML = '<p class="what">The tool list could not be loaded. This page needs to be ' +
+        'served over the web rather than opened straight from a folder.</p>';
+    });
+
+  function render(data) {
+    var cats = {};
+    data.categories.forEach(function (c) { cats[c.id] = c; });
+
+    noteEl.innerHTML = '<strong>Prices checked ' + esc(data.meta.checked) + '.</strong> ' +
+      esc(data.meta.note);
+
+    filtersEl.innerHTML = '<span class="flabel">Show</span>' +
+      '<button class="chip on" type="button" data-c="all" aria-pressed="true">Everything</button>' +
+      data.categories.map(function (c) {
+        return '<button class="chip" type="button" data-c="' + esc(c.id) + '" aria-pressed="false">' +
+          esc(c.name) + '</button>';
+      }).join('');
+
+    gridEl.innerHTML = data.tools.map(function (t) {
+      var cat = cats[t.category] || { name: t.category, color: '#5C6E82' };
+      var keep = KEEP[t.keep] || { label: t.keep, cls: '' };
+      return '<article class="tool" data-c="' + esc(t.category) + '">' +
+        '<div class="thead">' +
+          '<h2>' + (t.url
+            ? '<a href="' + esc(t.url) + '" target="_blank" rel="noopener">' + esc(t.name) + '</a>'
+            : esc(t.name)) + '</h2>' +
+          '<span class="cat" style="--cc:' + esc(cat.color) + '">' + esc(cat.name) + '</span>' +
+        '</div>' +
+        '<p class="what">' + fmt(t.what) + '</p>' +
+        '<div class="facts">' +
+          '<div class="fact"><div class="fl">What it costs</div><div class="fv">' + esc(t.cost) + '</div></div>' +
+          '<div class="fact"><div class="fl">After graduation</div>' +
+            '<div class="fv ' + keep.cls + '">' + esc(keep.label) + '</div></div>' +
+        '</div>' +
+        '<div class="block good"><span class="bl">What it is good at</span>' + fmt(t.strength) + '</div>' +
+        '<div class="block bad"><span class="bl">How this one fails</span>' + fmt(t.fails) + '</div>' +
+        (t.classroom ? '<div class="block use"><span class="bl">Using it in class</span>' +
+          fmt(t.classroom) + '</div>' : '') +
+      '</article>';
+    }).join('');
+
+    filtersEl.addEventListener('click', function (e) {
+      var b = e.target.closest('.chip');
+      if (!b) return;
+      var want = b.dataset.c;
+      filtersEl.querySelectorAll('.chip').forEach(function (c) {
+        var on = c === b;
+        c.classList.toggle('on', on);
+        c.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      gridEl.querySelectorAll('.tool').forEach(function (card) {
+        card.classList.toggle('hide', want !== 'all' && card.dataset.c !== want);
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>
