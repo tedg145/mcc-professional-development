@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en" data-qr-start-hidden>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find the Error — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="A fluent, confident AI-written paragraph. Three errors. Click the ones you think are wrong. What you miss is what the model most reliably gets wrong.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A1A2E; --navy:#003366; --orange:#FF6600; --orange-d:#E25C00;
+  --gold:#F9DD56; --teal:#008DA7; --violet:#8B7FE6;
+  --ondk:#A7B7C9; --dimdk:#5C6E82; --line:rgba(255,255,255,.12);
+  --green:#6FD79B; --amber:#EFB94D; --red:#FF8A78;
+  --sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--ink);color:#fff;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;min-height:100vh;line-height:1.6}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit}
+
+.bar{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,30px);
+  border-bottom:1px solid var(--line);background:rgba(6,16,30,.92);position:sticky;top:0;z-index:40;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);flex-wrap:wrap}
+.bar .home{font-size:14.5px;font-weight:700;text-decoration:none;white-space:nowrap}
+.bar .home span{color:var(--orange)}
+.bar .sep{width:1px;height:20px;background:var(--line)}
+.bar .where{font-size:13.5px;color:var(--ondk)}
+.bar .right{margin-left:auto;display:flex;gap:8px}
+.bar .right a{font-size:12.5px;text-decoration:none;border:1px solid var(--line);border-radius:9px;
+  padding:7px 13px;color:var(--ondk);transition:background .2s,color .2s}
+.bar .right a:hover{background:rgba(255,255,255,.08);color:#fff}
+
+main{flex:1;width:100%;max-width:1080px;margin:0 auto;padding:clamp(24px,5vw,44px) clamp(16px,4vw,30px) 60px}
+.breadcrumb{font-size:12px;color:var(--dimdk);font-family:var(--mono);margin-bottom:14px}
+.breadcrumb a{color:var(--ondk);text-decoration:none;transition:color .2s}
+.breadcrumb a:hover{color:var(--orange)}
+.breadcrumb .sep{margin:0 8px;color:var(--dimdk)}
+
+.kicker{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+h1{font-size:clamp(30px,5.4vw,50px);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:12px}
+h1 span{color:var(--dimdk)}
+.lede{color:var(--ondk);font-size:clamp(15px,1.8vw,18px);line-height:1.65;margin-top:18px;max-width:64ch}
+.lede strong{color:#fff;font-weight:600}
+.lede em{color:var(--gold);font-style:normal;font-weight:500}
+
+h2.sec{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold);margin:52px 0 16px;display:flex;align-items:center;gap:10px}
+h2.sec::after{content:'';flex:1;height:1px;background:var(--line)}
+
+/* ---------- paragraph card ---------- */
+.instructions{margin:24px 0 14px;padding:14px 18px;background:rgba(255,102,0,.06);
+  border:1px solid rgba(255,102,0,.25);border-radius:10px;
+  font-size:14px;line-height:1.6;color:#FFD9BF}
+.instructions strong{color:#fff;font-weight:600}
+.instructions.hidden{display:none}
+
+.paragraph-card{background:rgba(255,255,255,.03);border:1px solid var(--line);
+  border-radius:14px;padding:clamp(24px,4vw,40px) clamp(22px,4vw,44px);
+  font-size:clamp(16px,1.9vw,18.5px);line-height:1.9;color:#fff}
+
+.claim{cursor:pointer;position:relative;border-bottom:1px dotted rgba(255,255,255,.28);
+  padding:1px 3px;margin:0 -3px;border-radius:3px;
+  transition:background .2s,border-color .2s,color .2s}
+.claim:hover{background:rgba(255,255,255,.07);border-bottom-color:rgba(255,255,255,.55)}
+.claim.marked{background:rgba(255,102,0,.22);border-bottom:1.5px solid var(--orange);
+  color:#fff;font-weight:500}
+
+.revealed .claim{cursor:default;pointer-events:none}
+.revealed .claim.correct-catch{background:rgba(111,215,155,.22);border-bottom:2px solid var(--green);
+  color:#DAF3E5;font-weight:500}
+.revealed .claim.missed-error{background:rgba(239,185,77,.22);border-bottom:2px solid var(--amber);
+  color:#F5D68F;font-weight:500;animation:pulse 1.1s ease-out}
+.revealed .claim.false-positive{background:rgba(255,255,255,.04);border-bottom:1px solid var(--dimdk);
+  color:var(--dimdk);text-decoration:line-through;text-decoration-color:var(--dimdk)}
+@keyframes pulse{0%{background:rgba(239,185,77,.05)}40%{background:rgba(239,185,77,.4)}100%{background:rgba(239,185,77,.22)}}
+
+/* ---------- controls ---------- */
+.controls{display:flex;gap:12px;margin-top:22px;align-items:center;flex-wrap:wrap}
+.btn{background:var(--orange);color:#fff;border-radius:10px;padding:12px 24px;
+  font-size:14px;font-weight:600;transition:background .2s,transform .1s}
+.btn:hover{background:var(--orange-d)}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ondk);
+  padding:11px 20px;font-weight:500}
+.btn.ghost:hover{background:rgba(255,255,255,.06);color:#fff}
+.controls-hint{font-size:13px;color:var(--dimdk);margin-left:6px}
+
+/* ---------- score panel ---------- */
+.score-card{background:rgba(255,255,255,.03);border:1px solid var(--line);
+  border-radius:14px;padding:22px 26px;margin-top:24px;display:none;animation:fadein .5s ease-out}
+.score-card.show{display:block}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.score-header{display:flex;align-items:baseline;gap:16px;margin-bottom:18px;
+  padding-bottom:16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.score-value{font-size:38px;font-weight:700;color:var(--orange);letter-spacing:-.02em;line-height:1}
+.score-label{font-size:15px;color:var(--ondk);flex:1;min-width:180px}
+.score-label strong{color:#fff;font-weight:600}
+.score-meta{display:flex;gap:14px;font-size:12px;color:var(--dimdk);font-family:var(--mono)}
+.score-meta span{padding:4px 10px;background:rgba(255,255,255,.04);border-radius:6px;border:1px solid var(--line)}
+
+.errors-list{display:flex;flex-direction:column;gap:14px}
+.error-item{padding:16px 20px;background:rgba(255,255,255,.03);
+  border-left:3px solid var(--amber);border-radius:0 10px 10px 0}
+.error-item.caught{border-left-color:var(--green)}
+.error-header{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.error-tag{font-size:11px;font-family:var(--mono);letter-spacing:.1em;
+  text-transform:uppercase;font-weight:600;padding:3px 9px;border-radius:5px}
+.error-tag.caught{color:var(--green);background:rgba(111,215,155,.14);border:1px solid rgba(111,215,155,.3)}
+.error-tag.missed{color:var(--amber);background:rgba(239,185,77,.12);border:1px solid rgba(239,185,77,.3)}
+.error-title{font-size:15px;color:#fff;font-weight:500}
+.error-title s{color:var(--dimdk);text-decoration:line-through;text-decoration-color:var(--red);
+  margin-right:4px}
+.error-title strong{color:var(--green);font-weight:600;margin-left:4px}
+.error-body{font-size:13.5px;line-height:1.7;color:var(--ondk)}
+.error-body em{color:var(--gold);font-style:normal;font-weight:500}
+.error-body strong{color:#fff;font-weight:600}
+
+/* ---------- the point ---------- */
+.the-point{border:1px solid var(--line);border-radius:14px;padding:26px 28px;
+  background:rgba(255,255,255,.025);margin-top:8px}
+.the-point h3{font-size:18px;font-weight:600;color:#fff;margin-bottom:14px;letter-spacing:-.01em}
+.the-point p{font-size:14.5px;line-height:1.7;color:var(--ondk);margin-bottom:12px}
+.the-point p:last-child{margin-bottom:0}
+.the-point strong{color:#fff;font-weight:600}
+.the-point em{color:var(--gold);font-style:normal;font-weight:500}
+
+/* ---------- facilitator notes ---------- */
+.fac-notes{border:1px solid var(--line);border-radius:14px;padding:22px 24px;
+  background:rgba(255,255,255,.025);margin-top:8px}
+.fac-notes h3{font-size:16px;font-weight:600;color:#fff;margin:0 0 12px}
+.fac-notes ul{list-style:none;padding:0;margin:0}
+.fac-notes li{font-size:14px;line-height:1.7;color:var(--ondk);
+  padding-left:22px;position:relative;margin-bottom:12px}
+.fac-notes li::before{content:'→';position:absolute;left:0;top:0;
+  color:var(--orange);font-weight:700}
+.fac-notes li strong{color:#fff;font-weight:600}
+.fac-notes li code{font-family:var(--mono);font-size:.88em;
+  background:rgba(255,255,255,.08);padding:.1em .4em;border-radius:3px;color:var(--gold)}
+
+/* ---------- back link ---------- */
+.back-link{margin-top:32px;display:flex;justify-content:center}
+.back-link a{font-size:13px;color:var(--ondk);text-decoration:none;padding:10px 18px;
+  border:1px solid var(--line);border-radius:10px;transition:background .2s,color .2s}
+.back-link a:hover{background:rgba(255,255,255,.06);color:#fff}
+
+footer{padding:32px clamp(16px,4vw,30px);border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--dimdk);text-align:center}
+footer a{color:var(--ondk);text-decoration:none}
+footer a:hover{color:#fff}
+
+@media print{
+  body{background:#fff;color:#000}
+  .bar,.controls,.back-link,footer{display:none!important}
+  h1,h2,h3{color:#000!important}
+  .lede,.the-point p,.error-body{color:#333!important}
+  .claim{border-bottom:1px dotted #999;color:#000}
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <a class="home" href="../">MCC <span>AI</span></a>
+  <span class="sep"></span>
+  <span class="where">Find the error</span>
+  <div class="right">
+    <a href="../how-it-works/">How it works</a>
+    <a href="../context-lab/">Context lab</a>
+    <a href="../">Home</a>
+  </div>
+</div>
+
+<main>
+
+  <div class="breadcrumb">
+    <a href="../how-it-works/">How an LLM works</a><span class="sep">›</span>Find the error
+  </div>
+
+  <div class="kicker">Session 1 · The exercise</div>
+  <h1>Read carefully.<br><span>Click what's wrong.</span></h1>
+  <p class="lede">
+    Below is a paragraph the model wrote about a topic you probably know. It sounds confident. It reads fluently. Three of the claims in it are wrong.
+    <strong>Click each phrase you think is an error.</strong> Then hit Submit and see how you did. <em>What you miss is what the model most reliably gets wrong.</em>
+  </p>
+
+  <div class="instructions" id="instructions">
+    <strong>How to play:</strong> Underlined phrases are clickable. Click any phrase you think is incorrect. Click again to unclick. When you're ready, hit <strong>Submit answers</strong>. Facilitators can hit <strong>Show me</strong> to reveal without any clicks.
+  </div>
+
+  <div class="paragraph-card" id="paragraph-card">
+    <p>
+      On <span class="claim">July 16, 1969</span>, the Apollo 11 mission launched from <span class="claim">Kennedy Space Center</span> in Florida, carrying commander <span class="claim">Neil Armstrong</span>, command module pilot <span class="claim">Michael Collins</span>, and lunar module pilot <span class="claim">Buzz Aldrin</span>. Armstrong and Aldrin spent <span class="claim" data-error-id="time">12 hours and 36 minutes</span> on the lunar surface at <span class="claim">Tranquility Base</span> before returning to the command module in orbit. Their moonwalk was broadcast live to an estimated <span class="claim">650 million viewers</span> worldwide &mdash; a figure that <span class="claim" data-error-id="citation">Turner and Mahoney (2003)</span> describe as the largest live global audience ever assembled up to that point. The crew brought back approximately <span class="claim">47 pounds</span> of rock and soil samples, and splashed down in the <span class="claim">Pacific Ocean</span> on <span class="claim">July 24, 1969</span>, where they were recovered by the <span class="claim" data-error-id="ship">USS Endeavor</span>.
+    </p>
+  </div>
+
+  <div class="controls">
+    <button class="btn" onclick="submitAnswers()" id="submit-btn">Submit answers</button>
+    <button class="btn ghost" onclick="showAnswers()" id="show-btn">Show me</button>
+    <button class="btn ghost" onclick="resetAll()" id="reset-btn" style="display:none">Try again</button>
+    <span class="controls-hint" id="controls-hint">Click any underlined phrase to mark it as wrong</span>
+  </div>
+
+  <div class="score-card" id="score-card">
+    <div class="score-header">
+      <div class="score-value" id="score-value">0 / 3</div>
+      <div class="score-label" id="score-label">You caught <strong>0 of 3 errors</strong>.</div>
+      <div class="score-meta" id="score-meta"></div>
+    </div>
+    <div class="errors-list" id="errors-list"></div>
+  </div>
+
+  <!-- ============ THE POINT ============ -->
+  <h2 class="sec">What this shows</h2>
+  <div class="the-point">
+    <h3>The pattern is almost always the same. And the answer is almost always the number.</h3>
+    <p>
+      Most rooms catch the substituted name (the ship). Some rooms catch the wrong number. Almost no room catches the fabricated citation. That order is not an accident. It maps directly to <em>how much a person's existing knowledge helps them verify each type of claim.</em>
+    </p>
+    <p>
+      Ship names, birthdates, capital cities &mdash; when the model gets these wrong, someone in the room usually remembers the right answer. <strong>Numbers, times, quantities, and citations are different.</strong> Nobody carries the exact figure in their head. Nothing in the sentence signals "wrong." The model produces all three types of claim with identical fluent confidence, and the room's error-detection instincts &mdash; trained on humans &mdash; have nothing to work with.
+    </p>
+    <p>
+      The citation is the most instructive of the three. An AI-generated fake citation looks more like a real citation than most real citations do. Real papers have messy titles, missing years, weird punctuation, first authors nobody remembers. Fake ones are clean, plausible, well-formatted. <em>The polish is the tell &mdash; but only if you know to look for it.</em>
+    </p>
+  </div>
+
+  <!-- ============ FACILITATOR NOTES ============ -->
+  <h2 class="sec">For facilitators</h2>
+  <div class="fac-notes">
+    <h3>Using this in Session 1 · the 0:50&ndash;1:15 block</h3>
+    <ul>
+      <li><strong>Project the paragraph and give the room 60&ndash;90 seconds to read.</strong> Don't rush this. The paragraph is short but the exercise depends on people actually reading it, not scanning.</li>
+      <li><strong>Ask "which of these are wrong?" before revealing.</strong> Hands up, quick tally per suspicion. This commits people to a position before the answer &mdash; commitment is what makes the reveal land.</li>
+      <li><strong>Hit "Show me" to reveal without individual clicks.</strong> Useful when projecting to a room that isn't clicking on their own devices. All three errors light up amber, and the per-error explanations appear underneath.</li>
+      <li><strong>The teaching moment is "which was hardest?"</strong> Ask it out loud after the reveal. The answer is always the number, or the citation. Watch how the room's certainty about the wrong ship falls apart when they realize they only caught it because they happened to know Endeavor was a Space Shuttle.</li>
+      <li><strong>The bridge to the next block:</strong> "So if the model produces confident, well-formatted, plausible-sounding wrong information &mdash; and our human instincts don't catch it &mdash; what are we supposed to do?" That's the setup for the verification block that follows.</li>
+      <li><strong>Hand out the QR:</strong> bottom-left button, or <code>Shift + Q</code>. Lets the room retry on their own devices, or take it back to their department.</li>
+    </ul>
+  </div>
+
+  <div class="back-link">
+    <a href="../how-it-works/">← Back to How an LLM works</a>
+  </div>
+
+</main>
+
+<footer>
+  © 2026 <a href="../">MCC AI Professional Development</a> · Ted Gonzalez, JD/MBA · Session 1 exercise
+</footer>
+
+<script src="../assets/mcc-qr.js"></script>
+<script>
+(function(){
+  const ERRORS = {
+    time: {
+      wrong: '12 hours and 36 minutes',
+      correct: '21 hours and 36 minutes',
+      explanation: 'The actual surface stay was <strong>21 hours, 36 minutes</strong>. This is the classic "the number" error &mdash; plausible-looking, extremely hard to catch without knowing. When the model hallucinates times, dates, and quantities, they usually sound right. Nothing in the sentence signals "wrong."'
+    },
+    citation: {
+      wrong: 'Turner and Mahoney (2003)',
+      correct: 'no such paper exists',
+      explanation: '<strong>Fabricated citation.</strong> There is no such paper. AI-generated fake citations often look <em>more</em> authoritative than real ones &mdash; properly formatted, plausible author names, plausible publication years. Real citations are usually messier. The polish is the tell &mdash; if you know to look for it.'
+    },
+    ship: {
+      wrong: 'USS Endeavor',
+      correct: 'USS Hornet',
+      explanation: 'The recovery ship was the <strong>USS Hornet</strong>. <em>Endeavor</em> is a Space Shuttle. Substituted names are common: the model reaches for something related and plausible, and grabs the wrong noun from a nearby cluster.'
+    }
+  };
+
+  const ERROR_ORDER = ['time', 'citation', 'ship'];
+  let submitted = false;
+
+  function toggleClaim(el){
+    if (submitted) return;
+    el.classList.toggle('marked');
+  }
+
+  // Wire up click handlers
+  document.querySelectorAll('.claim').forEach(el => {
+    el.addEventListener('click', () => toggleClaim(el));
+  });
+
+  function reveal(){
+    submitted = true;
+    document.getElementById('paragraph-card').classList.add('revealed');
+    document.getElementById('instructions').classList.add('hidden');
+
+    let caught = 0, missed = 0, falsePos = 0;
+
+    document.querySelectorAll('.claim').forEach(el => {
+      const errorId = el.dataset.errorId;
+      const marked = el.classList.contains('marked');
+      el.classList.remove('marked');
+
+      if (errorId && marked){ el.classList.add('correct-catch'); caught++; }
+      else if (errorId && !marked){ el.classList.add('missed-error'); missed++; }
+      else if (!errorId && marked){ el.classList.add('false-positive'); falsePos++; }
+    });
+
+    document.getElementById('score-value').textContent = caught + ' / 3';
+
+    let label = '';
+    if (caught === 3) label = 'You caught <strong>all three</strong>. Rare.';
+    else if (caught === 2) label = 'You caught <strong>two of three</strong>. Almost certainly missed the citation.';
+    else if (caught === 1) label = 'You caught <strong>one of three</strong>. Which one was it &mdash; and what tipped you off?';
+    else label = 'You caught <strong>none of the three</strong>. Same as most rooms. Same as most people.';
+    document.getElementById('score-label').innerHTML = label;
+
+    let meta = '';
+    if (falsePos > 0) meta += '<span>' + falsePos + ' false positive' + (falsePos > 1 ? 's' : '') + '</span>';
+    if (missed > 0) meta += '<span>' + missed + ' missed</span>';
+    document.getElementById('score-meta').innerHTML = meta;
+
+    const errorsHtml = ERROR_ORDER.map(id => {
+      const err = ERRORS[id];
+      const errEl = document.querySelector('[data-error-id="' + id + '"]');
+      const wasCaught = errEl && errEl.classList.contains('correct-catch');
+      return '<div class="error-item ' + (wasCaught ? 'caught' : '') + '">' +
+        '<div class="error-header">' +
+          '<span class="error-tag ' + (wasCaught ? 'caught' : 'missed') + '">' +
+            (wasCaught ? '\u2713 Caught' : '\u2717 Missed') +
+          '</span>' +
+          '<span class="error-title"><s>' + err.wrong + '</s>&rarr;<strong>' + err.correct + '</strong></span>' +
+        '</div>' +
+        '<div class="error-body">' + err.explanation + '</div>' +
+      '</div>';
+    }).join('');
+    document.getElementById('errors-list').innerHTML = errorsHtml;
+
+    document.getElementById('score-card').classList.add('show');
+    document.getElementById('submit-btn').style.display = 'none';
+    document.getElementById('show-btn').style.display = 'none';
+    document.getElementById('reset-btn').style.display = 'inline-block';
+    document.getElementById('controls-hint').textContent = 'Green = caught. Amber = missed. Struck-through = false positive.';
+
+    setTimeout(() => {
+      document.getElementById('score-card').scrollIntoView({behavior:'smooth', block:'start'});
+    }, 400);
+  }
+  window.submitAnswers = reveal;
+  window.showAnswers = reveal;
+
+  function resetAll(){
+    submitted = false;
+    document.getElementById('paragraph-card').classList.remove('revealed');
+    document.getElementById('instructions').classList.remove('hidden');
+    document.querySelectorAll('.claim').forEach(el => {
+      el.classList.remove('marked', 'correct-catch', 'missed-error', 'false-positive');
+    });
+    document.getElementById('score-card').classList.remove('show');
+    document.getElementById('submit-btn').style.display = 'inline-block';
+    document.getElementById('show-btn').style.display = 'inline-block';
+    document.getElementById('reset-btn').style.display = 'none';
+    document.getElementById('controls-hint').textContent = 'Click any underlined phrase to mark it as wrong';
+    document.getElementById('paragraph-card').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  window.resetAll = resetAll;
+
+  if (window.MCCQR && window.MCCQR.show){ window.MCCQR.show(); }
+})();
+</script>
+</body>
+</html>
