@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en" data-qr-start-hidden>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verify It — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="A three-question framework for deciding how hard to verify an AI-generated claim. Applied to the errors from the previous exercise, then run on a new one yourself.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A1A2E; --navy:#003366; --orange:#FF6600; --orange-d:#E25C00;
+  --gold:#F9DD56; --teal:#008DA7; --violet:#8B7FE6;
+  --ondk:#A7B7C9; --dimdk:#5C6E82; --line:rgba(255,255,255,.12);
+  --green:#6FD79B; --amber:#EFB94D; --red:#FF8A78;
+  --sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--ink);color:#fff;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;min-height:100vh;line-height:1.6}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit}
+
+.bar{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,30px);
+  border-bottom:1px solid var(--line);background:rgba(6,16,30,.92);position:sticky;top:0;z-index:40;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);flex-wrap:wrap}
+.bar .home{font-size:14.5px;font-weight:700;text-decoration:none;white-space:nowrap}
+.bar .home span{color:var(--orange)}
+.bar .sep{width:1px;height:20px;background:var(--line)}
+.bar .where{font-size:13.5px;color:var(--ondk)}
+.bar .right{margin-left:auto;display:flex;gap:8px}
+.bar .right a{font-size:12.5px;text-decoration:none;border:1px solid var(--line);border-radius:9px;
+  padding:7px 13px;color:var(--ondk);transition:background .2s,color .2s}
+.bar .right a:hover{background:rgba(255,255,255,.08);color:#fff}
+
+main{flex:1;width:100%;max-width:1080px;margin:0 auto;padding:clamp(24px,5vw,44px) clamp(16px,4vw,30px) 60px}
+.breadcrumb{font-size:12px;color:var(--dimdk);font-family:var(--mono);margin-bottom:14px}
+.breadcrumb a{color:var(--ondk);text-decoration:none;transition:color .2s}
+.breadcrumb a:hover{color:var(--orange)}
+.breadcrumb .sep{margin:0 8px;color:var(--dimdk)}
+
+.kicker{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+h1{font-size:clamp(30px,5.4vw,50px);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:12px}
+h1 span{color:var(--dimdk)}
+.lede{color:var(--ondk);font-size:clamp(15px,1.8vw,18px);line-height:1.65;margin-top:18px;max-width:64ch}
+.lede strong{color:#fff;font-weight:600}
+.lede em{color:var(--gold);font-style:normal;font-weight:500}
+
+h2.sec{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold);margin:52px 0 16px;display:flex;align-items:center;gap:10px}
+h2.sec::after{content:'';flex:1;height:1px;background:var(--line)}
+.sec-sub{font-size:14px;color:var(--ondk);line-height:1.6;margin:-8px 0 20px;max-width:68ch}
+
+/* ---------- three questions ---------- */
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.qcard{border:1px solid var(--line);border-radius:14px;padding:24px 24px 22px;
+  background:rgba(255,255,255,.03)}
+.qcard .qnum{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.14em;
+  color:var(--orange);margin-bottom:12px}
+.qcard h3{font-size:17px;font-weight:600;color:#fff;line-height:1.35;margin-bottom:14px}
+.qcard .rule{font-size:12.5px;color:var(--dimdk);line-height:1.6;padding-top:14px;
+  border-top:1px solid var(--line)}
+.qcard .rule strong{color:var(--ondk);font-weight:600}
+
+/* ---------- applied cards ---------- */
+.applied-wrap{display:flex;flex-direction:column;gap:16px}
+.applied-card{border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03);
+  overflow:hidden}
+.applied-head{padding:20px 24px;display:flex;justify-content:space-between;align-items:center;
+  gap:16px;flex-wrap:wrap}
+.applied-claim{font-size:15.5px;color:#fff}
+.applied-claim .strike{color:var(--dimdk);text-decoration:line-through;text-decoration-color:var(--red)}
+.applied-eyebrow{font-size:10.5px;color:var(--dimdk);letter-spacing:.14em;text-transform:uppercase;
+  font-family:var(--mono);font-weight:600;margin-bottom:8px}
+.walkthrough-btn{background:transparent;border:1px solid var(--line);color:var(--ondk);
+  padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;white-space:nowrap;
+  transition:background .2s,color .2s}
+.walkthrough-btn:hover{background:rgba(255,255,255,.06);color:#fff}
+.applied-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.applied-body.open{max-height:900px}
+.applied-body-inner{padding:0 24px 24px;border-top:1px solid var(--line);margin-top:0}
+.qa-row{padding:16px 0;border-bottom:1px solid var(--line)}
+.qa-row:last-of-type{border-bottom:none}
+.qa-q{font-size:13px;color:var(--gold);font-weight:600;margin-bottom:6px}
+.qa-a{font-size:14px;color:var(--ondk);line-height:1.6}
+.qa-a strong{color:#fff;font-weight:600}
+.verdict{margin-top:16px;padding:14px 18px;background:rgba(255,102,0,.09);
+  border:1px solid rgba(255,102,0,.3);border-radius:10px;font-size:13.5px;line-height:1.6;
+  color:#FFD9BF}
+.verdict strong{color:#fff}
+
+/* ---------- your turn widget ---------- */
+.yt-widget{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.03);
+  padding:clamp(22px,3vw,32px);margin-top:8px}
+.yt-claim-card{background:rgba(255,255,255,.05);border-radius:12px;padding:20px 22px;
+  border:1px solid var(--line);margin-bottom:24px}
+.yt-eyebrow{font-size:10px;color:var(--dimdk);letter-spacing:.15em;text-transform:uppercase;
+  margin-bottom:10px;font-family:var(--mono);font-weight:600}
+.yt-claim-text{font-size:15.5px;line-height:1.7;color:#fff}
+.yt-claim-text em{color:var(--gold);font-style:normal;font-weight:500}
+
+.yt-step{display:none}
+.yt-step.active{display:block;animation:stepin .35s ease-out}
+@keyframes stepin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.yt-step-label{font-family:var(--mono);font-size:11px;color:var(--dimdk);letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:10px}
+.yt-question{font-size:17px;font-weight:600;color:#fff;margin-bottom:18px;line-height:1.4}
+.yt-options{display:flex;flex-direction:column;gap:10px}
+.yt-opt{text-align:left;padding:14px 18px;border:1px solid var(--line);border-radius:10px;
+  background:rgba(255,255,255,.02);font-size:14px;color:var(--ondk);line-height:1.5;
+  transition:background .2s,border-color .2s,color .2s}
+.yt-opt:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.24);color:#fff}
+
+.yt-progress{display:flex;gap:6px;margin-bottom:22px}
+.yt-progress-dot{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,.08)}
+.yt-progress-dot.done{background:var(--orange)}
+
+.yt-result{display:none}
+.yt-result.show{display:block;animation:stepin .4s ease-out}
+.yt-gauge-card{background:rgba(255,255,255,.05);border-radius:12px;padding:20px 22px;
+  border:1px solid var(--line);margin-bottom:18px}
+.yt-gauge-label{font-size:11px;color:var(--dimdk);letter-spacing:.15em;text-transform:uppercase;
+  font-family:var(--mono);font-weight:600;margin-bottom:10px}
+.yt-gauge-value{font-size:22px;font-weight:600;margin-bottom:12px;letter-spacing:-.01em}
+.yt-gauge-value.low{color:var(--green)}
+.yt-gauge-value.medium{color:var(--gold)}
+.yt-gauge-value.high{color:var(--amber)}
+.yt-gauge-value.stop{color:var(--red)}
+.yt-gauge-bar{height:10px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden;
+  border:1px solid var(--line)}
+.yt-gauge-fill{height:100%;border-radius:5px;transition:width .6s cubic-bezier(.2,.7,.3,1)}
+.yt-result-text{font-size:14.5px;line-height:1.7;color:var(--ondk)}
+.yt-result-text strong{color:#fff;font-weight:600}
+
+.yt-controls{display:flex;gap:12px;margin-top:20px;align-items:center}
+.btn{background:var(--orange);color:#fff;border-radius:10px;padding:11px 22px;
+  font-size:14px;font-weight:600;transition:background .2s,transform .1s}
+.btn:hover{background:var(--orange-d)}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ondk);
+  padding:10px 18px;font-weight:500}
+.btn.ghost:hover{background:rgba(255,255,255,.06);color:#fff}
+
+/* ---------- the point ---------- */
+.the-point{border:1px solid var(--line);border-radius:14px;padding:26px 28px;
+  background:rgba(255,255,255,.025);margin-top:8px}
+.the-point h3{font-size:18px;font-weight:600;color:#fff;margin-bottom:14px;letter-spacing:-.01em}
+.the-point p{font-size:14.5px;line-height:1.7;color:var(--ondk);margin-bottom:12px}
+.the-point p:last-child{margin-bottom:0}
+.the-point strong{color:#fff;font-weight:600}
+.the-point em{color:var(--gold);font-style:normal;font-weight:500}
+
+/* ---------- facilitator notes ---------- */
+.fac-notes{border:1px solid var(--line);border-radius:14px;padding:22px 24px;
+  background:rgba(255,255,255,.025);margin-top:8px}
+.fac-notes h3{font-size:16px;font-weight:600;color:#fff;margin:0 0 12px}
+.fac-notes ul{list-style:none;padding:0;margin:0}
+.fac-notes li{font-size:14px;line-height:1.7;color:var(--ondk);
+  padding-left:22px;position:relative;margin-bottom:12px}
+.fac-notes li::before{content:'→';position:absolute;left:0;top:0;
+  color:var(--orange);font-weight:700}
+.fac-notes li strong{color:#fff;font-weight:600}
+.fac-notes li code{font-family:var(--mono);font-size:.88em;
+  background:rgba(255,255,255,.08);padding:.1em .4em;border-radius:3px;color:var(--gold)}
+
+.back-link{margin-top:32px;display:flex;justify-content:center}
+.back-link a{font-size:13px;color:var(--ondk);text-decoration:none;padding:10px 18px;
+  border:1px solid var(--line);border-radius:10px;transition:background .2s,color .2s}
+.back-link a:hover{background:rgba(255,255,255,.06);color:#fff}
+
+footer{padding:32px clamp(16px,4vw,30px);border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--dimdk);text-align:center}
+footer a{color:var(--ondk);text-decoration:none}
+footer a:hover{color:#fff}
+
+@media print{
+  body{background:#fff;color:#000}
+  .bar,.yt-controls,.back-link,footer,.walkthrough-btn{display:none!important}
+  h1,h2,h3{color:#000!important}
+  .lede,.the-point p,.qa-a{color:#333!important}
+  .applied-body{max-height:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <a class="home" href="../">MCC <span>AI</span></a>
+  <span class="sep"></span>
+  <span class="where">Verify it</span>
+  <div class="right">
+    <a href="../find-the-error/">Find the error</a>
+    <a href="../how-it-works/">How it works</a>
+    <a href="../">Home</a>
+  </div>
+</div>
+
+<main>
+
+  <div class="breadcrumb">
+    <a href="../find-the-error/">Find the error</a><span class="sep">›</span>Verify it
+  </div>
+
+  <div class="kicker">Session 1 · The verification block</div>
+  <h1>Three questions.<br><span>Then decide.</span></h1>
+  <p class="lede">
+    You just saw how a fluent, confident, wrong claim slips past the instincts you'd normally trust. <strong>Here's what to actually do about it</strong> — a short framework you can run on any AI-generated claim in about ten seconds. Not a rule that says never trust the model. A way to decide, claim by claim, <em>how much verification effort the situation actually calls for.</em>
+  </p>
+
+  <h2 class="sec">The three questions</h2>
+  <div class="qgrid">
+    <div class="qcard">
+      <div class="qnum">01</div>
+      <h3>Would the model know this cold, or is it improvising?</h3>
+      <div class="rule"><strong>Rule of thumb:</strong> Well-attested, widely documented facts are reliable. Exact numbers, precise dates, quantities, and citations are exactly where fluent guessing happens.</div>
+    </div>
+    <div class="qcard">
+      <div class="qnum">02</div>
+      <h3>Can you check it against a primary source in under two minutes?</h3>
+      <div class="rule"><strong>Rule of thumb:</strong> If checking is fast, there's no excuse not to. If it would take real digging, that itself is information — the claim is expensive to verify and risky to trust blind.</div>
+    </div>
+    <div class="qcard">
+      <div class="qnum">03</div>
+      <h3>What happens if you're wrong?</h3>
+      <div class="rule"><strong>Rule of thumb:</strong> A wrong claim in a casual draft is a typo. A wrong claim in a policy document, a legal memo, or a grant application is a different category of problem entirely.</div>
+    </div>
+  </div>
+
+  <h2 class="sec">Run it on the errors you just saw</h2>
+  <p class="sec-sub">Two of the three errors from the previous exercise, walked through the framework.</p>
+
+  <div class="applied-wrap">
+    <div class="applied-card">
+      <div class="applied-head">
+        <div>
+          <div class="applied-eyebrow">The number</div>
+          <div class="applied-claim"><span class="strike">"12 hours and 36 minutes"</span> on the lunar surface</div>
+        </div>
+        <button class="walkthrough-btn" onclick="toggleApplied(this, 'applied-1')">Walk through it</button>
+      </div>
+      <div class="applied-body" id="applied-1">
+        <div class="applied-body-inner">
+          <div class="qa-row">
+            <div class="qa-q">Would the model know this cold, or is it improvising?</div>
+            <div class="qa-a"><strong>Improvising.</strong> An exact duration down to the minute is a specific figure, not something reliably "known" the way a well-attested fact is.</div>
+          </div>
+          <div class="qa-row">
+            <div class="qa-q">Can you check it in under two minutes?</div>
+            <div class="qa-a"><strong>Yes, fast.</strong> One search confirms the actual figure is 21 hours, 36 minutes.</div>
+          </div>
+          <div class="qa-row">
+            <div class="qa-q">What happens if you're wrong?</div>
+            <div class="qa-a"><strong>Depends on the room.</strong> Low stakes in a casual conversation. Higher if this becomes a fact sheet, a teaching slide, or gets repeated by someone else as true.</div>
+          </div>
+          <div class="verdict"><strong>Verdict:</strong> Specific and fast to check — verify it every time. There's no real cost to looking, and a meaningful cost to being fluently wrong in front of a room.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="applied-card">
+      <div class="applied-head">
+        <div>
+          <div class="applied-eyebrow">The citation</div>
+          <div class="applied-claim"><span class="strike">"Turner and Mahoney (2003)"</span> — a paper that doesn't exist</div>
+        </div>
+        <button class="walkthrough-btn" onclick="toggleApplied(this, 'applied-2')">Walk through it</button>
+      </div>
+      <div class="applied-body" id="applied-2">
+        <div class="applied-body-inner">
+          <div class="qa-row">
+            <div class="qa-q">Would the model know this cold, or is it improvising?</div>
+            <div class="qa-a"><strong>Improvising.</strong> Citations are exactly the kind of specific, checkable claim models fabricate with total fluency — plausible authors, plausible year, well-formatted.</div>
+          </div>
+          <div class="qa-row">
+            <div class="qa-q">Can you check it in under two minutes?</div>
+            <div class="qa-a"><strong>Yes — if you actually try.</strong> A citation search takes under a minute. Either the paper exists or it doesn't. The check is fast; the temptation to skip it is the real risk.</div>
+          </div>
+          <div class="qa-row">
+            <div class="qa-q">What happens if you're wrong?</div>
+            <div class="qa-a"><strong>High.</strong> A fabricated citation in anything that leaves your desk — a report, a grant application, a syllabus — is a professional liability, not just an error.</div>
+          </div>
+          <div class="verdict"><strong>Verdict:</strong> This is the highest-value check in the whole framework. Never let a citation into a document you haven't independently verified.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sec">Try it yourself</h2>
+  <p class="sec-sub">A new claim. Run the same three questions — this time you pick the answers.</p>
+
+  <div class="yt-widget">
+    <div class="yt-claim-card">
+      <div class="yt-eyebrow">The scenario</div>
+      <div class="yt-claim-text">
+        A colleague asks the AI to draft talking points for a division meeting. The draft says: <em>"Enrollment in our AI literacy workshops has grown 47% year over year, consistent with the pattern Gallagher and Osei (2024) documented in their study of AI adoption in higher education."</em>
+      </div>
+    </div>
+
+    <div class="yt-progress">
+      <div class="yt-progress-dot" id="yt-dot-1"></div>
+      <div class="yt-progress-dot" id="yt-dot-2"></div>
+      <div class="yt-progress-dot" id="yt-dot-3"></div>
+    </div>
+
+    <div class="yt-step active" id="yt-step-1">
+      <div class="yt-step-label">Question 1 of 3</div>
+      <div class="yt-question">Would the model know this cold, or is it improvising?</div>
+      <div class="yt-options">
+        <button class="yt-opt" onclick="answerYT(1, 0)">Know cold — this is common knowledge about the field</button>
+        <button class="yt-opt" onclick="answerYT(1, 1)">Improvising — a specific stat and a named citation, both easy to fabricate fluently</button>
+      </div>
+    </div>
+
+    <div class="yt-step" id="yt-step-2">
+      <div class="yt-step-label">Question 2 of 3</div>
+      <div class="yt-question">Can you check it against a primary source in under two minutes?</div>
+      <div class="yt-options">
+        <button class="yt-opt" onclick="answerYT(2, 0)">Yes — pull our own enrollment numbers, search the citation, both fast</button>
+        <button class="yt-opt" onclick="answerYT(2, 1)">No — would take real digging to run either one down</button>
+      </div>
+    </div>
+
+    <div class="yt-step" id="yt-step-3">
+      <div class="yt-step-label">Question 3 of 3</div>
+      <div class="yt-question">What happens if you're wrong?</div>
+      <div class="yt-options">
+        <button class="yt-opt" onclick="answerYT(3, 0)">Low — this stays in my own notes, easy to correct later</button>
+        <button class="yt-opt" onclick="answerYT(3, 1)">High — this goes in front of the division, and could get repeated as fact</button>
+      </div>
+    </div>
+
+    <div class="yt-result" id="yt-result">
+      <div class="yt-gauge-card">
+        <div class="yt-gauge-label">Verification priority</div>
+        <div class="yt-gauge-value" id="yt-gauge-value">—</div>
+        <div class="yt-gauge-bar"><div class="yt-gauge-fill" id="yt-gauge-fill" style="width:0%"></div></div>
+      </div>
+      <div class="yt-result-text" id="yt-result-text"></div>
+      <div class="yt-controls">
+        <button class="btn ghost" onclick="resetYT()">Try again</button>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sec">What this shows</h2>
+  <div class="the-point">
+    <h3>You don't need to verify everything. You need to know which things to verify.</h3>
+    <p>
+      Running every AI-generated sentence past a fact-checker is not realistic, and it is not the point. The three questions exist to help you triage in seconds: <em>specific, checkable, and consequential</em> claims get verified. Vague, unverifiable, or low-stakes claims don't need the same effort.
+    </p>
+    <p>
+      Notice what the framework does <strong>not</strong> ask: it never asks whether the model sounded confident. Confidence is not a signal. It's the thing this whole exercise exists to un-learn.
+    </p>
+    <p>
+      The two claims from the previous exercise both landed in the same place — verify it, every time — because both were specific, fast to check, and costly if wrong. That combination is common. It is also exactly the combination our instincts are worst at catching, because fluent text gives no outward sign of which claims fall into it.
+    </p>
+  </div>
+
+  <h2 class="sec">For facilitators</h2>
+  <div class="fac-notes">
+    <h3>Using this in Session 1 · after the 1:15 mark</h3>
+    <ul>
+      <li><strong>This is the direct answer to the question find-the-error leaves open.</strong> If you ran that exercise, the bridge line was "so what do we actually do about it" — this page is the "do."</li>
+      <li><strong>Project the three questions first, without the applied examples.</strong> Let the room sit with the framework for a moment before showing it in action. The framework should feel obvious in hindsight, not clever.</li>
+      <li><strong>The applied cards are click-to-reveal.</strong> Good for pacing — ask the room to guess the verdict before you click "Walk through it."</li>
+      <li><strong>"Try it yourself" works best live, together.</strong> Read the scenario out loud, ask for a show of hands on each question before revealing the next one, then compare the room's collective verdict to the gauge.</li>
+      <li><strong>The closing point is the one to say out loud:</strong> <em>the framework never asks whether the model sounded confident.</em> That's deliberate — confidence is exactly the signal this whole session has been teaching people not to trust.</li>
+    </ul>
+  </div>
+
+  <div class="back-link">
+    <a href="../find-the-error/">← Back to Find the error</a>
+  </div>
+
+</main>
+
+<footer>
+  © 2026 <a href="../">MCC AI Professional Development</a> · Ted Gonzalez, JD/MBA · Session 1 verification block
+</footer>
+
+<script src="../assets/mcc-qr.js"></script>
+<script>
+(function(){
+  function toggleApplied(btn, id){
+    const body = document.getElementById(id);
+    const open = body.classList.toggle('open');
+    btn.textContent = open ? 'Hide it' : 'Walk through it';
+  }
+  window.toggleApplied = toggleApplied;
+
+  const ytAnswers = { 1: null, 2: null, 3: null };
+
+  function answerYT(step, choice){
+    ytAnswers[step] = choice;
+    document.getElementById('yt-dot-' + step).classList.add('done');
+    document.getElementById('yt-step-' + step).classList.remove('active');
+
+    if (step < 3){
+      document.getElementById('yt-step-' + (step + 1)).classList.add('active');
+    } else {
+      showYTResult();
+    }
+  }
+  window.answerYT = answerYT;
+
+  function showYTResult(){
+    const score = (ytAnswers[1] || 0) + (ytAnswers[2] || 0) + (ytAnswers[3] || 0);
+    const val = document.getElementById('yt-gauge-value');
+    const fill = document.getElementById('yt-gauge-fill');
+    const text = document.getElementById('yt-result-text');
+
+    const levels = [
+      { label: 'Low priority', cls: 'low', width: 15, color: 'var(--green)',
+        text: 'A model would likely get this right, checking barely costs anything, and getting it wrong doesn\'t cost much either. Move on.' },
+      { label: 'Worth a glance', cls: 'medium', width: 42, color: 'var(--gold)',
+        text: 'Enough risk signals that a quick check is good practice, even though nothing here strictly forces it.' },
+      { label: 'Verify before using', cls: 'high', width: 70, color: 'var(--amber)',
+        text: 'Enough risk stacked up that skipping the check is a real gamble, not just caution for its own sake.' },
+      { label: 'Stop and verify', cls: 'stop', width: 96, color: 'var(--red)',
+        text: 'Specific, checkable, and consequential if wrong — <strong>this is exactly the combination the framework exists to catch.</strong> Pull your own enrollment numbers and search the citation before this reaches the room. Both take under two minutes. There is no good reason to skip either one.' }
+    ];
+
+    const lvl = levels[score];
+    val.textContent = lvl.label;
+    val.className = 'yt-gauge-value ' + lvl.cls;
+    fill.style.width = lvl.width + '%';
+    fill.style.background = lvl.color;
+    text.innerHTML = lvl.text;
+
+    document.getElementById('yt-result').classList.add('show');
+    setTimeout(() => {
+      document.getElementById('yt-result').scrollIntoView({behavior:'smooth', block:'nearest'});
+    }, 300);
+  }
+
+  function resetYT(){
+    ytAnswers[1] = null; ytAnswers[2] = null; ytAnswers[3] = null;
+    for (let i = 1; i <= 3; i++){
+      document.getElementById('yt-dot-' + i).classList.remove('done');
+      document.getElementById('yt-step-' + i).classList.remove('active');
+    }
+    document.getElementById('yt-step-1').classList.add('active');
+    document.getElementById('yt-result').classList.remove('show');
+    document.querySelector('.yt-widget').scrollIntoView({behavior:'smooth', block:"nearest'});
+  }
+  window.resetYT = resetYT;
+
+  if (window.MCCQR && window.MCCQR.show){ window.MCCQR.show(); }
+})();
+</script>
+</body>
+</html>
