@@ -144,6 +144,32 @@ h2.sec::after{content:'';flex:1;height:1px;background:var(--line)}
 .fac-notes li code{font-family:var(--mono);font-size:.88em;
   background:rgba(255,255,255,.08);padding:.1em .4em;border-radius:3px;color:var(--gold)}
 
+/* ---------- what's next tile ---------- */
+.depth-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+  gap:14px;margin-top:8px}
+.depth-card{display:flex;align-items:center;gap:24px;padding:24px 28px;
+  background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;
+  border-left:3px solid var(--orange);text-decoration:none;color:inherit;
+  transition:background .25s,border-color .25s,transform .1s}
+.depth-card:hover{background:rgba(255,102,0,.06);border-color:rgba(255,102,0,.32);
+  border-left-color:var(--orange)}
+.depth-card:active{transform:scale(.997)}
+.depth-body{flex:1;min-width:0}
+.depth-eyebrow{font-size:11px;color:var(--dimdk);letter-spacing:.15em;text-transform:uppercase;
+  font-family:var(--mono);font-weight:600;margin-bottom:10px}
+.depth-title{font-size:20px;font-weight:600;color:#fff;letter-spacing:-.01em;margin-bottom:10px;line-height:1.25}
+.depth-blurb{font-size:14px;line-height:1.65;color:var(--ondk)}
+.depth-blurb em{color:var(--gold);font-style:normal;font-weight:500}
+.depth-cta{display:flex;align-items:center;gap:8px;margin-top:14px;
+  color:var(--orange);font-weight:600;font-size:13.5px;font-family:var(--mono)}
+.depth-arrow{color:var(--orange);font-size:28px;font-weight:300;line-height:1;
+  transition:transform .25s;flex-shrink:0}
+.depth-card:hover .depth-arrow{transform:translateX(4px)}
+@media(max-width:560px){
+  .depth-card{flex-direction:column;align-items:flex-start;gap:16px;padding:22px}
+  .depth-arrow{align-self:flex-end;font-size:24px}
+}
+
 /* ---------- back link ---------- */
 .back-link{margin-top:32px;display:flex;justify-content:center}
 .back-link a{font-size:13px;color:var(--ondk);text-decoration:none;padding:10px 18px;
@@ -243,6 +269,21 @@ footer a:hover{color:#fff}
       <li><strong>The bridge to the next block:</strong> "So if the model produces confident, well-formatted, plausible-sounding wrong information &mdash; and our human instincts don't catch it &mdash; what are we supposed to do?" That's the setup for the verification block that follows.</li>
       <li><strong>Hand out the QR:</strong> bottom-left button, or <code>Shift + Q</code>. Lets the room retry on their own devices, or take it back to their department.</li>
     </ul>
+  </div>
+
+  <!-- ============ WHAT'S NEXT ============ -->
+  <h2 class="sec">What's next</h2>
+  <div class="depth-grid">
+    <a class="depth-card" href="../verification/">
+      <div class="depth-body">
+        <div class="depth-eyebrow">Session 1 · the answer</div>
+        <div class="depth-title">Three questions. Then decide.</div>
+        <div class="depth-blurb">
+          You just saw how a fluent, confident, wrong claim slips past the instincts you'd normally trust. Here's what to actually do about it &mdash; a short framework you can run on any claim in about ten seconds, applied live to the errors you just tried to catch.
+        </div>
+        <div class="depth-cta">Open the verification block <span aria-hidden="true">&rarr;</span></div>
+      </div>
+    </a>
   </div>
 
   <div class="back-link">
