@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en" data-qr-start-hidden>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Context Lab — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="Watch the model's probability distribution reshape as each word is added to the prompt. Prompt engineering is not magic phrasing — it is constraining the possibility space.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A1A2E; --navy:#003366; --orange:#FF6600; --orange-d:#E25C00;
+  --gold:#F9DD56; --teal:#008DA7; --violet:#8B7FE6;
+  --ondk:#A7B7C9; --dimdk:#5C6E82; --line:rgba(255,255,255,.12);
+  --green:#6FD79B; --amber:#EFB94D; --red:#FF8A78;
+  --sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--ink);color:#fff;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;min-height:100vh;line-height:1.6}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit}
+
+.bar{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,30px);
+  border-bottom:1px solid var(--line);background:rgba(6,16,30,.92);position:sticky;top:0;z-index:40;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);flex-wrap:wrap}
+.bar .home{font-size:14.5px;font-weight:700;text-decoration:none;white-space:nowrap}
+.bar .home span{color:var(--orange)}
+.bar .sep{width:1px;height:20px;background:var(--line)}
+.bar .where{font-size:13.5px;color:var(--ondk)}
+.bar .right{margin-left:auto;display:flex;gap:8px}
+.bar .right a{font-size:12.5px;text-decoration:none;border:1px solid var(--line);border-radius:9px;
+  padding:7px 13px;color:var(--ondk);transition:background .2s,color .2s}
+.bar .right a:hover{background:rgba(255,255,255,.08);color:#fff}
+
+main{flex:1;width:100%;max-width:1080px;margin:0 auto;padding:clamp(24px,5vw,44px) clamp(16px,4vw,30px) 60px}
+.breadcrumb{font-size:12px;color:var(--dimdk);font-family:var(--mono);margin-bottom:14px}
+.breadcrumb a{color:var(--ondk);text-decoration:none;transition:color .2s}
+.breadcrumb a:hover{color:var(--orange)}
+.breadcrumb .sep{margin:0 8px;color:var(--dimdk)}
+
+.kicker{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+h1{font-size:clamp(30px,5.4vw,50px);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:12px}
+h1 span{color:var(--dimdk)}
+.lede{color:var(--ondk);font-size:clamp(15px,1.8vw,18px);line-height:1.65;margin-top:18px;max-width:64ch}
+.lede strong{color:#fff;font-weight:600}
+.lede em{color:var(--gold);font-style:normal;font-weight:500}
+
+h2.sec{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold);margin:52px 0 16px;display:flex;align-items:center;gap:10px}
+h2.sec::after{content:'';flex:1;height:1px;background:var(--line)}
+
+/* ---------- widget shell ---------- */
+.lab{border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.03);
+  padding:clamp(20px,3vw,32px);margin-top:24px;overflow:hidden}
+
+.lab-head{display:flex;justify-content:space-between;align-items:center;gap:14px;
+  flex-wrap:wrap;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.step-counter{display:flex;align-items:center;gap:12px;font-family:var(--mono);
+  font-size:12px;color:var(--dimdk)}
+.step-counter b{color:var(--ondk);font-weight:500}
+.reset-btn{font-size:12.5px;color:var(--ondk);padding:6px 12px;border:1px solid var(--line);
+  border-radius:8px;transition:background .2s,color .2s}
+.reset-btn:hover{background:rgba(255,255,255,.06);color:#fff}
+
+/* prompt display */
+.prompt-card{background:rgba(255,255,255,.05);border-radius:12px;padding:18px 22px;
+  border:1px solid var(--line);margin-bottom:22px}
+.eyebrow{font-size:10px;color:var(--dimdk);letter-spacing:.15em;text-transform:uppercase;
+  margin-bottom:10px;font-family:var(--mono);font-weight:600}
+.prompt-display{font-size:20px;line-height:1.5;color:#fff;min-height:38px;font-weight:500}
+.prompt-display .empty-hint{color:var(--dimdk);font-style:italic;font-weight:400;font-size:16px}
+.prompt-display .tok{transition:opacity .3s}
+.prompt-display .tok-new{background:rgba(255,102,0,.28);color:var(--orange);
+  padding:0 6px;border-radius:4px;animation:pop .4s ease-out;margin-left:2px}
+@keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+.prompt-display .cursor{display:inline-block;width:2px;height:22px;background:var(--orange);
+  margin-left:4px;vertical-align:-4px;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* distribution */
+.dist-wrap{display:grid;grid-template-columns:1fr;gap:20px}
+@media(min-width:820px){.dist-wrap{grid-template-columns:2fr 1fr;gap:26px}}
+
+.dist-card{background:rgba(255,255,255,.05);border-radius:12px;padding:18px 22px;
+  border:1px solid var(--line)}
+.dist-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.dist-title{font-size:14px;color:#fff;font-weight:500}
+.dist-title .next-hint{color:var(--dimdk);font-size:12px;font-weight:400;margin-left:6px}
+.dist-scale{font-family:var(--mono);font-size:11px;color:var(--dimdk)}
+
+.prob-list{display:flex;flex-direction:column;gap:8px}
+.prob-row{display:grid;grid-template-columns:110px 1fr 46px;gap:12px;align-items:center;
+  font-size:13.5px;transition:opacity .3s}
+.prob-tok{font-family:var(--mono);text-align:right;color:var(--ondk);
+  transition:color .3s,font-weight .3s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prob-num{font-family:var(--mono);color:var(--dimdk);text-align:right;font-size:12px}
+.prob-bar{height:20px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden}
+.prob-bar-fill{height:100%;background:rgba(139,127,230,.65);
+  transition:width .7s cubic-bezier(.2,.7,.3,1),background .3s;border-radius:5px}
+.prob-row.chosen .prob-tok{color:var(--orange);font-weight:600}
+.prob-row.chosen .prob-bar-fill{background:var(--orange)}
+.prob-row.chosen .prob-num{color:var(--orange)}
+.prob-more{font-size:12px;color:var(--dimdk);text-align:center;padding-top:10px;
+  border-top:1px dashed var(--line);margin-top:8px;font-family:var(--mono);font-style:italic}
+
+/* uncertainty gauge */
+.gauge-card{background:rgba(255,255,255,.05);border-radius:12px;padding:18px 22px;
+  border:1px solid var(--line);display:flex;flex-direction:column;gap:16px}
+.gauge-label{font-size:11px;color:var(--dimdk);letter-spacing:.15em;text-transform:uppercase;
+  font-family:var(--mono);font-weight:600}
+.gauge-value{font-size:22px;font-weight:600;color:#fff;letter-spacing:-.01em;line-height:1.15;transition:color .5s}
+.gauge-value.very-high{color:var(--red)}
+.gauge-value.high{color:var(--amber)}
+.gauge-value.medium{color:var(--gold)}
+.gauge-value.low{color:var(--green)}
+.gauge-bar{height:10px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden;
+  border:1px solid var(--line)}
+.gauge-fill{height:100%;background:var(--red);transition:width .7s cubic-bezier(.2,.7,.3,1),background .5s;border-radius:5px}
+.gauge-caption{font-size:12.5px;color:var(--ondk);line-height:1.55;margin-top:4px}
+
+/* controls */
+.lab-controls{display:flex;gap:14px;align-items:center;margin-top:26px;flex-wrap:wrap;
+  padding-top:22px;border-top:1px solid var(--line)}
+.btn{background:var(--orange);color:#fff;border-radius:10px;padding:12px 24px;
+  font-size:14px;font-weight:600;transition:background .2s,transform .1s}
+.btn:hover{background:var(--orange-d)}
+.btn:active{transform:scale(.98)}
+.btn:disabled{background:var(--dimdk);cursor:not-allowed}
+.controls-hint{font-size:13px;color:var(--dimdk)}
+
+/* insight callout */
+.insight{margin-top:20px;padding:16px 20px;background:rgba(249,221,86,.09);
+  border:1px solid rgba(249,221,86,.28);border-radius:12px;
+  font-size:14.5px;line-height:1.6;color:#F5E6A0;display:none;animation:fadein .5s ease-out}
+.insight.show{display:block}
+.insight strong{color:#fff}
+.insight em{color:var(--gold);font-style:normal;font-weight:500}
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* what this shows */
+.takeaway{border:1px solid var(--line);border-radius:14px;padding:26px 28px;
+  background:rgba(255,255,255,.025);margin-top:8px}
+.takeaway h3{font-size:18px;font-weight:600;color:#fff;margin-bottom:14px;letter-spacing:-.01em}
+.takeaway p{font-size:14.5px;line-height:1.7;color:var(--ondk);margin-bottom:12px}
+.takeaway p:last-child{margin-bottom:0}
+.takeaway strong{color:#fff;font-weight:600}
+.takeaway em{color:var(--gold);font-style:normal;font-weight:500}
+
+/* back link */
+.back-link{margin-top:32px;display:flex;justify-content:center}
+.back-link a{font-size:13px;color:var(--ondk);text-decoration:none;padding:10px 18px;
+  border:1px solid var(--line);border-radius:10px;transition:background .2s,color .2s}
+.back-link a:hover{background:rgba(255,255,255,.06);color:#fff}
+
+footer{padding:32px clamp(16px,4vw,30px);border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--dimdk);text-align:center}
+footer a{color:var(--ondk);text-decoration:none}
+footer a:hover{color:#fff}
+
+@media print{
+  body{background:#fff;color:#000}
+  .bar,.lab,.back-link,footer{display:none!important}
+  h1,h2,h3{color:#000!important}
+  .lede,.takeaway p{color:#333!important}
+}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <a class="home" href="../">MCC <span>AI</span></a>
+  <span class="sep"></span>
+  <span class="where">Context lab</span>
+  <div class="right">
+    <a href="../how-it-works/">How it works</a>
+    <a href="../scenarios/">Scenarios</a>
+    <a href="../">Home</a>
+  </div>
+</div>
+
+<main>
+
+  <div class="breadcrumb">
+    <a href="../how-it-works/">How an LLM works</a><span class="sep">›</span>Context lab
+  </div>
+
+  <div class="kicker">Session 1 · Going deeper</div>
+  <h1>Watch the guesses<br><span>reshape.</span></h1>
+  <p class="lede">
+    Add one word to the prompt at a time. Watch what happens to the probability distribution — sometimes it <em>sharpens</em>, sometimes it <em>opens back up</em>. <strong>Prompt engineering is not magic phrasing. It is constraining the possibility space.</strong>
+  </p>
+
+  <section class="lab" id="lab">
+    <div class="lab-head">
+      <div class="step-counter">
+        <span>Words added: <b id="step-num">0</b> / 7</span>
+      </div>
+      <button class="reset-btn" onclick="resetLab()">Reset</button>
+    </div>
+
+    <div class="prompt-card">
+      <div class="eyebrow">The prompt so far</div>
+      <div class="prompt-display" id="prompt-display">
+        <span class="empty-hint">(empty — the model has nothing to go on yet)</span><span class="cursor"></span>
+      </div>
+    </div>
+
+    <div class="dist-wrap">
+      <div class="dist-card">
+        <div class="dist-header">
+          <div class="dist-title">Ranked candidates for the next word <span class="next-hint" id="next-hint">(top 5 shown)</span></div>
+          <div class="dist-scale" id="scale-hint">out of thousands</div>
+        </div>
+        <div class="prob-list" id="probs"></div>
+        <div class="prob-more" id="prob-more">…and thousands of other tokens, each below 1%</div>
+      </div>
+
+      <div class="gauge-card">
+        <div>
+          <div class="gauge-label">Model uncertainty</div>
+          <div class="gauge-value very-high" id="gauge-value">Very high</div>
+        </div>
+        <div class="gauge-bar"><div class="gauge-fill" id="gauge-fill" style="width:95%"></div></div>
+        <div class="gauge-caption" id="gauge-caption">Almost anything could plausibly come next.</div>
+      </div>
+    </div>
+
+    <div class="lab-controls">
+      <button class="btn" onclick="addNextWord()" id="next-btn">Add next word →</button>
+      <span class="controls-hint" id="controls-hint">Click to add the next word and see how the distribution shifts</span>
+    </div>
+
+    <div class="insight" id="insight"></div>
+  </section>
+
+  <h2 class="sec">What this shows</h2>
+  <div class="takeaway">
+    <h3>Some words narrow the possibility space. Some words reopen it.</h3>
+    <p>
+      Grammar words — articles, prepositions, conjunctions — usually <em>open the door back up</em>. After "to", almost any verb could plausibly follow. After "about", almost any noun. The model's uncertainty spikes right back up.
+    </p>
+    <p>
+      Content words — nouns, specific verbs, named entities — usually <em>collapse the space</em>. "Neil ___" leaves the model with a strong bet on "Armstrong". "MCC ___" leaves it groping.
+    </p>
+    <p>
+      <strong>This is why prompt engineering works, and it is not magic phrasing.</strong> When you write "You are an academic advisor writing to a first-year student who missed a deadline," you are not being polite to the model. You are collapsing a thousand possible response styles down to a few. Adding the words <em>rules out</em> everything they exclude.
+    </p>
+    <p>
+      This also explains why fluent-and-wrong is the model's most dangerous failure mode. When your prompt has narrowed the space enough, the top candidate can be very confident. That confidence is real — about the <em>probability</em>. It says nothing about whether the answer is <em>true</em>. Both properties are compatible with the same distribution.
+    </p>
+  </div>
+
+  <div class="back-link">
+    <a href="../how-it-works/">← Back to How an LLM works</a>
+  </div>
+
+</main>
+
+<footer>
+  © 2026 <a href="../">MCC AI Professional Development</a> · Ted Gonzalez, JD/MBA · Session 1 context lab
+</footer>
+
+<script src="../assets/mcc-qr.js"></script>
+<script>
+(function(){
+  const SEQUENCE = [
+    {
+      prompt: [],
+      candidates: [
+        { t: 'The',   p: 3.1 },
+        { t: 'I',     p: 2.4 },
+        { t: 'A',     p: 1.9 },
+        { t: 'In',    p: 1.6 },
+        { t: 'You',   p: 1.4 }
+      ],
+      more: '…and thousands of other tokens, each below 1%',
+      uncertainty: 'Very high', gaugeClass: 'very-high', gaugeWidth: 95,
+      caption: 'With nothing to go on, almost any word is roughly as likely as any other.',
+      insight: null
+    },
+    {
+      prompt: ['The'],
+      candidates: [
+        { t: 'best',    p: 2.8 },
+        { t: 'first',   p: 2.4 },
+        { t: 'most',    p: 2.1 },
+        { t: 'only',    p: 1.9 },
+        { t: 'answer',  p: 1.5 }
+      ],
+      more: '…and thousands more, still very flat',
+      uncertainty: 'Very high', gaugeClass: 'very-high', gaugeWidth: 90,
+      caption: 'One word barely constrains the space. Still wide open.',
+      insight: null
+    },
+    {
+      prompt: ['The', 'best'],
+      candidates: [
+        { t: 'way',      p: 35 },
+        { t: 'thing',    p: 12 },
+        { t: 'part',     p: 8 },
+        { t: 'option',   p: 6 },
+        { t: 'moment',   p: 5 }
+      ],
+      more: '…the top 5 already cover most of the mass',
+      uncertainty: 'Medium-high', gaugeClass: 'high', gaugeWidth: 60,
+      caption: 'The phrase "The best ___" tightens things up. A few options dominate.',
+      insight: '<strong>Sharpening.</strong> Adding "best" collapsed a huge space down to a handful of plausible nouns. That is what a content word does.'
+    },
+    {
+      prompt: ['The', 'best', 'way'],
+      candidates: [
+        { t: 'to',   p: 61 },
+        { t: 'of',   p: 14 },
+        { t: 'for',  p: 10 },
+        { t: 'in',   p: 6 },
+        { t: 'is',   p: 5 }
+      ],
+      more: 'A handful of prepositions cover almost everything',
+      uncertainty: 'Low', gaugeClass: 'low', gaugeWidth: 22,
+      caption: 'One preposition, "to", is now overwhelmingly likely.',
+      insight: '<strong>Very sharp.</strong> "The best way ___" has a runaway favorite. The model is nearly certain the next word is "to".'
+    },
+    {
+      prompt: ['The', 'best', 'way', 'to'],
+      candidates: [
+        { t: 'learn',  p: 8 },
+        { t: 'get',    p: 7 },
+        { t: 'start',  p: 6 },
+        { t: 'avoid',  p: 5 },
+        { t: 'teach',  p: 4 }
+      ],
+      more: '…dozens of verbs, all roughly plausible',
+      uncertainty: 'High', gaugeClass: 'high', gaugeWidth: 75,
+      caption: 'After "to", almost any verb could come next. The space reopens.',
+      insight: '<strong>Watch the uncertainty jump.</strong> Adding "to" didn\'t narrow anything — it opened the door to any verb in the language. <em>Grammar words open. Content words close.</em>'
+    },
+    {
+      prompt: ['The', 'best', 'way', 'to', 'teach'],
+      candidates: [
+        { t: 'children',   p: 11 },
+        { t: 'students',   p: 9 },
+        { t: 'someone',    p: 8 },
+        { t: 'your',       p: 7 },
+        { t: 'a',          p: 6 }
+      ],
+      more: 'Many possible objects — anyone or anything you could teach',
+      uncertainty: 'Medium-high', gaugeClass: 'high', gaugeWidth: 62,
+      caption: '"Teach ___" narrows a bit — you teach someone or something.',
+      insight: null
+    },
+    {
+      prompt: ['The', 'best', 'way', 'to', 'teach', 'students'],
+      candidates: [
+        { t: 'about',  p: 32 },
+        { t: 'how',    p: 18 },
+        { t: 'to',     p: 15 },
+        { t: 'is',     p: 10 },
+        { t: 'the',    p: 8 }
+      ],
+      more: 'A short list of prepositions and connectives',
+      uncertainty: 'Medium', gaugeClass: 'medium', gaugeWidth: 40,
+      caption: 'A handful of function words dominate.',
+      insight: null
+    },
+    {
+      prompt: ['The', 'best', 'way', 'to', 'teach', 'students', 'about'],
+      candidates: [
+        { t: 'math',     p: 5 },
+        { t: 'science',  p: 5 },
+        { t: 'the',      p: 5 },
+        { t: 'a',        p: 4 },
+        { t: 'history',  p: 3 }
+      ],
+      more: '…any subject in the world could plausibly come next',
+      uncertainty: 'Very high', gaugeClass: 'very-high', gaugeWidth: 92,
+      caption: 'After "about", the space reopens all the way — every possible topic.',
+      insight: '<strong>All the way back open.</strong> "About ___" invites any noun-phrase in the language. This is the arc: sharpen, reopen, sharpen, reopen. <em>Each word is either narrowing your possibility space or reopening it.</em>'
+    }
+  ];
+
+  let step = 0;
+
+  function renderPromptDisplay(){
+    const s = SEQUENCE[step];
+    const el = document.getElementById('prompt-display');
+    if (s.prompt.length === 0){
+      el.innerHTML = '<span class="empty-hint">(empty — the model has nothing to go on yet)</span><span class="cursor"></span>';
+    } else {
+      const parts = s.prompt.map((word, i) => {
+        const isNew = i === s.prompt.length - 1 && step > 0;
+        return isNew
+          ? '<span class="tok tok-new">' + word + '</span>'
+          : '<span class="tok">' + word + '</span>';
+      });
+      el.innerHTML = parts.join(' ') + '<span class="cursor"></span>';
+    }
+  }
+
+  function renderDistribution(){
+    const s = SEQUENCE[step];
+    const maxP = Math.max.apply(null, s.candidates.map(c => c.p));
+    const html = s.candidates.map(c => {
+      const barWidth = Math.max(2, Math.round((c.p / maxP) * 100));
+      const displayP = c.p >= 10 ? Math.round(c.p) + '%' : c.p.toFixed(1) + '%';
+      return '<div class="prob-row">' +
+        '<div class="prob-tok">' + c.t + '</div>' +
+        '<div class="prob-bar"><div class="prob-bar-fill" style="width:' + barWidth + '%"></div></div>' +
+        '<div class="prob-num">' + displayP + '</div></div>';
+    }).join('');
+    document.getElementById('probs').innerHTML = html;
+    document.getElementById('prob-more').textContent = s.more;
+  }
+
+  function renderGauge(){
+    const s = SEQUENCE[step];
+    const val = document.getElementById('gauge-value');
+    val.textContent = s.uncertainty;
+    val.className = 'gauge-value ' + s.gaugeClass;
+    document.getElementById('gauge-fill').style.width = s.gaugeWidth + '%';
+    const fill = document.getElementById('gauge-fill');
+    const colors = { 'very-high': 'var(--red)', 'high': 'var(--amber)', 'medium': 'var(--gold)', 'low': 'var(--green)' };
+    fill.style.background = colors[s.gaugeClass];
+    document.getElementById('gauge-caption').textContent = s.caption;
+  }
+
+  function renderInsight(){
+    const s = SEQUENCE[step];
+    const el = document.getElementById('insight');
+    if (s.insight){
+      el.innerHTML = s.insight;
+      el.classList.add('show');
+    } else {
+      el.classList.remove('show');
+      el.innerHTML = '';
+    }
+  }
+
+  function updateControls(){
+    const btn = document.getElementById('next-btn');
+    const hint = document.getElementById('controls-hint');
+    const counter = document.getElementById('step-num');
+    counter.textContent = SEQUENCE[step].prompt.length;
+
+    if (step >= SEQUENCE.length - 1){
+      btn.disabled = true;
+      btn.textContent = 'End of demo';
+      hint.textContent = 'Hit Reset to run it again, or scroll down for the takeaway';
+    } else {
+      btn.disabled = false;
+      btn.textContent = step === 0 ? 'Start — add first word →' : 'Add next word →';
+      hint.textContent = 'Click to add the next word and see how the distribution shifts';
+    }
+  }
+
+  function renderAll(){
+    renderPromptDisplay();
+    renderDistribution();
+    renderGauge();
+    renderInsight();
+    updateControls();
+  }
+
+  function addNextWord(){
+    if (step < SEQUENCE.length - 1){
+      step++;
+      renderAll();
+    }
+  }
+  window.addNextWord = addNextWord;
+
+  function resetLab(){
+    step = 0;
+    renderAll();
+  }
+  window.resetLab = resetLab;
+
+  renderAll();
+
+  if (window.MCCQR && window.MCCQR.show){ window.MCCQR.show(); }
+
+  document.addEventListener('keydown', function(e){
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === ' '){
+      e.preventDefault();
+      addNextWord();
+    } else if (e.key === 'r' || e.key === 'R'){
+      resetLab();
+    }
+  });
+})();
+</script>
+</body>
+</html>
