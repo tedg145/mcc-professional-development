@@ -213,6 +213,13 @@ h2.sec::after{content:'';flex:1;height:1px;background:var(--line)}
   border-radius:8px;transition:background .2s,color .2s;white-space:nowrap}
 .replay-btn:hover{background:rgba(255,255,255,.06);color:#fff}
 .replay-btn.show{display:inline-block}
+.narrate-toggle{width:36px;height:36px;border-radius:50%;flex-shrink:0;border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s}
+.narrate-toggle:hover{background:rgba(255,255,255,.06)}
+.narrate-toggle.on{background:rgba(255,102,0,.16);border-color:rgba(255,102,0,.5)}
+.narrate-toggle.on svg{stroke:var(--orange)}
+.narrate-toggle svg{stroke:var(--ondk);transition:stroke .2s}
+.narrate-toggle.hidden{display:none}
 
 /* ---------- facilitator notes ---------- */
 .fac-notes{border:1px solid var(--line);border-radius:14px;padding:22px 24px;
@@ -499,6 +506,9 @@ footer a:hover{color:#fff}
         <svg id="play-icon" width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
         <svg id="pause-icon" width="14" height="14" viewBox="0 0 24 24" fill="#fff" style="display:none"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
       </button>
+      <button class="narrate-toggle" id="narrate-toggle" aria-label="Toggle spoken narration" title="Spoken narration">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      </button>
       <div class="scrubber" id="scrubber"></div>
       <div class="scene-counter" id="scene-counter">01 / 11</div>
       <button class="replay-btn" id="replay-btn">Watch again</button>
@@ -515,6 +525,7 @@ footer a:hover{color:#fff}
       <li><strong>Works as an opener for a technically-inclined room</strong> &mdash; a data science department, a math faculty group, or anyone who's already asked "but how does it actually work under the hood."</li>
       <li><strong>Click any scrubber segment</strong> to jump straight to a scene if you only want to project one or two &mdash; useful for answering a specific question live without running the whole sequence.</li>
       <li><strong>Pause is real pause.</strong> It stops exactly where you are and resumes from there, not from the start of the scene &mdash; safe to pause and talk through a formula.</li>
+      <li><strong>Spoken narration is optional, off by default.</strong> The speaker icon next to play turns on the browser's built-in voice reading a short script per scene. Good for solo, self-paced viewing; leave it off when you're projecting and narrating yourself.</li>
     </ul>
   </div>
 
@@ -538,9 +549,26 @@ footer a:hover{color:#fff}
   const playToggle = document.getElementById('play-toggle');
   const playIcon = document.getElementById('play-icon');
   const pauseIcon = document.getElementById('pause-icon');
+  const narrateToggle = document.getElementById('narrate-toggle');
   const scrubber = document.getElementById('scrubber');
   const counter = document.getElementById('scene-counter');
   const replayBtn = document.getElementById('replay-btn');
+
+  const NARRATION = [
+    "Human language isn't literally mathematics. But it has enough regular structure that mathematics can model it.",
+    "At its core, a language model does one thing: predict the next token, given everything that came before. After \"the cat sat on the,\" it ranks candidates by probability, then does this over and over to generate a response.",
+    "First, language gets broken into tokens. The sentence becomes a sequence of token identifiers. The numbers themselves don't mean anything, they're just lookups for a richer representation.",
+    "Each token becomes a vector, a long list of numbers in a high-dimensional space. Related concepts land near each other. Cat and dog end up close together. Cat and democracy end up far apart. Not because of a dictionary definition, but because of patterns learned across thousands of dimensions.",
+    "Context changes meaning. The word bank means something different next to deposited money than it does next to river. A transformer uses a mechanism called attention to figure out which other words matter most when interpreting a given word.",
+    "Grammar gets learned the same way, as probability. After seeing millions of examples, the model learns that \"she is walking\" is far more likely than \"she are walking.\" No grammar rulebook required.",
+    "A fact like Paris is the capital of France isn't stored in one place. It's distributed across relationships between many concepts, spread across a huge number of parameters.",
+    "Training is optimization. When the model gets a prediction wrong, that's a penalty called loss. The model nudges its internal settings very slightly to reduce that loss, and repeats this across an enormous number of examples.",
+    "Put it all together. Language becomes tokens, tokens become vectors, attention adds context, and the result is a probability distribution over what comes next. That's the whole pipeline.",
+    "So does this mean language is math? Not exactly. Language carries grammar, ambiguity, metaphor, emotion, and culture. Mathematics is just the tool the model uses to represent patterns within that system.",
+    "Tokens turn text into units. Embeddings turn tokens into vectors. Attention represents context. Probability ranks continuations. And optimization improves it all, one example at a time. An LLM is a machine that models the structure of language using geometry, probability, and optimization."
+  ];
+  const speechOK = 'speechSynthesis' in window;
+  let narrateOn = false;
 
   let idx = 0;
   let playing = false;
@@ -619,6 +647,36 @@ footer a:hover{color:#fff}
     setFillTo(startPct, true, remaining);
   }
 
+  function stopSpeech(){
+    if (speechOK) window.speechSynthesis.cancel();
+  }
+
+  function speakScene(i){
+    if (!speechOK || !narrateOn) return;
+    window.speechSynthesis.cancel();
+    const text = NARRATION[i];
+    if (!text) return;
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 0.98;
+    utter.pitch = 1;
+    window.speechSynthesis.speak(utter);
+  }
+
+  function updateNarrateIcon(){
+    narrateToggle.classList.toggle('on', narrateOn);
+  }
+
+  if (!speechOK){
+    narrateToggle.classList.add('hidden');
+  } else {
+    narrateToggle.addEventListener('click', () => {
+      narrateOn = !narrateOn;
+      updateNarrateIcon();
+      if (narrateOn && playing){ speakScene(idx); }
+      else { stopSpeech(); }
+    });
+  }
+
   function play(){
     playing = true;
     everPlayed = true;
@@ -626,6 +684,7 @@ footer a:hover{color:#fff}
     replayBtn.classList.remove('show');
     updatePlayIcon();
     scheduleAdvance();
+    speakScene(idx);
   }
 
   function pause(){
@@ -636,6 +695,7 @@ footer a:hover{color:#fff}
     updatePlayIcon();
     const pct = Math.min(100, (segElapsed / currentDuration()) * 100);
     setFillTo(pct, false);
+    stopSpeech();
   }
 
   function advance(){
@@ -643,7 +703,7 @@ footer a:hover{color:#fff}
     if (idx < scenes.length - 1){
       idx++;
       activateScene(idx);
-      if (playing) scheduleAdvance();
+      if (playing){ scheduleAdvance(); speakScene(idx); }
     } else {
       playing = false;
       clearAdvanceTimer();
@@ -651,6 +711,7 @@ footer a:hover{color:#fff}
       setFillTo(100, false);
       segs[idx].classList.add('done');
       replayBtn.classList.add('show');
+      stopSpeech();
     }
   }
 
@@ -662,12 +723,13 @@ footer a:hover{color:#fff}
     overlay.classList.add('hide');
     replayBtn.classList.remove('show');
     activateScene(idx);
-    if (playing) scheduleAdvance();
-    else setFillTo(0, false);
+    if (playing){ scheduleAdvance(); speakScene(idx); }
+    else { setFillTo(0, false); stopSpeech(); }
   }
 
   function resetPlayer(){
     clearAdvanceTimer();
+    stopSpeech();
     idx = 0;
     segElapsed = 0;
     segStart = null;
