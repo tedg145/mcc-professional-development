@@ -137,6 +137,7 @@ div.card .go{color:var(--dimdk)}
   *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 </style>
+<link rel="stylesheet" href="assets/mcc-hub.css">
 </head>
 <body>
 
@@ -157,12 +158,74 @@ div.card .go{color:var(--dimdk)}
 <div id="hub">
   <div class="glow"></div><div class="glow2"></div>
   <div id="hubinner">
-    <div class="wrap" style="flex:1;display:flex;flex-direction:column">
-      <div class="eyebrow">McLennan Community College</div>
-      <h1>AI Professional<br><span>Development</span></h1>
-      <p class="sub">Everything here runs in a browser — no install, no account, nothing to configure.
-        Built for staff and faculty, and growing as the curriculum does.</p>
-      <div id="cards"></div>
+    <div class="hub-topbar">
+      <a class="hub-brand" href="#hub" aria-label="MCC AI Professional Development home">
+        <span class="hub-brand__mark">MCC</span>
+        <span><strong>AI Professional Development</strong><small>Learn · Practice · Build · Use</small></span>
+      </a>
+      <label class="hub-search">
+        <span class="hub-search__icon" aria-hidden="true">⌕</span>
+        <input id="hub-search" type="search" placeholder="Search activities, tools, and concepts" autocomplete="off">
+        <span class="hub-search__hint">/</span>
+      </label>
+      <button class="hub-guide-button" type="button" data-open-guide>AI Guide ✦</button>
+    </div>
+    <div class="wrap hub-shell" style="flex:1;display:flex;flex-direction:column">
+      <section class="hub-hero">
+        <div class="hub-hero__copy">
+          <div class="eyebrow">McLennan Community College</div>
+          <h1>Learn it. Question it.<br><span>Build with it.</span></h1>
+          <p class="sub">A practical AI learning environment for MCC faculty, staff, supervisors, and builders. Choose a path, try a mission, or ask the guide where to begin.</p>
+          <div class="hub-hero__actions">
+            <a class="hub-action hub-action--primary" href="how-it-works/">Start with the essentials</a>
+            <a class="hub-action" href="#pathways">Choose your path</a>
+          </div>
+        </div>
+        <aside class="hub-journey" aria-label="Professional development journey">
+          <div class="hub-journey__label">Your development path</div>
+          <ol>
+            <li><span>01</span><div><strong>Learn</strong><small>Build a useful mental model.</small></div></li>
+            <li><span>02</span><div><strong>Practice</strong><small>Test judgment in guided activities.</small></div></li>
+            <li><span>03</span><div><strong>Build</strong><small>Create tools and workflows.</small></div></li>
+            <li><span>04</span><div><strong>Use</strong><small>Apply AI to real MCC work.</small></div></li>
+          </ol>
+        </aside>
+      </section>
+
+      <section class="hub-resume" aria-label="Start or continue learning">
+        <a class="hub-resume-card" href="how-it-works/">
+          <span class="hub-resume-card__icon" aria-hidden="true">→</span>
+          <span><small>New to the site?</small><h2>Start with the essentials</h2><p>A short, visual explanation of how a language model works.</p></span>
+        </a>
+        <a class="hub-resume-card" id="continue-card" href="how-it-works/">
+          <span class="hub-resume-card__icon" aria-hidden="true">↗</span>
+          <span><small>Continue</small><h2>Pick up where you left off</h2><p>Your most recent activity is saved in this browser.</p></span>
+        </a>
+      </section>
+
+      <section class="hub-pathways" id="pathways">
+        <div class="hub-section-heading">
+          <div><small>Choose your path</small><h2>What brings you here?</h2></div>
+          <p>Select a role to emphasize the activities most useful to you. Nothing disappears permanently.</p>
+        </div>
+        <div class="hub-path-grid" role="group" aria-label="Filter by audience">
+          <button class="hub-path" type="button" data-audience="faculty"><span class="hub-path__icon">🎓</span><strong>Faculty</strong><small>Teaching, assessment, feedback, and course design.</small></button>
+          <button class="hub-path" type="button" data-audience="staff"><span class="hub-path__icon">◆</span><strong>Staff</strong><small>Communication, productivity, and everyday workflows.</small></button>
+          <button class="hub-path" type="button" data-audience="supervisor"><span class="hub-path__icon">◎</span><strong>Supervisor</strong><small>Policy, decisions, risk, and responsible adoption.</small></button>
+          <button class="hub-path" type="button" data-audience="builder"><span class="hub-path__icon">&lt;/&gt;</span><strong>Builder</strong><small>Prompts, prototypes, safeguards, and automation.</small></button>
+        </div>
+        <div class="hub-filter-status" id="filter-status" aria-live="polite"></div>
+      </section>
+
+      <section class="hub-zones" aria-label="Learning activities">
+        <div class="hub-section-heading">
+          <div><small>Explore the environment</small><h2>Four clear zones. One growing curriculum.</h2></div>
+          <p>Every activity includes an estimated time, level, format, and audience fit.</p>
+        </div>
+        <div id="activity-zones"></div>
+        <div class="hub-empty" id="hub-empty">No activities match that search. Try a broader word or clear the role filter.</div>
+      </section>
+
       <div id="hubfoot">
         <div>Ted Gonzalez, JD/MBA · <button id="replay">Replay intro</button></div>
         <div>&copy; 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
@@ -177,75 +240,50 @@ div.card .go{color:var(--dimdk)}
    Set soon:true to show it greyed out and not yet clickable.
    ============================================================ */
 const SECTIONS = [
-  { href:'how-it-works/', kicker:'Session 1 · Mental model', tag:'3 stages',
-    title:'How an LLM Works',
-    desc:'What it learned during training, how it predicts one word at a time, and why fluency is not accuracy. Includes a context lab and a find-the-error exercise.',
-    cta:'Start the walkthrough' },
-
-  { href:'presentations/', kicker:'Slide library', tag:'Staff + Faculty',
-    title:'Presentations',
-    desc:'Every deck, grouped by audience. Viewable in the browser, downloadable to edit.',
-    cta:'Browse the decks' },
-
-  { href:'workshop/', kicker:'Three-hour workshop', tag:'Hands-on',
-    title:'Build Your Own Tools',
-    desc:'The toolchain, localhost, free hosting, safeguards, row-level security, and what to consider before you sell anything.',
-    cta:'Open the workshop' },
-
-  { href:'sandbox/', kicker:'Practice environment', tag:'6 missions',
-    title:'The Sabine Crossing Sandbox',
-    desc:'A fictional college where nothing can break. A scoped assistant, authorization screens, a connector marketplace and a terminal.',
-    cta:'Open the sandbox' },
-
-  { href:'scenarios/', kicker:'Practice missions', tag:'4 scenarios',
-    title:'Scenarios',
-    desc:'Short missions where the technology fails on purpose — a fabricated citation, a redaction that is only a drawing, an assistant that invents policy.',
-    cta:'Run a scenario' },
-
-  { href:'inspector/', kicker:'Hands-on lab', tag:'Nothing uploads',
-    title:'Metadata Inspector',
-    desc:'Drop in a photo or a document and see what it is carrying. Camera, author, revision history, and sometimes exactly where it was taken.',
-    cta:'Open the inspector' },
-
-  { href:'tools/', kicker:'Reference', tag:'8 tools',
-    title:'Tool Bench',
-    desc:'What each tool is for, what it costs, whether you keep it after graduation, and — the column nobody else has — how each one fails.',
-    cta:'See the bench' },
-
-  { href:'hours/', kicker:'Personal lab', tag:'Your week',
-    title:'Find Your Ten Hours',
-    desc:'List the work you already repeat. See where the hours are, which pattern each task is, and what to do first — then print the plan.',
-    cta:'Find your hours' },
-
-  { href:'inbox/', kicker:'Practice environment', tag:'8 messages',
-    title:'The Inbox Hour',
-    desc:'Eight things waiting on a Tuesday morning. Four are ordinary. Deciding which is which is the whole exercise.',
-    cta:'Open the inbox' }
-
-  // Add the next section by copying a block above. Example:
-  // ,{ href:'resources/', kicker:'Reference', tag:'Coming soon',
-  //    title:'Policy & Resources',
-  //    desc:'The data line, the Tool Charter, and the pre-launch checklist.',
-  //    cta:'Open', soon:true }
+  {zone:'Learn',href:'how-it-works/',type:'Walkthrough',level:'Beginner',duration:'15 min',title:'How an LLM Works',desc:'See what a language model learned, how it predicts, and why fluent answers can still be wrong.',audience:['faculty','staff','supervisor','builder'],cta:'Start the walkthrough'},
+  {zone:'Learn',href:'language-math/',type:'Visual explainer',level:'Intermediate',duration:'15–20 min',title:'Language & Math',desc:'Explore tokens, vectors, probability, attention, and the mathematics beneath generated language.',audience:['faculty','builder'],cta:'Explore the concepts'},
+  {zone:'Practice',href:'scenarios/',type:'Scenario set',level:'Intermediate',duration:'10–20 min',title:'AI Decision Scenarios',desc:'Work through missions where citations, redactions, policies, and confident answers fail on purpose.',audience:['faculty','staff','supervisor'],cta:'Run a scenario'},
+  {zone:'Practice',href:'context-lab/',type:'Interactive lab',level:'Beginner',duration:'10 min',title:'Context Lab',desc:'Test how missing or changing context alters what an AI system produces.',audience:['faculty','staff','builder'],cta:'Open the lab'},
+  {zone:'Practice',href:'find-the-error/',type:'Challenge',level:'Beginner',duration:'8–12 min',title:'Find the Error',desc:'Practice slowing down, inspecting an answer, and spotting the detail that does not belong.',audience:['faculty','staff','supervisor'],cta:'Take the challenge'},
+  {zone:'Practice',href:'verification/',type:'Verification lab',level:'Intermediate',duration:'15 min',title:'Verification',desc:'Build a repeatable habit for checking claims, sources, quotations, and institutional facts.',audience:['faculty','staff','supervisor'],cta:'Practice verification'},
+  {zone:'Practice',href:'inspector/',type:'Hands-on lab',level:'Intermediate',duration:'10 min',title:'Metadata Inspector',desc:'See what photos and documents can carry—locally in your browser, without uploading the file.',audience:['staff','supervisor','builder'],cta:'Inspect a file'},
+  {zone:'Build',href:'workshop/',type:'Workshop',level:'Advanced',duration:'3 hours',title:'Build Your Own Tools',desc:'Move from idea to hosted tool with safeguards, security, and responsible product decisions.',audience:['builder','supervisor'],cta:'Open the workshop'},
+  {zone:'Build',href:'sandbox/',type:'Practice environment',level:'Intermediate',duration:'20–30 min',title:'Sabine Crossing Sandbox',desc:'Experiment with assistants, authorization, connectors, and a terminal where nothing real can break.',audience:['builder','staff','supervisor'],cta:'Enter the sandbox'},
+  {zone:'Use',href:'presentations/',type:'Slide library',level:'All levels',duration:'Flexible',title:'Presentations',desc:'Browse staff and faculty decks, view them in the browser, or download editable PowerPoint files.',audience:['faculty','staff','supervisor'],cta:'Browse the decks'},
+  {zone:'Use',href:'tools/',type:'Reference',level:'Beginner',duration:'10 min',title:'Tool Bench',desc:'Compare purpose, cost, access, and—most importantly—how each AI tool can fail.',audience:['faculty','staff','supervisor','builder'],cta:'Compare tools'},
+  {zone:'Use',href:'hours/',type:'Personal lab',level:'Beginner',duration:'15 min',title:'Find Your Ten Hours',desc:'Identify repeated work, classify the pattern, and choose a sensible first automation target.',audience:['staff','supervisor','builder'],cta:'Find your hours'},
+  {zone:'Use',href:'inbox/',type:'Practice environment',level:'Beginner',duration:'12–15 min',title:'The Inbox Hour',desc:'Triage eight Tuesday-morning messages and decide which tasks should—and should not—use AI.',audience:['staff','supervisor'],cta:'Open the inbox'}
 ];
 
 const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-document.getElementById('cards').innerHTML = SECTIONS.map(s => {
-  /* Kicker and tag share one flex row so a long kicker can never run
-     underneath the pill, whatever either of them says. */
-  const inner = '<div class="khead"><div class="k">' + esc(s.kicker) + '</div>'
-    + (s.tag ? '<div class="tag">' + esc(s.tag) + '</div>' : '') + '</div>'
-    + '<h2>' + esc(s.title) + '</h2>'
-    + '<p>' + esc(s.desc) + '</p>'
-    + '<div class="go">' + esc(s.cta) + ' &rarr;</div>';
-  return s.soon ? '<div class="card">' + inner + '</div>'
-                : '<a class="card" href="' + s.href + '">' + inner + '</a>';
+const ZONES = {Learn:{number:'01',desc:'Understand what AI is doing.'},Practice:{number:'02',desc:'Strengthen judgment through guided activity.'},Build:{number:'03',desc:'Create useful tools with safeguards.'},Use:{number:'04',desc:'Apply AI to real professional work.'}};
+const zoneRoot = document.getElementById('activity-zones');
+zoneRoot.innerHTML = Object.keys(ZONES).map(zone => {
+  const items = SECTIONS.filter(s => s.zone === zone);
+  return '<section class="zone" data-zone="'+zone+'"><div class="zone__heading"><div class="zone__number">'+ZONES[zone].number+'</div><div><h2>'+zone+'</h2><p>'+ZONES[zone].desc+'</p></div><span class="zone__count">'+items.length+' activities</span></div><div class="zone-grid">'
+    + items.map(s => '<a class="activity-card" href="'+s.href+'" data-search="'+esc((s.title+' '+s.desc+' '+s.type+' '+s.level+' '+s.audience.join(' ')).toLowerCase())+'" data-audience="'+s.audience.join(' ')+'" data-title="'+esc(s.title)+'"><div class="activity-card__top"><span class="activity-card__type">'+esc(s.type)+'</span><span class="activity-card__level">'+esc(s.level)+'</span></div><h3>'+esc(s.title)+'</h3><p>'+esc(s.desc)+'</p><div class="activity-card__meta"><span>◷ '+esc(s.duration)+'</span><span>◎ '+esc(s.audience.join(' · '))+'</span></div><div class="activity-card__go">'+esc(s.cta)+' →</div></a>').join('')
+    + '</div></section>';
 }).join('');
-document.querySelectorAll('a.card').forEach(c => c.addEventListener('pointermove', e => {
-  const r = c.getBoundingClientRect();
-  c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-  c.style.setProperty('--my', (e.clientY - r.top) + 'px');
-}));
+
+const searchInput=document.getElementById('hub-search');
+const cards=[...document.querySelectorAll('.activity-card')];
+const pathButtons=[...document.querySelectorAll('[data-audience]')];
+let activeAudience='';
+function applyFilters(){
+  const q=searchInput.value.trim().toLowerCase();let visible=0;
+  cards.forEach(card=>{const matchQuery=!q||card.dataset.search.includes(q);const matchAudience=!activeAudience||card.dataset.audience.split(' ').includes(activeAudience);const show=matchQuery&&matchAudience;card.hidden=!show;if(show)visible++;});
+  document.querySelectorAll('.zone').forEach(zone=>{zone.hidden=!zone.querySelector('.activity-card:not([hidden])');});
+  document.getElementById('hub-empty').classList.toggle('is-visible',visible===0);
+  const status=document.getElementById('filter-status');
+  status.innerHTML=activeAudience?'Showing '+visible+' activities for <strong>'+esc(activeAudience)+'</strong>.<button type="button" id="clear-filter">Show everything</button>':'';
+  const clear=document.getElementById('clear-filter');if(clear)clear.addEventListener('click',()=>{activeAudience='';pathButtons.forEach(b=>b.classList.remove('is-active'));applyFilters();});
+}
+searchInput.addEventListener('input',applyFilters);
+pathButtons.forEach(button=>button.addEventListener('click',()=>{activeAudience=activeAudience===button.dataset.audience?'':button.dataset.audience;pathButtons.forEach(b=>b.classList.toggle('is-active',b.dataset.audience===activeAudience));applyFilters();document.querySelector('.hub-zones').scrollIntoView({behavior:'smooth',block:'start'});}));
+window.addEventListener('keydown',e=>{if(e.key==='/'&&!/input|textarea/i.test(document.activeElement.tagName)){e.preventDefault();searchInput.focus();}});
+cards.forEach(card=>{card.addEventListener('pointermove',e=>{const r=card.getBoundingClientRect();card.style.setProperty('--mx',(e.clientX-r.left)+'px');card.style.setProperty('--my',(e.clientY-r.top)+'px');});card.addEventListener('click',()=>{try{localStorage.setItem('mcc-last-page-v1',JSON.stringify({path:card.getAttribute('href'),title:card.dataset.title,at:Date.now()}));}catch(e){}});});
+try{const recent=JSON.parse(localStorage.getItem('mcc-last-page-v1')||'null');if(recent&&recent.path){const resume=document.getElementById('continue-card');resume.href=recent.path;resume.querySelector('h2').textContent=recent.title;resume.querySelector('p').textContent='Resume your most recent MCC activity.';}}catch(e){}
+document.querySelector('[data-open-guide]').addEventListener('click',()=>{if(window.MCCGuide)window.MCCGuide.open();});
 
 /* ============================================================
    THE REACTOR
@@ -473,5 +511,6 @@ document.getElementById('replay').addEventListener('click', function(){
 if(entered && window.MCCQR) window.MCCQR.show();
 </script>
 <script src="assets/mcc-qr.js" defer></script>
+<script src="assets/mcc-guide.js" defer></script>
 </body>
 </html>

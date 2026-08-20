@@ -6,7 +6,7 @@ Workshop materials for MCC staff and faculty.
 
 | Path | What it is |
 |---|---|
-| `/` | Landing page — the intro sequence, then the hub |
+| `/` | Landing page — the cinematic intro, then the mission-control hub |
 | `/presentations/` | Slide library, grouped into **Staff** and **Faculty** |
 | `/scenarios/` | Interactive missions where the technology fails on purpose |
 | `/inspector/` | Metadata Inspector — read what a file is carrying, in the browser |
@@ -15,6 +15,29 @@ Workshop materials for MCC staff and faculty.
 | `/assets/` | Shared JavaScript. No frameworks, no CDN, no build step. |
 
 Everything runs in a browser. No install, no account, nothing to configure.
+
+## The hub
+
+The hub organizes the curriculum into four zones: **Learn**, **Practice**,
+**Build**, and **Use**. Each activity carries audience, difficulty, format, and
+estimated-time metadata. Visitors can search the entire catalog, filter it by
+role (Faculty, Staff, Supervisor, or Builder), and resume their most recent
+activity from browser-local storage.
+
+The catalog lives in the `SECTIONS` array in the root `index.html`. Add a new
+entry there and it automatically appears in the right zone and participates in
+search and audience filtering.
+
+## MCC AI Guide
+
+`assets/mcc-guide.js` adds the persistent MCC AI Guide to every page. The guide
+has three modes—**Navigator**, **Coach**, and **Builder**—and grounds its
+recommendations in the MCC site map. It recognizes the visitor's current
+activity and routes them to relevant labs, workshops, and references.
+
+The guide is intentionally browser-local. It does not transmit questions to an
+outside AI service. Update the `content` array near the top of
+`assets/mcc-guide.js` whenever a new activity should become a recommendation.
 
 ---
 
