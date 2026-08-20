@@ -6,7 +6,7 @@ Workshop materials for MCC staff and faculty.
 
 | Path | What it is |
 |---|---|
-| `/` | Landing page — the intro sequence, then the hub |
+| `/` | Landing page — the cinematic intro, then the mission-control hub |
 | `/presentations/` | Slide library, grouped into **Staff** and **Faculty** |
 | `/scenarios/` | Interactive missions where the technology fails on purpose |
 | `/inspector/` | Metadata Inspector — read what a file is carrying, in the browser |
@@ -15,6 +15,19 @@ Workshop materials for MCC staff and faculty.
 | `/assets/` | Shared JavaScript. No frameworks, no CDN, no build step. |
 
 Everything runs in a browser. No install, no account, nothing to configure.
+
+## The hub
+
+The hub organizes the curriculum into four zones: **Learn**, **Practice**,
+**Build**, and **Use**. Each activity carries audience, difficulty, format, and
+estimated-time metadata. Visitors can search the entire catalog, filter it by
+role (Faculty, Staff, Supervisor, or Builder), and resume their most recent
+activity from browser-local storage.
+
+The shared catalog lives in `assets/mcc-content.js`. Add a new activity there
+and it automatically appears in the right hub zone and participates in search
+and audience filtering. Four featured activity IDs are selected in the root
+`index.html`; the complete catalog stays collapsed until requested.
 
 ---
 
@@ -51,10 +64,10 @@ are `email`, `doc`, `chat`, `table` and `terminal`. The full format reference,
 with worked examples, is in the **How to write a new scenario** panel on the
 scenarios page itself, so the instructions travel with the site.
 
-## Adding a hub card
+## Adding a hub activity
 
-Edit the `SECTIONS` array near the bottom of the root `index.html`. There is a
-commented-out example showing a `soon: true` entry for something not built yet.
+Add the activity to `assets/mcc-content.js`. To feature it on the landing page,
+add its ID to `FEATURED_IDS` in the root `index.html`.
 
 ---
 
