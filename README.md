@@ -38,6 +38,9 @@ activity and routes them to relevant labs, workshops, and references.
 The guide is intentionally browser-local. It does not transmit questions to an
 outside AI service. Activity metadata, search terms, related activities, and
 page-specific coaching prompts are maintained in `assets/mcc-content.js`.
+Mac's artwork is intentionally limited to the compact AI Guide launcher and
+panel header so the learning environment retains its clean, content-first
+visual hierarchy.
 
 ---
 
