@@ -24,9 +24,9 @@ estimated-time metadata. Visitors can search the entire catalog, filter it by
 role (Faculty, Staff, Supervisor, or Builder), and resume their most recent
 activity from browser-local storage.
 
-The catalog lives in the `SECTIONS` array in the root `index.html`. Add a new
-entry there and it automatically appears in the right zone and participates in
-search and audience filtering.
+The shared catalog lives in `assets/mcc-content.js`. Add a new activity there
+and it automatically appears in the right hub zone, participates in search and
+audience filtering, and becomes available to Mac for navigation and coaching.
 
 ## MCC AI Guide
 
@@ -36,8 +36,8 @@ recommendations in the MCC site map. It recognizes the visitor's current
 activity and routes them to relevant labs, workshops, and references.
 
 The guide is intentionally browser-local. It does not transmit questions to an
-outside AI service. Update the `content` array near the top of
-`assets/mcc-guide.js` whenever a new activity should become a recommendation.
+outside AI service. Activity metadata, search terms, related activities, and
+page-specific coaching prompts are maintained in `assets/mcc-content.js`.
 
 ---
 

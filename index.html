@@ -235,26 +235,13 @@ div.card .go{color:var(--dimdk)}
   </div>
 </div>
 
+<script src="assets/mcc-content.js"></script>
 <script>
 /* ============================================================
-   THE SECTION LIST — add a block here when you add a section.
-   Set soon:true to show it greyed out and not yet clickable.
+   THE SECTION LIST — maintained in assets/mcc-content.js so the
+   hub, search, and Mac all use the same activity information.
    ============================================================ */
-const SECTIONS = [
-  {zone:'Learn',href:'how-it-works/',type:'Walkthrough',level:'Beginner',duration:'15 min',title:'How an LLM Works',desc:'See what a language model learned, how it predicts, and why fluent answers can still be wrong.',audience:['faculty','staff','supervisor','builder'],cta:'Start the walkthrough'},
-  {zone:'Learn',href:'language-math/',type:'Visual explainer',level:'Intermediate',duration:'15–20 min',title:'Language & Math',desc:'Explore tokens, vectors, probability, attention, and the mathematics beneath generated language.',audience:['faculty','builder'],cta:'Explore the concepts'},
-  {zone:'Practice',href:'scenarios/',type:'Scenario set',level:'Intermediate',duration:'10–20 min',title:'AI Decision Scenarios',desc:'Work through missions where citations, redactions, policies, and confident answers fail on purpose.',audience:['faculty','staff','supervisor'],cta:'Run a scenario'},
-  {zone:'Practice',href:'context-lab/',type:'Interactive lab',level:'Beginner',duration:'10 min',title:'Context Lab',desc:'Test how missing or changing context alters what an AI system produces.',audience:['faculty','staff','builder'],cta:'Open the lab'},
-  {zone:'Practice',href:'find-the-error/',type:'Challenge',level:'Beginner',duration:'8–12 min',title:'Find the Error',desc:'Practice slowing down, inspecting an answer, and spotting the detail that does not belong.',audience:['faculty','staff','supervisor'],cta:'Take the challenge'},
-  {zone:'Practice',href:'verification/',type:'Verification lab',level:'Intermediate',duration:'15 min',title:'Verification',desc:'Build a repeatable habit for checking claims, sources, quotations, and institutional facts.',audience:['faculty','staff','supervisor'],cta:'Practice verification'},
-  {zone:'Practice',href:'inspector/',type:'Hands-on lab',level:'Intermediate',duration:'10 min',title:'Metadata Inspector',desc:'See what photos and documents can carry—locally in your browser, without uploading the file.',audience:['staff','supervisor','builder'],cta:'Inspect a file'},
-  {zone:'Build',href:'workshop/',type:'Workshop',level:'Advanced',duration:'3 hours',title:'Build Your Own Tools',desc:'Move from idea to hosted tool with safeguards, security, and responsible product decisions.',audience:['builder','supervisor'],cta:'Open the workshop'},
-  {zone:'Build',href:'sandbox/',type:'Practice environment',level:'Intermediate',duration:'20–30 min',title:'Sabine Crossing Sandbox',desc:'Experiment with assistants, authorization, connectors, and a terminal where nothing real can break.',audience:['builder','staff','supervisor'],cta:'Enter the sandbox'},
-  {zone:'Use',href:'presentations/',type:'Slide library',level:'All levels',duration:'Flexible',title:'Presentations',desc:'Browse staff and faculty decks, view them in the browser, or download editable PowerPoint files.',audience:['faculty','staff','supervisor'],cta:'Browse the decks'},
-  {zone:'Use',href:'tools/',type:'Reference',level:'Beginner',duration:'10 min',title:'Tool Bench',desc:'Compare purpose, cost, access, and—most importantly—how each AI tool can fail.',audience:['faculty','staff','supervisor','builder'],cta:'Compare tools'},
-  {zone:'Use',href:'hours/',type:'Personal lab',level:'Beginner',duration:'15 min',title:'Find Your Ten Hours',desc:'Identify repeated work, classify the pattern, and choose a sensible first automation target.',audience:['staff','supervisor','builder'],cta:'Find your hours'},
-  {zone:'Use',href:'inbox/',type:'Practice environment',level:'Beginner',duration:'12–15 min',title:'The Inbox Hour',desc:'Triage eight Tuesday-morning messages and decide which tasks should—and should not—use AI.',audience:['staff','supervisor'],cta:'Open the inbox'}
-];
+const SECTIONS = (window.MCC_CONTENT || []).map(s => Object.assign({},s,{href:s.path,desc:s.description}));
 
 const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const ZONES = {Learn:{number:'01',desc:'Understand what AI is doing.'},Practice:{number:'02',desc:'Strengthen judgment through guided activity.'},Build:{number:'03',desc:'Create useful tools with safeguards.'},Use:{number:'04',desc:'Apply AI to real professional work.'}};
@@ -262,7 +249,7 @@ const zoneRoot = document.getElementById('activity-zones');
 zoneRoot.innerHTML = Object.keys(ZONES).map(zone => {
   const items = SECTIONS.filter(s => s.zone === zone);
   return '<section class="zone" data-zone="'+zone+'"><div class="zone__heading"><div class="zone__number">'+ZONES[zone].number+'</div><div><h2>'+zone+'</h2><p>'+ZONES[zone].desc+'</p></div><span class="zone__count">'+items.length+' activities</span></div><div class="zone-grid">'
-    + items.map(s => '<a class="activity-card" href="'+s.href+'" data-search="'+esc((s.title+' '+s.desc+' '+s.type+' '+s.level+' '+s.audience.join(' ')).toLowerCase())+'" data-audience="'+s.audience.join(' ')+'" data-title="'+esc(s.title)+'"><div class="activity-card__top"><span class="activity-card__type">'+esc(s.type)+'</span><span class="activity-card__level">'+esc(s.level)+'</span></div><h3>'+esc(s.title)+'</h3><p>'+esc(s.desc)+'</p><div class="activity-card__meta"><span>◷ '+esc(s.duration)+'</span><span>◎ '+esc(s.audience.join(' · '))+'</span></div><div class="activity-card__go">'+esc(s.cta)+' →</div></a>').join('')
+    + items.map(s => '<a class="activity-card" href="'+s.href+'" data-search="'+esc((s.title+' '+s.desc+' '+s.type+' '+s.level+' '+s.keywords+' '+s.audience.join(' ')).toLowerCase())+'" data-audience="'+s.audience.join(' ')+'" data-title="'+esc(s.title)+'"><div class="activity-card__top"><span class="activity-card__type">'+esc(s.type)+'</span><span class="activity-card__level">'+esc(s.level)+'</span></div><h3>'+esc(s.title)+'</h3><p>'+esc(s.desc)+'</p><div class="activity-card__meta"><span>◷ '+esc(s.duration)+'</span><span>◎ '+esc(s.audience.join(' · '))+'</span></div><div class="activity-card__go">'+esc(s.cta)+' →</div></a>').join('')
     + '</div></section>';
 }).join('');
 
