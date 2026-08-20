@@ -25,13 +25,14 @@
 
   var guide=document.createElement('div');guide.className='mcc-guide';guide.dataset.mccGuide='';
   guide.innerHTML='<section class="mcc-guide__panel" aria-label="MCC AI Guide" aria-hidden="true">'
-    +'<header class="mcc-guide__header"><div class="mcc-guide__face">AI</div><div class="mcc-guide__title"><strong>MCC AI Guide</strong><small>Site-grounded learning assistant</small></div><button class="mcc-guide__close" type="button" aria-label="Close AI Guide">×</button></header>'
+    +'<header class="mcc-guide__header"><img class="mcc-guide__face" src="'+new URL('assets/mac-avatar.webp',root).href+'" alt=""><div class="mcc-guide__title"><strong>Mac · MCC AI Guide</strong><small>Your site-grounded learning navigator</small></div><button class="mcc-guide__close" type="button" aria-label="Close Mac AI Guide">×</button></header>'
     +'<div class="mcc-guide__context">CURRENT LOCATION · <strong>'+escapeHtml(current.title)+'</strong></div>'
     +'<div class="mcc-guide__tabs" role="tablist"><button class="mcc-guide__tab is-active" data-mode="navigator" type="button">🧭 Navigator</button><button class="mcc-guide__tab" data-mode="coach" type="button">◉ Coach</button><button class="mcc-guide__tab" data-mode="builder" type="button">⌘ Builder</button></div>'
-    +'<div class="mcc-guide__messages" aria-live="polite"><div class="mcc-guide__message">Tell me what you want to accomplish. I’ll point you to the best MCC activity and explain why it fits.</div></div>'
+    +'<div class="mcc-guide__welcome"><img src="'+new URL('assets/mac-navigator.webp',root).href+'" alt="Mac the Highlander, MCC AI learning guide"><p><strong>Hello, I’m Mac.</strong><span>Tell me what you want to accomplish. I’ll point you toward the best MCC activity.</span></p></div>'
+    +'<div class="mcc-guide__messages" aria-live="polite"><div class="mcc-guide__message">Choose a quick question below, or describe what you need help learning, checking, or building.</div></div>'
     +'<div class="mcc-guide__choices"><button class="mcc-guide__choice" data-query="Where should I start?" type="button">Start here</button><button class="mcc-guide__choice" data-query="Help me use AI safely" type="button">Use AI safely</button><button class="mcc-guide__choice" data-query="I want to build an AI tool" type="button">Build something</button></div>'
     +'<div class="mcc-guide__compose"><div class="mcc-guide__compose-row"><input type="text" aria-label="Ask the MCC AI Guide" placeholder="What would you like to do?"><button class="mcc-guide__send" type="button">Send</button></div><p class="mcc-guide__privacy">This guide uses the MCC site map in your browser. It does not send your message to an outside AI service.</p></div></section>'
-    +'<button class="mcc-guide__launcher" type="button" aria-label="Open MCC AI Guide" aria-expanded="false"><span class="mcc-guide__orb" aria-hidden="true"></span><span><strong>MCC AI Guide</strong><small>Navigator · Coach · Builder</small></span></button>';
+    +'<button class="mcc-guide__launcher" type="button" aria-label="Ask Mac, the MCC AI Guide" aria-expanded="false"><img class="mcc-guide__launcher-avatar" src="'+new URL('assets/mac-avatar.webp',root).href+'" alt=""><span><strong>Ask Mac</strong><small>Navigator · Coach · Builder</small></span></button>';
   document.body.appendChild(guide);
   var panel=guide.querySelector('.mcc-guide__panel'),launcher=guide.querySelector('.mcc-guide__launcher'),messages=guide.querySelector('.mcc-guide__messages'),input=guide.querySelector('input');
   var mode='navigator';
