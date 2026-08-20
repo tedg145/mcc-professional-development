@@ -168,18 +168,18 @@ div.card .go{color:var(--dimdk)}
         <input id="hub-search" type="search" placeholder="Search activities, tools, and concepts" autocomplete="off">
         <span class="hub-search__hint">/</span>
       </label>
-      <button class="hub-guide-button" type="button" data-open-guide>AI Guide ✦</button>
+      <nav class="hub-nav" aria-label="Hub navigation">
+        <a href="#featured">Resources</a>
+        <a href="#pathways">Pathways</a>
+        <a href="#my-learning">My Learning</a>
+      </nav>
     </div>
     <div class="wrap hub-shell" style="flex:1;display:flex;flex-direction:column">
       <section class="hub-hero">
         <div class="hub-hero__copy">
           <div class="eyebrow">McLennan Community College</div>
-          <h1>Learn it. Question it.<br><span>Build with it.</span></h1>
-          <p class="sub">A practical AI learning environment for MCC faculty, staff, supervisors, and builders. Choose a path, try a mission, or ask the guide where to begin.</p>
-          <div class="hub-hero__actions">
-            <a class="hub-action hub-action--primary" href="how-it-works/">Start with the essentials</a>
-            <a class="hub-action" href="#pathways">Choose your path</a>
-          </div>
+          <h1><span class="hub-headline--white">Learn it.</span><br><span class="hub-headline--teal">Question it.</span><br><span class="hub-headline--orange">Build with it.</span></h1>
+          <p class="sub">Practical AI learning for the MCC community.<br>Build skills. Solve real problems. Make an impact.</p>
         </div>
         <aside class="hub-journey" aria-label="Professional development journey">
           <div class="hub-journey__label">Your development path</div>
@@ -193,32 +193,32 @@ div.card .go{color:var(--dimdk)}
         </aside>
       </section>
 
-      <section class="hub-resume" aria-label="Start or continue learning">
-        <a class="hub-resume-card" href="how-it-works/">
-          <span class="hub-resume-card__icon" aria-hidden="true">→</span>
-          <span><small>New to the site?</small><h2>Start with the essentials</h2><p>A short, visual explanation of how a language model works.</p></span>
-        </a>
-        <a class="hub-resume-card" id="continue-card" href="how-it-works/">
-          <span class="hub-resume-card__icon" aria-hidden="true">↗</span>
-          <span><small>Continue</small><h2>Pick up where you left off</h2><p>Your most recent activity is saved in this browser.</p></span>
-        </a>
-      </section>
-
       <section class="hub-pathways" id="pathways">
         <div class="hub-section-heading">
           <div><small>Choose your path</small><h2>What brings you here?</h2></div>
           <p>Select a role to emphasize the activities most useful to you. Nothing disappears permanently.</p>
         </div>
         <div class="hub-path-grid" role="group" aria-label="Filter by audience">
-          <button class="hub-path" type="button" data-audience="faculty"><span class="hub-path__icon">🎓</span><strong>Faculty</strong><small>Teaching, assessment, feedback, and course design.</small></button>
-          <button class="hub-path" type="button" data-audience="staff"><span class="hub-path__icon">◆</span><strong>Staff</strong><small>Communication, productivity, and everyday workflows.</small></button>
-          <button class="hub-path" type="button" data-audience="supervisor"><span class="hub-path__icon">◎</span><strong>Supervisor</strong><small>Policy, decisions, risk, and responsible adoption.</small></button>
-          <button class="hub-path" type="button" data-audience="builder"><span class="hub-path__icon">&lt;/&gt;</span><strong>Builder</strong><small>Prompts, prototypes, safeguards, and automation.</small></button>
+          <button class="hub-path" type="button" data-audience="faculty"><span class="hub-path__icon">◇</span><strong>Faculty</strong><small>Enhance teaching, design learning experiences, and support student success.</small><span class="hub-path__cta">Explore for Faculty →</span></button>
+          <button class="hub-path" type="button" data-audience="staff"><span class="hub-path__icon">◎</span><strong>Staff</strong><small>Streamline workflows, improve communication, and boost productivity.</small><span class="hub-path__cta">Explore for Staff →</span></button>
+          <button class="hub-path" type="button" data-audience="supervisor"><span class="hub-path__icon">△</span><strong>Supervisor</strong><small>Lead with AI, support your teams, and drive responsible change.</small><span class="hub-path__cta hub-path__cta--gold">Explore for Supervisor →</span></button>
+          <button class="hub-path" type="button" data-audience="builder"><span class="hub-path__icon">&lt;/&gt;</span><strong>Builder</strong><small>Design, develop, and integrate AI solutions across the college.</small><span class="hub-path__cta hub-path__cta--orange">Explore for Builder →</span></button>
         </div>
         <div class="hub-filter-status" id="filter-status" aria-live="polite"></div>
       </section>
 
-      <section class="hub-zones" aria-label="Learning activities">
+      <section class="hub-featured" id="featured" aria-label="Featured learning activities">
+        <div class="hub-featured__heading"><h2>Featured Learning Activities</h2><button id="toggle-all" type="button" aria-expanded="false">View all activities →</button></div>
+        <div class="hub-feature-grid" id="featured-grid"></div>
+      </section>
+
+      <a class="hub-continue" id="my-learning" href="how-it-works/">
+        <span class="hub-continue__icon" aria-hidden="true">↗</span>
+        <span><small>My learning</small><strong id="continue-title">Start with the essentials</strong><em id="continue-description">Begin with a short, visual explanation of how a language model works.</em></span>
+        <b>Continue →</b>
+      </a>
+
+      <section class="hub-zones" id="all-activities" aria-label="All learning activities" hidden>
         <div class="hub-section-heading">
           <div><small>Explore the environment</small><h2>Four clear zones. One growing curriculum.</h2></div>
           <p>Every activity includes an estimated time, level, format, and audience fit.</p>
@@ -228,8 +228,8 @@ div.card .go{color:var(--dimdk)}
       </section>
 
       <div id="hubfoot">
-        <div>Ted Gonzalez, JD/MBA · <button id="replay">Replay intro</button></div>
-        <div>&copy; 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
+        <div class="hub-foot-brand"><span>◇</span><strong>AI at MCC</strong><small>Ethical, innovative, and human-centered AI learning.</small></div>
+        <div><button id="replay">Replay intro</button> · &copy; 2026 Ted Gonzalez, JD/MBA</div>
       </div>
     </div>
   </div>
@@ -239,12 +239,15 @@ div.card .go{color:var(--dimdk)}
 <script>
 /* ============================================================
    THE SECTION LIST — maintained in assets/mcc-content.js so the
-   hub, search, and Mac all use the same activity information.
+   hub and search use the same activity information.
    ============================================================ */
 const SECTIONS = (window.MCC_CONTENT || []).map(s => Object.assign({},s,{href:s.path,desc:s.description}));
 
 const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const ZONES = {Learn:{number:'01',desc:'Understand what AI is doing.'},Practice:{number:'02',desc:'Strengthen judgment through guided activity.'},Build:{number:'03',desc:'Create useful tools with safeguards.'},Use:{number:'04',desc:'Apply AI to real professional work.'}};
+const FEATURED_IDS=['how-it-works','context-lab','workshop','scenarios'];
+const featuredRoot=document.getElementById('featured-grid');
+featuredRoot.innerHTML=FEATURED_IDS.map(id=>SECTIONS.find(s=>s.id===id)).filter(Boolean).map(s=>'<a class="featured-card" href="'+s.href+'" data-progress-card data-title="'+esc(s.title)+'"><div class="featured-card__icon" aria-hidden="true">'+({Learn:'◇',Practice:'◎',Build:'△',Use:'□'}[s.zone]||'◇')+'</div><h3>'+esc(s.title)+'</h3><p>'+esc(s.desc)+'</p><div class="featured-card__meta"><span>◷ '+esc(s.duration)+'</span><span>'+esc(s.level)+'</span><span>'+esc(s.type)+'</span></div></a>').join('');
 const zoneRoot = document.getElementById('activity-zones');
 zoneRoot.innerHTML = Object.keys(ZONES).map(zone => {
   const items = SECTIONS.filter(s => s.zone === zone);
@@ -256,7 +259,10 @@ zoneRoot.innerHTML = Object.keys(ZONES).map(zone => {
 const searchInput=document.getElementById('hub-search');
 const cards=[...document.querySelectorAll('.activity-card')];
 const pathButtons=[...document.querySelectorAll('[data-audience]')];
+const allActivities=document.getElementById('all-activities');
+const toggleAll=document.getElementById('toggle-all');
 let activeAudience='';
+function setCatalogOpen(open,scroll){allActivities.hidden=!open;toggleAll.setAttribute('aria-expanded',String(open));toggleAll.textContent=open?'Hide all activities ↑':'View all activities →';if(open&&scroll)allActivities.scrollIntoView({behavior:'smooth',block:'start'});}
 function applyFilters(){
   const q=searchInput.value.trim().toLowerCase();let visible=0;
   cards.forEach(card=>{const matchQuery=!q||card.dataset.search.includes(q);const matchAudience=!activeAudience||card.dataset.audience.split(' ').includes(activeAudience);const show=matchQuery&&matchAudience;card.hidden=!show;if(show)visible++;});
@@ -266,12 +272,13 @@ function applyFilters(){
   status.innerHTML=activeAudience?'Showing '+visible+' activities for <strong>'+esc(activeAudience)+'</strong>.<button type="button" id="clear-filter">Show everything</button>':'';
   const clear=document.getElementById('clear-filter');if(clear)clear.addEventListener('click',()=>{activeAudience='';pathButtons.forEach(b=>b.classList.remove('is-active'));applyFilters();});
 }
-searchInput.addEventListener('input',applyFilters);
-pathButtons.forEach(button=>button.addEventListener('click',()=>{activeAudience=activeAudience===button.dataset.audience?'':button.dataset.audience;pathButtons.forEach(b=>b.classList.toggle('is-active',b.dataset.audience===activeAudience));applyFilters();document.querySelector('.hub-zones').scrollIntoView({behavior:'smooth',block:'start'});}));
+searchInput.addEventListener('input',()=>{if(searchInput.value.trim())setCatalogOpen(true,false);applyFilters();});
+toggleAll.addEventListener('click',()=>setCatalogOpen(allActivities.hidden,true));
+pathButtons.forEach(button=>button.addEventListener('click',()=>{activeAudience=activeAudience===button.dataset.audience?'':button.dataset.audience;pathButtons.forEach(b=>b.classList.toggle('is-active',b.dataset.audience===activeAudience));setCatalogOpen(true,false);applyFilters();allActivities.scrollIntoView({behavior:'smooth',block:'start'});}));
 window.addEventListener('keydown',e=>{if(e.key==='/'&&!/input|textarea/i.test(document.activeElement.tagName)){e.preventDefault();searchInput.focus();}});
-cards.forEach(card=>{card.addEventListener('pointermove',e=>{const r=card.getBoundingClientRect();card.style.setProperty('--mx',(e.clientX-r.left)+'px');card.style.setProperty('--my',(e.clientY-r.top)+'px');});card.addEventListener('click',()=>{try{localStorage.setItem('mcc-last-page-v1',JSON.stringify({path:card.getAttribute('href'),title:card.dataset.title,at:Date.now()}));}catch(e){}});});
-try{const recent=JSON.parse(localStorage.getItem('mcc-last-page-v1')||'null');if(recent&&recent.path){const resume=document.getElementById('continue-card');resume.href=recent.path;resume.querySelector('h2').textContent=recent.title;resume.querySelector('p').textContent='Resume your most recent MCC activity.';}}catch(e){}
-document.querySelector('[data-open-guide]').addEventListener('click',()=>{if(window.MCCGuide)window.MCCGuide.open();});
+cards.forEach(card=>card.addEventListener('pointermove',e=>{const r=card.getBoundingClientRect();card.style.setProperty('--mx',(e.clientX-r.left)+'px');card.style.setProperty('--my',(e.clientY-r.top)+'px');}));
+document.querySelectorAll('[data-progress-card],.activity-card').forEach(card=>card.addEventListener('click',()=>{try{localStorage.setItem('mcc-last-page-v1',JSON.stringify({path:card.getAttribute('href'),title:card.dataset.title,at:Date.now()}));}catch(e){}}));
+try{const recent=JSON.parse(localStorage.getItem('mcc-last-page-v1')||'null');if(recent&&recent.path){const resume=document.getElementById('my-learning');resume.href=recent.path;document.getElementById('continue-title').textContent=recent.title;document.getElementById('continue-description').textContent='Resume your most recent MCC activity.';}}catch(e){}
 
 /* ============================================================
    THE REACTOR
@@ -499,6 +506,5 @@ document.getElementById('replay').addEventListener('click', function(){
 if(entered && window.MCCQR) window.MCCQR.show();
 </script>
 <script src="assets/mcc-qr.js" defer></script>
-<script src="assets/mcc-guide.js" defer></script>
 </body>
 </html>

@@ -25,22 +25,9 @@ role (Faculty, Staff, Supervisor, or Builder), and resume their most recent
 activity from browser-local storage.
 
 The shared catalog lives in `assets/mcc-content.js`. Add a new activity there
-and it automatically appears in the right hub zone, participates in search and
-audience filtering, and becomes available to Mac for navigation and coaching.
-
-## MCC AI Guide
-
-`assets/mcc-guide.js` adds the persistent MCC AI Guide to every page. The guide
-has three modes—**Navigator**, **Coach**, and **Builder**—and grounds its
-recommendations in the MCC site map. It recognizes the visitor's current
-activity and routes them to relevant labs, workshops, and references.
-
-The guide is intentionally browser-local. It does not transmit questions to an
-outside AI service. Activity metadata, search terms, related activities, and
-page-specific coaching prompts are maintained in `assets/mcc-content.js`.
-Mac's artwork is intentionally limited to the compact AI Guide launcher and
-panel header so the learning environment retains its clean, content-first
-visual hierarchy.
+and it automatically appears in the right hub zone and participates in search
+and audience filtering. Four featured activity IDs are selected in the root
+`index.html`; the complete catalog stays collapsed until requested.
 
 ---
 
@@ -77,10 +64,10 @@ are `email`, `doc`, `chat`, `table` and `terminal`. The full format reference,
 with worked examples, is in the **How to write a new scenario** panel on the
 scenarios page itself, so the instructions travel with the site.
 
-## Adding a hub card
+## Adding a hub activity
 
-Edit the `SECTIONS` array near the bottom of the root `index.html`. There is a
-commented-out example showing a `soon: true` entry for something not built yet.
+Add the activity to `assets/mcc-content.js`. To feature it on the landing page,
+add its ID to `FEATURED_IDS` in the root `index.html`.
 
 ---
 
