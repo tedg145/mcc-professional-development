@@ -111,10 +111,11 @@ footer{padding:16px clamp(16px,4vw,36px);border-top:1px solid rgba(255,255,255,.
   #stagebar .acts{width:100%;margin-left:0}
 }
 </style>
+<link rel="stylesheet" href="../assets/mcc-activity-shell.css">
 </head>
-<body>
+<body data-mcc-activity="presentations" data-activity-shell-mode="nav-only">
 
-<header>
+<header data-mcc-legacy-nav>
   <a class="home" href="../#hub">AI Professional <span>Development</span></a>
   <div class="sep"></div>
   <div class="crumb">Presentations</div>
@@ -262,14 +263,21 @@ function load(ci, di, push){
   });
   ttl.textContent = d.name;
   mta.textContent = LIBRARY[ci].name + ' · ' + d.tier + ' · ' + d.slides + ' slides · ' + d.time;
-  const pdf = 'files/' + d.id + '.pdf';
+  const inReviewPreview = location.hostname === 'htmlpreview.github.io';
+  const assetRoot = inReviewPreview
+    ? 'https://tedg145.github.io/mcc-professional-development/presentations/files/'
+    : 'files/';
+  const pdf = assetRoot + d.id + '.pdf';
+  const pptx = assetRoot + d.id + '.pptx';
   acts.innerHTML = '<a class="btn primary" href="' + pdf + '" target="_blank" rel="noopener">Present full screen &#8599;</a>'
-    + '<a class="btn" href="files/' + d.id + '.pptx" download>Download .pptx</a>';
+    + '<a class="btn" href="' + pptx + '" download>Download .pptx</a>';
   // view=Fit shows the WHOLE slide with no scrolling. Keep it as the ONLY fragment
   // parameter — adding &toolbar=1 makes Chrome ignore the fit entirely.
   frame.innerHTML = '<iframe src="' + pdf + '#view=Fit" title="' + esc(d.name) + '"></iframe>';
   document.title = d.name + ' — MCC Presentations';
-  if(push !== false) history.replaceState(null, '', '#' + d.id);
+  if(push !== false){
+    try{ history.replaceState(null, '', '#' + d.id); }catch(err){ /* cross-origin review renderer */ }
+  }
   if(window.innerWidth <= 880) document.getElementById('stage').scrollIntoView({behavior:'smooth'});
 }
 
@@ -287,9 +295,13 @@ LIBRARY.forEach(function(c, ci){
 });
 if(!opened){
   const first = LIBRARY.findIndex(function(c){ return c.decks.length > 0; });
-  toggleCat(first < 0 ? 0 : first, true);
+  const firstCategory = first < 0 ? 0 : first;
+  toggleCat(firstCategory, true);
+  if(LIBRARY[firstCategory].decks.length) load(firstCategory, 0, false);
 }
 </script>
 <script src="../assets/mcc-qr.js" defer></script>
+<script src="../assets/mcc-content.js" defer></script>
+<script src="../assets/mcc-activity-shell.js" defer></script>
 </body>
 </html>

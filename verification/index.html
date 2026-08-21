@@ -184,10 +184,11 @@ footer a:hover{color:#fff}
   .applied-body{max-height:none!important}
 }
 </style>
+<link rel="stylesheet" href="../assets/mcc-activity-shell.css">
 </head>
-<body>
+<body data-mcc-activity="verification" data-activity-target=".qgrid">
 
-<div class="bar">
+<div class="bar" data-mcc-legacy-nav>
   <a class="home" href="../">MCC <span>AI</span></a>
   <span class="sep"></span>
   <span class="where">Verify it</span>
@@ -199,6 +200,7 @@ footer a:hover{color:#fff}
 </div>
 
 <main>
+  <div data-activity-shell-mount></div>
 
   <div class="breadcrumb">
     <a href="../find-the-error/">Find the error</a><span class="sep">›</span>Verify it
@@ -382,6 +384,8 @@ footer a:hover{color:#fff}
 </footer>
 
 <script src="../assets/mcc-qr.js"></script>
+<script src="../assets/mcc-content.js" defer></script>
+<script src="../assets/mcc-activity-shell.js" defer></script>
 <script>
 (function(){
   function toggleApplied(btn, id){
@@ -444,7 +448,7 @@ footer a:hover{color:#fff}
     }
     document.getElementById('yt-step-1').classList.add('active');
     document.getElementById('yt-result').classList.remove('show');
-    document.querySelector('.yt-widget').scrollIntoView({behavior:'smooth', block:"nearest'});
+    document.querySelector('.yt-widget').scrollIntoView({behavior:'smooth', block:'nearest'});
   }
   window.resetYT = resetYT;
 

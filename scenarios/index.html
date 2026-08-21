@@ -285,10 +285,11 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 @media print{.bar,.libfoot,.guide,.acts,footer{display:none}}
 </style>
+<link rel="stylesheet" href="../assets/mcc-activity-shell.css">
 </head>
-<body>
+<body data-mcc-activity="scenarios" data-activity-target="#cards">
 
-<div class="bar">
+<div class="bar" data-mcc-legacy-nav>
   <a class="home" href="../">AI Professional <span>Development</span></a>
   <div class="sep" aria-hidden="true"></div>
   <div class="where">Scenarios</div>
@@ -300,6 +301,7 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
 </div>
 
 <main>
+  <div data-activity-shell-mount></div>
   <div id="library">
     <div class="kicker">Practice missions</div>
     <h1>Scenarios<br><span>Where the technology fails on purpose</span></h1>
@@ -425,6 +427,8 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
 
 <script src="../assets/mcc-scenario.js"></script>
 <script src="../assets/mcc-qr.js" defer></script>
+<script src="../assets/mcc-content.js" defer></script>
+<script src="../assets/mcc-activity-shell.js" defer></script>
 <script>
 (function () {
   'use strict';

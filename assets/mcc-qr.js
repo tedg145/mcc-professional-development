@@ -710,10 +710,43 @@
     document.body.removeChild(ta);
   }
 
+  function installProtectedShell() {
+    var match = location.pathname.match(/\/(sandbox|inbox|workshop)\/(?:index\.html)?$/);
+    if (!match) return;
+    var settings = {
+      sandbox: { id: 'sandbox', mode: 'nav-only' },
+      inbox: { id: 'inbox', mode: 'full', target: '#list' },
+      workshop: { id: 'workshop', mode: 'nav-only' }
+    }[match[1]];
+    document.body.dataset.mccActivity = settings.id;
+    document.body.dataset.activityShellMode = settings.mode;
+    if (settings.target) document.body.dataset.activityTarget = settings.target;
+    if (settings.mode === 'full' && !document.querySelector('[data-activity-shell-mount]')) {
+      var main = document.querySelector('main');
+      if (main) { var mount = document.createElement('div'); mount.setAttribute('data-activity-shell-mount', ''); main.insertBefore(mount, main.firstChild); }
+    }
+    var legacy = document.querySelector('body > .bar');
+    if (legacy) legacy.setAttribute('data-mcc-legacy-nav', '');
+    var own = Array.prototype.slice.call(document.scripts).find(function (s) { return /mcc-qr\.js(?:\?|$)/.test(s.src); });
+    if (!own) return;
+    var root = new URL('../', own.src);
+    if (!document.querySelector('link[href*="mcc-activity-shell.css"]')) {
+      var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = new URL('assets/mcc-activity-shell.css', root).href; document.head.appendChild(css);
+    }
+    function loadShell() {
+      if (document.querySelector('script[src*="mcc-activity-shell.js"]')) return;
+      var shell = document.createElement('script'); shell.src = new URL('assets/mcc-activity-shell.js', root).href; document.body.appendChild(shell);
+    }
+    if (window.MCC_CONTENT) loadShell();
+    else {
+      var content = document.createElement('script'); content.src = new URL('assets/mcc-content.js', root).href; content.onload = loadShell; document.body.appendChild(content);
+    }
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', install);
+    document.addEventListener('DOMContentLoaded', function () { install(); installProtectedShell(); });
   } else {
-    install();
+    install(); installProtectedShell();
   }
 
   window.MCCQR = {

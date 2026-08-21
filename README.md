@@ -29,6 +29,15 @@ and it automatically appears in the right hub zone and participates in search
 and audience filtering. Four featured activity IDs are selected in the root
 `index.html`; the complete catalog stays collapsed until requested.
 
+## The activity shell
+
+`assets/mcc-activity-shell.css` and `assets/mcc-activity-shell.js` provide the
+shared MCC header, activity metadata, learning objectives, start/save controls,
+related activities, and responsive behavior. Activity-specific objectives and
+icons live with the shared catalog in `assets/mcc-content.js`. The individual
+pages retain their own experiments, simulations, presentations, and teaching
+content inside that common navigation system.
+
 ---
 
 ## The QR button
