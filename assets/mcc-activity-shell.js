@@ -30,15 +30,17 @@
   function read(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'null')||fallback;}catch(e){return fallback;}}
   function write(key,value){try{localStorage.setItem(key,JSON.stringify(value));}catch(e){}}
   function progress(status){var state=read(progressKey,{});state[id]={status:status,updatedAt:Date.now()};write(progressKey,state);write('mcc-last-page-v1',{path:activity.path,title:activity.title,at:Date.now()});}
-  if(hero){
+  if(hero&&hero!==body){
     var start=hero.querySelector('[data-activity-start]'),save=hero.querySelector('[data-activity-save]');
     var selector=hero.dataset.activityTarget||body.dataset.activityTarget||'';var target=selector?document.querySelector(selector):null;
     var saved=read(savedKey,[]);
-    function paintSaved(){var on=saved.indexOf(id)>-1;save.classList.toggle('is-saved',on);save.textContent=on?'Saved for later ✓':'Save for later';save.setAttribute('aria-pressed',String(on));}
-    paintSaved();
-    start.addEventListener('click',function(){progress('started');if(target)target.scrollIntoView({behavior:'smooth',block:'start'});});
-    save.addEventListener('click',function(){var at=saved.indexOf(id);if(at>-1)saved.splice(at,1);else saved.push(id);write(savedKey,saved);paintSaved();});
-    document.addEventListener('mcc:activity-complete',function(){progress('completed');start.textContent='Activity completed ✓';});
+    if(start&&save){
+      function paintSaved(){var on=saved.indexOf(id)>-1;save.classList.toggle('is-saved',on);save.textContent=on?'Saved for later ✓':'Save for later';save.setAttribute('aria-pressed',String(on));}
+      paintSaved();
+      start.addEventListener('click',function(){progress('started');if(target)target.scrollIntoView({behavior:'smooth',block:'start'});});
+      save.addEventListener('click',function(){var at=saved.indexOf(id);if(at>-1)saved.splice(at,1);else saved.push(id);write(savedKey,saved);paintSaved();});
+      document.addEventListener('mcc:activity-complete',function(){progress('completed');start.textContent='Activity completed ✓';});
+    }
   }
 
   if(mode!=='nav-only'){
