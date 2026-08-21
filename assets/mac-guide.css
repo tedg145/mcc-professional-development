@@ -164,9 +164,52 @@
   cursor: pointer;
 }
 .mac-guide__close:hover { border-color: rgba(255, 102, 0, .55); }
+.mac-guide__modes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--mac-line);
+  background: rgba(0, 0, 0, .12);
+}
+.mac-guide__mode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 35px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--mac-muted);
+  font-size: 9px;
+  font-weight: 750;
+  cursor: pointer;
+}
+.mac-guide__mode span { color: var(--mac-cyan); font-size: 10px; }
+.mac-guide__mode:hover { color: #fff; background: rgba(255, 255, 255, .035); }
+.mac-guide__mode[aria-selected="true"] {
+  border-color: rgba(34, 191, 213, .34);
+  background: rgba(34, 191, 213, .1);
+  color: #fff;
+  box-shadow: inset 0 -2px 0 var(--mac-cyan);
+}
+.mac-guide__mode:focus-visible { outline: 2px solid var(--mac-cyan); outline-offset: 1px; }
 .mac-guide__body { overflow: auto; padding: 16px 17px 12px; }
-.mac-guide__location { margin-bottom: 13px; color: var(--mac-muted); font-size: 9px; }
+.mac-guide__location { margin-bottom: 9px; color: var(--mac-muted); font-size: 8px; letter-spacing: .05em; text-transform: uppercase; }
 .mac-guide__location strong { color: #fff; }
+.mac-guide__context {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 13px;
+  padding: 11px 12px;
+  border: 1px solid rgba(34, 191, 213, .18);
+  border-radius: 11px;
+  background: linear-gradient(120deg, rgba(34, 191, 213, .075), rgba(255, 102, 0, .035));
+}
+.mac-guide__context span { color: var(--mac-cyan); font-size: 7px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.mac-guide__context strong { color: #fff; font-size: 11px; }
+.mac-guide__context em { color: var(--mac-muted); font-size: 8px; font-style: normal; }
 .mac-guide__intro { margin: 0; color: #d9e4ed; font-size: 12px; line-height: 1.55; }
 .mac-guide__quick { display: flex; flex-wrap: wrap; gap: 7px; margin: 14px 0; }
 .mac-guide__chip {
@@ -204,6 +247,26 @@
 .mac-guide__result small { color: var(--mac-orange); font-size: 7px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .mac-guide__result strong { display: block; margin: 5px 0 4px; font-size: 11px; }
 .mac-guide__result span { display: block; color: var(--mac-muted); font-size: 9px; line-height: 1.45; }
+.mac-guide__answer {
+  padding: 13px;
+  border: 1px solid rgba(34, 191, 213, .24);
+  border-radius: 12px;
+  background: rgba(7, 26, 43, .72);
+}
+.mac-guide__answer small { display: block; color: var(--mac-orange); font-size: 7px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.mac-guide__answer strong { display: block; margin: 6px 0 5px; color: #fff; font-size: 12px; }
+.mac-guide__answer p { margin: 0; color: #c8d6e2; font-size: 10px; line-height: 1.55; }
+.mac-guide__answer ul { margin: 8px 0 0; padding-left: 17px; color: #c8d6e2; font-size: 9px; line-height: 1.55; }
+.mac-guide__answer li + li { margin-top: 4px; }
+.mac-guide__action-link {
+  display: inline-flex;
+  margin-top: 10px;
+  color: var(--mac-cyan);
+  font-size: 9px;
+  font-weight: 800;
+  text-decoration: none;
+}
+.mac-guide__action-link:hover { color: #fff; }
 .mac-guide__form {
   display: flex;
   gap: 8px;
