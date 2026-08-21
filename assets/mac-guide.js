@@ -302,6 +302,7 @@
     });
     if (tokens.indexOf('new') > -1 || tokens.indexOf('beginner') > -1) {
       if (item.level === 'Beginner') total += 5;
+      if (item.id === 'llm-works') total += 12;
     }
     if (tokens.indexOf('15') > -1 && /^(8|10|12|15)/.test(item.duration)) total += 4;
     return total;
