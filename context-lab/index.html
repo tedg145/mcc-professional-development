@@ -168,31 +168,52 @@ footer a:hover{color:#fff}
   .lede,.takeaway p{color:#333!important}
 }
 </style>
+<link rel="stylesheet" href="../assets/mcc-activity-shell.css">
 </head>
 <body>
 
-<div class="bar">
-  <a class="home" href="../">MCC <span>AI</span></a>
-  <span class="sep"></span>
-  <span class="where">Context lab</span>
-  <div class="right">
-    <a href="../how-it-works/">How it works</a>
-    <a href="../scenarios/">Scenarios</a>
-    <a href="../">Home</a>
-  </div>
-</div>
+<header class="mcc-activity-bar">
+  <a class="mcc-activity-brand" href="../#hub" aria-label="MCC AI Professional Development home">
+    <span class="mcc-activity-brand__mark">MCC</span>
+    <span><strong>AI Professional Development</strong><small>Learn · Practice · Build · Use</small></span>
+  </a>
+  <nav class="mcc-activity-nav" aria-label="Activity navigation">
+    <a href="../#featured">Resources</a>
+    <a href="../#pathways">Pathways</a>
+    <a href="../#my-learning">My Learning</a>
+    <a class="mcc-activity-home" href="../#hub">Hub</a>
+  </nav>
+</header>
 
 <main>
 
-  <div class="breadcrumb">
-    <a href="../how-it-works/">How an LLM works</a><span class="sep">›</span>Context lab
-  </div>
+  <nav class="mcc-activity-breadcrumb" aria-label="Breadcrumb">
+    <a href="../#hub">Home</a><span>›</span><a href="../#all-activities">Activities</a><span>›</span><strong>Context Lab</strong>
+  </nav>
 
-  <div class="kicker">Session 1 · Going deeper</div>
-  <h1>Watch the guesses<br><span>reshape.</span></h1>
-  <p class="lede">
-    Add one word to the prompt at a time. Watch what happens to the probability distribution — sometimes it <em>sharpens</em>, sometimes it <em>opens back up</em>. <strong>Prompt engineering is not magic phrasing. It is constraining the possibility space.</strong>
-  </p>
+  <section class="mcc-activity-hero" data-mcc-activity="context-lab" data-activity-target="#lab">
+    <div class="mcc-activity-identity">
+      <div class="mcc-activity-icon" aria-hidden="true">◎</div>
+      <div>
+        <div class="mcc-activity-kicker">Interactive lab · Practice</div>
+        <h1>Context Lab</h1>
+        <p class="mcc-activity-summary">See how each additional word changes an AI model's range of likely answers—and why better context produces more useful results.</p>
+        <div class="mcc-activity-meta" aria-label="Activity details"><span>◷ 10 minutes</span><span>Beginner</span><span>Interactive</span><span>Faculty · Staff · Builder</span></div>
+        <div class="mcc-activity-actions"><button class="mcc-activity-action mcc-activity-action--primary" type="button" data-activity-start>Start activity</button><button class="mcc-activity-action" type="button" data-activity-save aria-pressed="false">Save for later</button></div>
+      </div>
+    </div>
+    <aside class="mcc-activity-overview">
+      <small>You'll learn to</small>
+      <h2>Turn context into a practical tool</h2>
+      <ul><li>Observe probability changes as context accumulates</li><li>Distinguish narrowing words from reopening words</li><li>Connect model confidence with verification</li><li>Write prompts that constrain the right possibilities</li></ul>
+    </aside>
+  </section>
+
+  <section class="mcc-lab-intro">
+    <div class="kicker">The experiment</div>
+    <h2>Watch the guesses <span>reshape.</span></h2>
+    <p class="lede">Add one word to the prompt at a time. Watch what happens to the probability distribution—sometimes it <em>sharpens</em>, sometimes it <em>opens back up</em>. <strong>Prompt engineering is not magic phrasing. It is constraining the possibility space.</strong></p>
+  </section>
 
   <section class="lab" id="lab">
     <div class="lab-head">
@@ -258,6 +279,11 @@ footer a:hover{color:#fff}
     <a href="../how-it-works/">← Back to How an LLM works</a>
   </div>
 
+  <section class="mcc-related" aria-label="Related activities">
+    <div class="mcc-related__heading"><div><small>Keep learning</small><h2>Related activities</h2></div><a href="../#all-activities">View all activities →</a></div>
+    <div class="mcc-related__grid" data-related-activities></div>
+  </section>
+
 </main>
 
 <footer>
@@ -265,6 +291,8 @@ footer a:hover{color:#fff}
 </footer>
 
 <script src="../assets/mcc-qr.js"></script>
+<script src="../assets/mcc-content.js"></script>
+<script src="../assets/mcc-activity-shell.js" defer></script>
 <script>
 (function(){
   const SEQUENCE = [
@@ -449,6 +477,7 @@ footer a:hover{color:#fff}
       btn.disabled = true;
       btn.textContent = 'End of demo';
       hint.textContent = 'Hit Reset to run it again, or scroll down for the takeaway';
+      document.dispatchEvent(new CustomEvent('mcc:activity-complete',{detail:{id:'context-lab'}}));
     } else {
       btn.disabled = false;
       btn.textContent = step === 0 ? 'Start — add first word →' : 'Add next word →';
