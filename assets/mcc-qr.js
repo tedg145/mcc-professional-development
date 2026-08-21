@@ -743,10 +743,30 @@
     }
   }
 
+  function installMacGuide() {
+    var own = Array.prototype.slice.call(document.scripts).find(function (s) { return /mcc-qr\.js(?:\?|$)/.test(s.src); });
+    if (!own || document.querySelector('script[src*="mac-guide.js"]')) return;
+    var root = new URL('../', own.src);
+    document.body.dataset.macGuideRoot = root.href;
+    var cssUrl = new URL('assets/mac-guide.css', root).href;
+    var guideUrl = new URL('assets/mac-guide.js', root).href;
+    if (location.hostname === 'htmlpreview.github.io') {
+      Promise.all([fetch(cssUrl).then(function (response) { return response.text(); }), fetch(guideUrl).then(function (response) { return response.text(); })]).then(function (parts) {
+        if (!document.querySelector('style[data-mac-guide]')) { var style = document.createElement('style'); style.dataset.macGuide = ''; style.textContent = parts[0]; document.head.appendChild(style); }
+        (new Function(parts[1]))();
+      });
+      return;
+    }
+    if (!document.querySelector('link[href*="mac-guide.css"]')) {
+      var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = cssUrl; document.head.appendChild(css);
+    }
+    var guide = document.createElement('script'); guide.src = guideUrl; guide.defer = true; document.body.appendChild(guide);
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () { install(); installProtectedShell(); });
+    document.addEventListener('DOMContentLoaded', function () { install(); installProtectedShell(); installMacGuide(); });
   } else {
-    install(); installProtectedShell();
+    install(); installProtectedShell(); installMacGuide();
   }
 
   window.MCCQR = {
