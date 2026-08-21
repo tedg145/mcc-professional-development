@@ -15,5 +15,21 @@
     {id:'hours',zone:'Use',path:'hours/',type:'Personal lab',level:'Beginner',duration:'15 min',title:'Find Your Ten Hours',description:'Identify repeated work, classify the pattern, and choose a sensible first automation target.',audience:['staff','supervisor','builder'],keywords:'time hours workflow productivity automate repeated task process',cta:'Find your hours',related:['inbox','tools'],coach:{hint:'Start with work that is frequent, structured, low-risk, and easy to review.',explain:'Time savings usually come from repeated workflow steps, not from automating an entire job at once.',next:'Choose one task and document its trigger, inputs, steps, review point, and final output.'}},
     {id:'inbox',zone:'Use',path:'inbox/',type:'Practice environment',level:'Beginner',duration:'12–15 min',title:'The Inbox Hour',description:'Triage eight Tuesday-morning messages and decide which tasks should—and should not—use AI.',audience:['staff','supervisor'],keywords:'email inbox productivity communication staff triage workflow sensitive',cta:'Open the inbox',related:['hours','scenarios'],coach:{hint:'Sort by risk before speed. Sensitive data, consequential decisions, and unclear authority need human attention first.',explain:'The goal is not to use AI on every message. It is to recognize which work benefits from assistance and which work requires direct judgment.',next:'Choose one low-risk repetitive message and draft a reusable workflow for it.'}}
   ];
+  var shell={
+    'llm-works':{icon:'◇',objectives:['Recognize the three stages behind an LLM response','Separate fluent prediction from factual accuracy','Identify where context and verification enter the process']},
+    'language-math':{icon:'◇',objectives:['Connect words with tokens and numerical representations','See how vectors encode relationships among ideas','Explain why probability—not stored sentences—drives output']},
+    'scenarios':{icon:'◎',objectives:['Identify the consequential claim in a realistic decision','Match verification effort to risk','Practice stopping an unsafe or unsupported workflow']},
+    'context-lab':{icon:'◎',objectives:['Observe probability changes as context accumulates','Distinguish narrowing words from reopening words','Write prompts that constrain the right possibilities']},
+    'find-error':{icon:'◎',objectives:['Break a fluent response into checkable claims','Spot errors in names, dates, numbers, and citations','Build a deliberate inspection habit']},
+    'verification':{icon:'◎',objectives:['Trace important claims to primary evidence','Assess whether a source supports the precise claim','Use a repeatable verification routine']},
+    'inspector':{icon:'◎',objectives:['Identify metadata carried by common files','Recognize privacy and disclosure risks','Prepare files more safely before sharing']},
+    'workshop':{icon:'△',objectives:['Define a narrow, useful tool before building','Prototype with clear data and authorization boundaries','Add safeguards, testing, and human review']},
+    'sandbox':{icon:'△',objectives:['Distinguish capability from authorization','Practice choosing the narrowest useful permission','Recognize connector and data-boundary risks']},
+    'presentations':{icon:'□',objectives:['Find materials by audience and learning goal','Pair presentations with hands-on activities','Adapt reusable decks for an MCC session']},
+    'tools':{icon:'□',objectives:['Compare tools by purpose, access, and cost','Evaluate predictable failure modes','Choose tools using institutional constraints']},
+    'hours':{icon:'□',objectives:['Identify repeated work that consumes time','Classify a task by workflow pattern','Choose a low-risk first automation target']},
+    'inbox':{icon:'□',objectives:['Separate routine work from consequential decisions','Identify messages that should not use AI','Design a reviewable low-risk communication workflow']}
+  };
+  activities.forEach(function(activity){Object.assign(activity,shell[activity.id]||{});});
   window.MCC_CONTENT=Object.freeze(activities.map(function(activity){return Object.freeze(activity);}));
 })();

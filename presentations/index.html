@@ -111,10 +111,11 @@ footer{padding:16px clamp(16px,4vw,36px);border-top:1px solid rgba(255,255,255,.
   #stagebar .acts{width:100%;margin-left:0}
 }
 </style>
+<link rel="stylesheet" href="../assets/mcc-activity-shell.css">
 </head>
-<body>
+<body data-mcc-activity="presentations" data-activity-shell-mode="nav-only">
 
-<header>
+<header data-mcc-legacy-nav>
   <a class="home" href="../#hub">AI Professional <span>Development</span></a>
   <div class="sep"></div>
   <div class="crumb">Presentations</div>
@@ -291,5 +292,7 @@ if(!opened){
 }
 </script>
 <script src="../assets/mcc-qr.js" defer></script>
+<script src="../assets/mcc-content.js" defer></script>
+<script src="../assets/mcc-activity-shell.js" defer></script>
 </body>
 </html>

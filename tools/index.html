@@ -106,10 +106,11 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
   .what,.fact .fv{color:#000}
 }
 </style>
+<link rel="stylesheet" href="../assets/mcc-activity-shell.css">
 </head>
-<body>
+<body data-mcc-activity="tools" data-activity-target="#filters">
 
-<div class="bar">
+<div class="bar" data-mcc-legacy-nav>
   <a class="home" href="../">AI Professional <span>Development</span></a>
   <div class="sep" aria-hidden="true"></div>
   <div class="where">Tool Bench</div>
@@ -121,6 +122,7 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
 </div>
 
 <main>
+  <div data-activity-shell-mount></div>
   <div class="kicker">Reference</div>
   <h1>Tool Bench<br><span>And how each one fails</span></h1>
   <p class="lede">There is no shortage of lists of AI tools. This one has a column the others do not:
@@ -147,6 +149,8 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
 </footer>
 
 <script src="../assets/mcc-qr.js" defer></script>
+<script src="../assets/mcc-content.js" defer></script>
+<script src="../assets/mcc-activity-shell.js" defer></script>
 <script>
 (function () {
   'use strict';

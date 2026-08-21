@@ -159,10 +159,11 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
   main{padding:0}
 }
 </style>
+<link rel="stylesheet" href="../assets/mcc-activity-shell.css">
 </head>
-<body>
+<body data-mcc-activity="hours" data-activity-target="#tname">
 
-<div class="bar">
+<div class="bar" data-mcc-legacy-nav>
   <a class="home" href="../">AI Professional <span>Development</span></a>
   <div class="sep" aria-hidden="true"></div>
   <div class="where">Find Your Ten Hours</div>
@@ -174,6 +175,7 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
 </div>
 
 <main>
+  <div data-activity-shell-mount></div>
   <div class="kicker">Personal lab</div>
   <h1>Find Your Ten Hours<br><span>The work you already repeat</span></h1>
   <p class="lede">Every other page here teaches something general. This one is about
@@ -278,6 +280,8 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
 </footer>
 
 <script src="../assets/mcc-qr.js" defer></script>
+<script src="../assets/mcc-content.js" defer></script>
+<script src="../assets/mcc-activity-shell.js" defer></script>
 <script>
 (function () {
   'use strict';

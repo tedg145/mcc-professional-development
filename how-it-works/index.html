@@ -234,10 +234,11 @@ footer a:hover{color:#fff}
   .lede,.idea p,.fac-notes li{color:#333!important}
 }
 </style>
+<link rel="stylesheet" href="../assets/mcc-activity-shell.css">
 </head>
-<body>
+<body data-mcc-activity="llm-works" data-activity-target="#walkthrough">
 
-<div class="bar">
+<div class="bar" data-mcc-legacy-nav>
   <a class="home" href="../">MCC <span>AI</span></a>
   <span class="sep"></span>
   <span class="where">How it works</span>
@@ -249,6 +250,7 @@ footer a:hover{color:#fff}
 </div>
 
 <main>
+  <div data-activity-shell-mount></div>
 
   <div class="kicker">Session 1 · The mental model</div>
   <h1>How an LLM works.<br><span>Three moves.</span></h1>
@@ -491,6 +493,8 @@ footer a:hover{color:#fff}
 </footer>
 
 <script src="../assets/mcc-qr.js"></script>
+<script src="../assets/mcc-content.js" defer></script>
+<script src="../assets/mcc-activity-shell.js" defer></script>
 <script>
 (function(){
   // ------------ prediction data ------------

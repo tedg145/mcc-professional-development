@@ -166,10 +166,11 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
   .group dd,.rhead .fn{color:#000}
 }
 </style>
+<link rel="stylesheet" href="../assets/mcc-activity-shell.css">
 </head>
-<body>
+<body data-mcc-activity="inspector" data-activity-target="#drop">
 
-<div class="bar">
+<div class="bar" data-mcc-legacy-nav>
   <a class="home" href="../">AI Professional <span>Development</span></a>
   <div class="sep" aria-hidden="true"></div>
   <div class="where">Metadata Inspector</div>
@@ -181,6 +182,7 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
 </div>
 
 <main>
+  <div data-activity-shell-mount></div>
   <div class="kicker">Hands-on lab</div>
   <h1>Metadata Inspector<br><span>See what your files are carrying</span></h1>
   <p class="lede">Every file you send holds more than what is on the page. Drop one in and
@@ -276,6 +278,8 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
 
 <script src="../assets/mcc-meta.js"></script>
 <script src="../assets/mcc-qr.js" defer></script>
+<script src="../assets/mcc-content.js" defer></script>
+<script src="../assets/mcc-activity-shell.js" defer></script>
 <script>
 (function () {
   'use strict';
