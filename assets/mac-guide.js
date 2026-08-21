@@ -21,9 +21,16 @@
     hover: asset('assets/mac-poses/reaction-hover.webp'),
     working: asset('assets/mac-poses/working-laptop.webp')
   };
-  var idlePoses = ['neutral', 'thinking', 'confident', 'patient', 'casual', 'seated'];
+  var idleChoices = [
+    { name: 'thinking', weight: 45 },
+    { name: 'casual', weight: 25 },
+    { name: 'patient', weight: 15 },
+    { name: 'confident', weight: 10 },
+    { name: 'seated', weight: 5 }
+  ];
   var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var positionKey = 'mccMacPositionV1';
+  var greetingKey = 'mccMacGreetedV1';
 
   var guide = document.createElement('aside');
   guide.className = 'mac-guide';
@@ -69,9 +76,17 @@
   var form = guide.querySelector('.mac-guide__form');
   var results = guide.querySelector('[data-mac-results]');
   var locationLabel = guide.querySelector('[data-mac-location]');
+  var statusLabel = guide.querySelector('.mac-guide__title span');
   var catalog = window.MCC_CONTENT || [];
-  var idleIndex = 0;
   var idleTimer = null;
+  var poseHoldTimer = null;
+  var poseSwapTimer = null;
+  var hoverTimer = null;
+  var hoverReturnTimer = null;
+  var closeTimer = null;
+  var recentIdlePoses = [];
+  var idleMomentCount = 0;
+  var pendingPose = null;
   var isHovering = false;
   var drag = null;
   var suppressClick = false;
@@ -87,29 +102,86 @@
     });
   }
 
-  function setPose(name) {
-    if (!poseUrls[name] || character.dataset.pose === name) return;
+  function randomBetween(minimum, maximum) {
+    return Math.round(minimum + Math.random() * (maximum - minimum));
+  }
+
+  function clearTimer(timer) {
+    if (timer) window.clearTimeout(timer);
+    return null;
+  }
+
+  function setPose(name, immediate) {
+    if (!poseUrls[name]) return;
+    poseSwapTimer = clearTimer(poseSwapTimer);
+    character.classList.remove('is-changing');
+    pendingPose = null;
+    if (character.dataset.pose === name) return;
+    if (immediate || reducedMotion) {
+      character.src = poseUrls[name];
+      character.dataset.pose = name;
+      return;
+    }
+    pendingPose = name;
     character.classList.add('is-changing');
-    window.setTimeout(function () {
+    poseSwapTimer = window.setTimeout(function () {
+      if (pendingPose !== name) return;
       character.src = poseUrls[name];
       character.dataset.pose = name;
       character.classList.remove('is-changing');
-    }, reducedMotion ? 0 : 90);
+      pendingPose = null;
+      poseSwapTimer = null;
+    }, 180);
   }
 
   function stopIdle() {
-    if (idleTimer) window.clearInterval(idleTimer);
-    idleTimer = null;
+    idleTimer = clearTimer(idleTimer);
+    poseHoldTimer = clearTimer(poseHoldTimer);
   }
 
-  function startIdle() {
+  function chooseIdlePose() {
+    var available = idleChoices.filter(function (choice) {
+      return recentIdlePoses.indexOf(choice.name) === -1;
+    });
+    if (!available.length) available = idleChoices.slice();
+    var total = available.reduce(function (sum, choice) { return sum + choice.weight; }, 0);
+    var draw = Math.random() * total;
+    var chosen = available[available.length - 1].name;
+    available.some(function (choice) {
+      draw -= choice.weight;
+      if (draw > 0) return false;
+      chosen = choice.name;
+      return true;
+    });
+    recentIdlePoses.push(chosen);
+    if (recentIdlePoses.length > 2) recentIdlePoses.shift();
+    return chosen;
+  }
+
+  function nextIdleDelay() {
+    idleMomentCount += 1;
+    if (idleMomentCount % 3 === 0 || Math.random() < 0.18) {
+      return randomBetween(45000, 90000);
+    }
+    return randomBetween(18000, 45000);
+  }
+
+  function startIdle(delay) {
     stopIdle();
-    if (reducedMotion || guide.classList.contains('is-open')) return;
-    idleTimer = window.setInterval(function () {
-      if (isHovering || drag || document.hidden) return;
-      idleIndex = (idleIndex + 1) % idlePoses.length;
-      setPose(idlePoses[idleIndex]);
-    }, 8500);
+    if (reducedMotion || guide.classList.contains('is-open') || document.hidden) return;
+    idleTimer = window.setTimeout(function () {
+      idleTimer = null;
+      if (isHovering || drag || document.hidden || guide.classList.contains('is-open')) {
+        startIdle(randomBetween(12000, 24000));
+        return;
+      }
+      setPose(chooseIdlePose());
+      poseHoldTimer = window.setTimeout(function () {
+        poseHoldTimer = null;
+        if (!isHovering && !drag && !guide.classList.contains('is-open')) setPose('neutral');
+        startIdle();
+      }, randomBetween(4000, 9000));
+    }, delay === undefined ? nextIdleDelay() : delay);
   }
 
   function activityHere() {
@@ -179,8 +251,12 @@
   }
 
   function openGuide() {
+    closeTimer = clearTimer(closeTimer);
+    hoverTimer = clearTimer(hoverTimer);
+    hoverReturnTimer = clearTimer(hoverReturnTimer);
     guide.classList.add('is-open');
     launcher.setAttribute('aria-expanded', 'true');
+    statusLabel.textContent = 'Ready to help';
     stopIdle();
     setPose('working');
     window.requestAnimationFrame(function () {
@@ -196,9 +272,14 @@
     panel.style.top = '';
     panel.style.right = '';
     panel.style.bottom = '';
-    idleIndex = 0;
-    setPose('neutral');
-    startIdle();
+    statusLabel.textContent = 'Ready when you are';
+    closeTimer = window.setTimeout(function () {
+      closeTimer = null;
+      if (!guide.classList.contains('is-open') && !isHovering) {
+        setPose('neutral');
+        startIdle(randomBetween(18000, 36000));
+      }
+    }, reducedMotion ? 0 : randomBetween(500, 850));
     launcher.focus();
   }
 
@@ -233,6 +314,7 @@
 
     if (!ranked.length) {
       results.innerHTML = '<div class="mac-guide__empty">I could not find a close match. Try a topic such as prompting, verification, privacy, faculty, productivity, or building tools.</div>';
+      statusLabel.textContent = 'Try another topic';
       return;
     }
 
@@ -240,6 +322,7 @@
       var item = row.item;
       return '<a class="mac-guide__result" href="' + new URL(item.path, siteRoot).href + '"><small>' + esc(item.zone) + ' · ' + esc(item.duration) + '</small><strong>' + esc(item.title) + '</strong><span>' + esc(item.description) + '</span></a>';
     }).join('');
+    statusLabel.textContent = ranked.length === 1 ? 'I found a path' : 'I found a few paths';
   }
 
   function refreshContext() {
@@ -283,7 +366,10 @@
     }
     guide.classList.remove('is-dragging');
     drag = null;
-    if (!guide.classList.contains('is-open')) startIdle();
+    if (!guide.classList.contains('is-open')) {
+      setPose('neutral');
+      startIdle(randomBetween(18000, 36000));
+    }
   }
 
   launcher.addEventListener('pointerup', finishDrag);
@@ -299,12 +385,25 @@
   launcher.addEventListener('pointerenter', function (event) {
     if (event.pointerType && event.pointerType !== 'mouse') return;
     isHovering = true;
-    if (!guide.classList.contains('is-open') && !drag) setPose('hover');
+    hoverReturnTimer = clearTimer(hoverReturnTimer);
+    stopIdle();
+    hoverTimer = window.setTimeout(function () {
+      hoverTimer = null;
+      if (isHovering && !guide.classList.contains('is-open') && !drag) setPose('hover');
+    }, 150);
   });
 
   launcher.addEventListener('pointerleave', function () {
     isHovering = false;
-    if (!guide.classList.contains('is-open') && !drag) setPose(idlePoses[idleIndex]);
+    hoverTimer = clearTimer(hoverTimer);
+    if (guide.classList.contains('is-open') || drag) return;
+    hoverReturnTimer = window.setTimeout(function () {
+      hoverReturnTimer = null;
+      if (!isHovering && !guide.classList.contains('is-open') && !drag) {
+        setPose('neutral');
+        startIdle(randomBetween(18000, 36000));
+      }
+    }, randomBetween(400, 700));
   });
 
   launcher.addEventListener('keydown', function (event) {
@@ -338,7 +437,10 @@
   });
   document.addEventListener('visibilitychange', function () {
     if (document.hidden) stopIdle();
-    else startIdle();
+    else if (!guide.classList.contains('is-open') && !isHovering) {
+      setPose('neutral');
+      startIdle(randomBetween(18000, 36000));
+    }
   });
   window.addEventListener('resize', function () {
     if (guide.classList.contains('is-positioned')) {
@@ -353,11 +455,23 @@
     results.innerHTML = '<div class="mac-guide__empty">Choose a quick question, or describe what you need help finding.</div>';
     revealForHub();
     restorePosition();
+    var shouldWave = false;
+    try {
+      shouldWave = !window.sessionStorage.getItem(greetingKey);
+      window.sessionStorage.setItem(greetingKey, '1');
+    } catch (error) {
+      shouldWave = true;
+    }
+    if (reducedMotion || !shouldWave) {
+      setPose('neutral', true);
+      startIdle();
+      return;
+    }
     character.dataset.pose = 'wave';
     window.setTimeout(function () {
       if (!guide.classList.contains('is-open') && !isHovering) setPose('neutral');
       startIdle();
-    }, reducedMotion ? 0 : 2600);
+    }, randomBetween(1800, 2400));
   }
 
   initial();
