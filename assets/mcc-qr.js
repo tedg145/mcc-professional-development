@@ -743,10 +743,20 @@
     }
   }
 
+  function installMacGuide() {
+    var own = Array.prototype.slice.call(document.scripts).find(function (s) { return /mcc-qr\.js(?:\?|$)/.test(s.src); });
+    if (!own || document.querySelector('script[src*="mac-guide.js"]')) return;
+    var root = new URL('../', own.src);
+    if (!document.querySelector('link[href*="mac-guide.css"]')) {
+      var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = new URL('assets/mac-guide.css', root).href; document.head.appendChild(css);
+    }
+    var guide = document.createElement('script'); guide.src = new URL('assets/mac-guide.js', root).href; guide.defer = true; document.body.appendChild(guide);
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () { install(); installProtectedShell(); });
+    document.addEventListener('DOMContentLoaded', function () { install(); installProtectedShell(); installMacGuide(); });
   } else {
-    install(); installProtectedShell();
+    install(); installProtectedShell(); installMacGuide();
   }
 
   window.MCCQR = {
