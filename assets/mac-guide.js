@@ -21,27 +21,51 @@ each limb is its own group with its own rotation pivot, so moving between
 "poses" is a real interpolated motion (CSS easing a rotation/translate)
 rather than a crossfade between two unrelated pictures. Colors match the
 site's own tokens rather than a separate art palette. */
+/* Shared gradient/filter defs — gives the flat vector shapes soft volume
+(radial highlights, cylindrical shading) and a bit of cast shadow between
+layers, aiming for the glossy 3D-rendered look of the original art while
+keeping every shape a single, cheaply-animatable path. */
+function macDefsMarkup() {
+return '<defs>' +
+'<radialGradient id="mgSkin" cx="38%" cy="28%" r="80%"><stop offset="0%" stop-color="#f8d3a6"/><stop offset="55%" stop-color="#e7ad82"/><stop offset="100%" stop-color="#bd815a"/></radialGradient>' +
+'<linearGradient id="mgBeard" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f6924c"/><stop offset="55%" stop-color="#e0632a"/><stop offset="100%" stop-color="#96370f"/></linearGradient>' +
+'<linearGradient id="mgBeardDeep" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#cf6530"/><stop offset="100%" stop-color="#87310d"/></linearGradient>' +
+'<linearGradient id="mgHat" x1="0" y1="0" x2="0.9" y2="1"><stop offset="0%" stop-color="#2a4b74"/><stop offset="55%" stop-color="#102540"/><stop offset="100%" stop-color="#040a14"/></linearGradient>' +
+'<linearGradient id="mgTorso" x1="0" y1="0" x2="0.9" y2="1"><stop offset="0%" stop-color="#2c5484"/><stop offset="50%" stop-color="#173355"/><stop offset="100%" stop-color="#071322"/></linearGradient>' +
+'<linearGradient id="mgTorsoDeep" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#152a46"/><stop offset="100%" stop-color="#040a14"/></linearGradient>' +
+'<linearGradient id="mgKilt" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f18f45"/><stop offset="55%" stop-color="#c9500a"/><stop offset="100%" stop-color="#7a2905"/></linearGradient>' +
+'<radialGradient id="mgShield" cx="35%" cy="26%" r="85%"><stop offset="0%" stop-color="#ffffff"/><stop offset="45%" stop-color="#dee4ea"/><stop offset="100%" stop-color="#87939f"/></radialGradient>' +
+'<radialGradient id="mgShoe" cx="35%" cy="20%" r="90%"><stop offset="0%" stop-color="#463523"/><stop offset="100%" stop-color="#0c0805"/></radialGradient>' +
+'<linearGradient id="mgSock" x1="0" y1="0" x2="0.8" y2="1"><stop offset="0%" stop-color="#20395a"/><stop offset="100%" stop-color="#040a14"/></linearGradient>' +
+'<filter id="mgLift" x="-60%" y="-60%" width="220%" height="220%"><feDropShadow dx="0" dy="2.4" stdDeviation="2.1" flood-color="#000" flood-opacity=".4"/></filter>' +
+'</defs>';
+}
+
 function macRigMarkup() {
 return '<svg class="mac-rig" viewBox="0 0 220 250" aria-hidden="true">' +
+macDefsMarkup() +
 '<g class="mac-rig__wrap">' +
 '<ellipse class="mac-rig__shadow" cx="110" cy="236" rx="46" ry="8"></ellipse>' +
-'<g class="mac-rig__leg-l" transform="translate(94,182)"><rect x="-9" y="0" width="18" height="34" rx="7" fill="#0b1626"></rect><ellipse cx="0" cy="38" rx="13" ry="8" fill="#1a1410"></ellipse></g>' +
-'<g class="mac-rig__leg-r" transform="translate(126,182)"><rect x="-9" y="0" width="18" height="34" rx="7" fill="#0b1626"></rect><ellipse cx="0" cy="38" rx="13" ry="8" fill="#1a1410"></ellipse></g>' +
+'<g class="mac-rig__leg-l" transform="translate(94,182)"><rect x="-9" y="0" width="18" height="34" rx="7" fill="url(#mgSock)"></rect><ellipse cx="0" cy="38" rx="13" ry="8" fill="url(#mgShoe)"></ellipse><ellipse cx="-3" cy="35" rx="3.2" ry="1.6" fill="#fff" opacity=".22"></ellipse></g>' +
+'<g class="mac-rig__leg-r" transform="translate(126,182)"><rect x="-9" y="0" width="18" height="34" rx="7" fill="url(#mgSock)"></rect><ellipse cx="0" cy="38" rx="13" ry="8" fill="url(#mgShoe)"></ellipse><ellipse cx="-3" cy="35" rx="3.2" ry="1.6" fill="#fff" opacity=".22"></ellipse></g>' +
 '<g class="mac-rig__body">' +
-'<path d="M74,150 L146,150 L156,196 L64,196 Z" fill="#c9500a"></path>' +
-'<line x1="80" y1="150" x2="68" y2="196" stroke="#0b1626" stroke-width="3" opacity=".55"></line>' +
-'<line x1="104" y1="150" x2="98" y2="196" stroke="#0b1626" stroke-width="3" opacity=".55"></line>' +
-'<line x1="128" y1="150" x2="130" y2="196" stroke="#0b1626" stroke-width="3" opacity=".55"></line>' +
-'<line x1="140" y1="150" x2="148" y2="196" stroke="#0b1626" stroke-width="3" opacity=".55"></line>' +
-'<path d="M76,96 Q72,86 82,80 L138,80 Q148,86 144,96 L150,152 Q110,166 70,152 Z" fill="#16304e"></path>' +
-'<path d="M82,80 L138,80 L134,92 L86,92 Z" fill="#0b1a2b"></path>' +
-'<g class="mac-rig__arm-l" transform="translate(72,96)"><g class="mac-rig__arm-l-rotor"><path d="M0,-4 Q-20,4 -22,34 Q-23,44 -14,48 Q-4,44 -6,32 Q-8,10 6,4 Z" fill="#16304e"></path><circle cx="-15" cy="47" r="9.5" fill="#e7ad82"></circle></g></g>' +
-'<g class="mac-rig__arm-r" transform="translate(148,96)"><g class="mac-rig__arm-r-rotor"><path d="M0,-4 Q20,4 22,34 Q23,44 14,48 Q4,44 6,32 Q8,10 -6,4 Z" fill="#16304e"></path><circle cx="15" cy="47" r="9.5" fill="#e7ad82"></circle></g></g>' +
-'<circle cx="110" cy="118" r="17" fill="#cfd6de"></circle>' +
-'<circle cx="110" cy="118" r="17" fill="none" stroke="#9aa6b3" stroke-width="2"></circle>' +
+'<path d="M74,150 L146,150 L156,196 L64,196 Z" fill="url(#mgKilt)"></path>' +
+'<line x1="80" y1="150" x2="68" y2="196" stroke="#5c2004" stroke-width="3" opacity=".5"></line>' +
+'<line x1="104" y1="150" x2="98" y2="196" stroke="#5c2004" stroke-width="3" opacity=".5"></line>' +
+'<line x1="128" y1="150" x2="130" y2="196" stroke="#5c2004" stroke-width="3" opacity=".5"></line>' +
+'<line x1="140" y1="150" x2="148" y2="196" stroke="#5c2004" stroke-width="3" opacity=".5"></line>' +
+'<path d="M78,151 L110,150 L104,196 L70,196 Z" fill="#fff" opacity=".08"></path>' +
+'<path d="M76,96 Q72,86 82,80 L138,80 Q148,86 144,96 L150,152 Q110,166 70,152 Z" fill="url(#mgTorso)"></path>' +
+'<path d="M82,80 L138,80 L134,92 L86,92 Z" fill="url(#mgTorsoDeep)"></path>' +
+'<path d="M84,84 L92,148" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".07"></path>' +
+'<g class="mac-rig__arm-l" transform="translate(72,96)" filter="url(#mgLift)"><g class="mac-rig__arm-l-rotor"><path d="M0,-4 Q-20,4 -22,34 Q-23,44 -14,48 Q-4,44 -6,32 Q-8,10 6,4 Z" fill="url(#mgTorso)"></path><circle cx="-15" cy="47" r="9.5" fill="url(#mgSkin)"></circle><ellipse cx="-18" cy="43" rx="2.6" ry="1.8" fill="#fff" opacity=".35"></ellipse></g></g>' +
+'<g class="mac-rig__arm-r" transform="translate(148,96)" filter="url(#mgLift)"><g class="mac-rig__arm-r-rotor"><path d="M0,-4 Q20,4 22,34 Q23,44 14,48 Q4,44 6,32 Q8,10 -6,4 Z" fill="url(#mgTorso)"></path><circle cx="15" cy="47" r="9.5" fill="url(#mgSkin)"></circle><ellipse cx="12" cy="43" rx="2.6" ry="1.8" fill="#fff" opacity=".35"></ellipse></g></g>' +
+'<circle cx="110" cy="118" r="17" fill="url(#mgShield)"></circle>' +
+'<circle cx="110" cy="118" r="17" fill="none" stroke="#7c8895" stroke-width="1.6"></circle>' +
+'<ellipse cx="104" cy="112" rx="5.5" ry="3.4" fill="#fff" opacity=".6"></ellipse>' +
 '<circle class="mac-rig__shield-glow" cx="110" cy="118" r="20" fill="none" stroke="#ff6600" stroke-width="3"></circle>' +
-'<text x="110" y="124" text-anchor="middle" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-weight="800" font-size="16" fill="#ff6600">M</text>' +
-'<g class="mac-rig__head" transform="translate(110,58)"><g class="mac-rig__head-rotor">' + macFaceMarkup() + '</g></g>' +
+'<text x="110" y="124" text-anchor="middle" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-weight="800" font-size="16" fill="#e05e00">M</text>' +
+'<g class="mac-rig__head" transform="translate(110,58)" filter="url(#mgLift)"><g class="mac-rig__head-rotor">' + macFaceMarkup() + '</g></g>' +
 '</g>' +
 '</g>' +
 '</svg>';
@@ -51,20 +75,24 @@ return '<svg class="mac-rig" viewBox="0 0 220 250" aria-hidden="true">' +
 static avatar in the panel header (drawn there with its own tight viewBox
 instead of trying to crop the full body into a 46px box). */
 function macFaceMarkup() {
-return '<path d="M-30,-6 Q-30,-32 0,-34 Q30,-32 30,-6 Q30,2 24,4 L-24,4 Q-30,2 -30,-6 Z" fill="#0b1a2b"></path>' +
+return '<path d="M-30,-6 Q-30,-32 0,-34 Q30,-32 30,-6 Q30,2 24,4 L-24,4 Q-30,2 -30,-6 Z" fill="url(#mgHat)"></path>' +
+'<path d="M-27,-16 Q-22,-28 -4,-31" stroke="#5b81ac" stroke-width="2.6" stroke-linecap="round" fill="none" opacity=".5"></path>' +
 '<rect x="-31" y="-2" width="62" height="8" rx="3" fill="#ff6600"></rect>' +
+'<rect x="-31" y="-2" width="62" height="3" rx="1.5" fill="#ffb27a" opacity=".55"></rect>' +
 '<circle cx="0" cy="-32" r="5" fill="#ff6600"></circle>' +
-'<ellipse cx="0" cy="14" rx="24" ry="23" fill="#e7ad82"></ellipse>' +
-'<path d="M-19,18 Q-19,13 0,13 Q19,13 19,18 Q26,32 17,42 Q9,50 0,50 Q-9,50 -17,42 Q-26,32 -19,18 Z" fill="#e0632a"></path>' +
-'<path d="M-18,17 Q-18,14 0,14 Q18,14 18,17 Q18,21 0,22 Q-18,21 -18,17 Z" fill="#b8481c"></path>' +
-'<g class="mac-rig__eyes"><ellipse cx="-9" cy="9" rx="2.6" ry="3.2" fill="#06111f"></ellipse><ellipse cx="9" cy="9" rx="2.6" ry="3.2" fill="#06111f"></ellipse></g>' +
-'<path d="M-13,2 Q-9,-1 -5,1" stroke="#b8481c" stroke-width="2" fill="none" stroke-linecap="round"></path>' +
-'<path d="M5,1 Q9,-1 13,2" stroke="#b8481c" stroke-width="2" fill="none" stroke-linecap="round"></path>' +
-'<path d="M-5,13 Q0,16 5,13" stroke="#06111f" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".8"></path>';
+'<circle cx="-1.6" cy="-33.6" r="1.6" fill="#ffcda1" opacity=".8"></circle>' +
+'<ellipse cx="0" cy="14" rx="24" ry="23" fill="url(#mgSkin)"></ellipse>' +
+'<ellipse cx="-9" cy="1" rx="8.5" ry="6" fill="#fff" opacity=".2"></ellipse>' +
+'<path d="M-19,18 Q-19,13 0,13 Q19,13 19,18 Q26,32 17,42 Q9,50 0,50 Q-9,50 -17,42 Q-26,32 -19,18 Z" fill="url(#mgBeard)"></path>' +
+'<path d="M-18,17 Q-18,14 0,14 Q18,14 18,17 Q18,21 0,22 Q-18,21 -18,17 Z" fill="url(#mgBeardDeep)"></path>' +
+'<g class="mac-rig__eyes"><ellipse cx="-9" cy="9" rx="2.6" ry="3.2" fill="#06111f"></ellipse><ellipse cx="9" cy="9" rx="2.6" ry="3.2" fill="#06111f"></ellipse><circle cx="-8" cy="7.8" r=".8" fill="#fff" opacity=".85"></circle><circle cx="10" cy="7.8" r=".8" fill="#fff" opacity=".85"></circle></g>' +
+'<path d="M-13,2 Q-9,-1 -5,1" stroke="#8f350f" stroke-width="2" fill="none" stroke-linecap="round"></path>' +
+'<path d="M5,1 Q9,-1 13,2" stroke="#8f350f" stroke-width="2" fill="none" stroke-linecap="round"></path>' +
+'<path d="M-5,13 Q0,16 5,13" stroke="#4a1c08" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".8"></path>';
 }
 
 function macAvatarMarkup() {
-return '<svg viewBox="-33 -36 66 88" aria-hidden="true"><g class="mac-rig__head-rotor">' + macFaceMarkup() + '</g></svg>';
+return '<svg viewBox="-33 -36 66 88" aria-hidden="true">' + macDefsMarkup() + '<g class="mac-rig__head-rotor">' + macFaceMarkup() + '</g></svg>';
 }
 
 var guide = document.createElement('aside');
