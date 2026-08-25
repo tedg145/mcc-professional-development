@@ -451,6 +451,11 @@ if (!nudge || !nudgeText || !nudgeLink) return;
 nudgeText.textContent = suggestion.text;
 nudgeLink.textContent = (suggestion.item.cta || 'Take a look') + ' →';
 nudgeLink.href = new URL(suggestion.item.path, siteRoot).href;
+/* Anchor off whichever edges Mac is actually near right now — he may have
+wandered anywhere, not just his default bottom-right home. */
+var rect = guide.getBoundingClientRect();
+nudge.classList.toggle('mac-guide__nudge--below', rect.top < window.innerHeight / 2);
+nudge.classList.toggle('mac-guide__nudge--left', rect.left > window.innerWidth / 2);
 nudge.hidden = false;
 window.requestAnimationFrame(function () {
 nudge.classList.add('is-visible');
