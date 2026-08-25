@@ -9,39 +9,73 @@ if (document.querySelector('.mac-guide')) return;
 var siteRoot = own
 ? new URL('../', own.src)
 : new URL(document.body.dataset.macGuideRoot || '../', location.href);
-var asset = function (path) { return new URL(path, siteRoot).href; };
-var poseUrls = {
-wave: asset('assets/mac-guide.webp'),
-neutral: asset('assets/mac-poses/idle-neutral.webp'),
-thinking: asset('assets/mac-poses/idle-thinking.webp'),
-confident: asset('assets/mac-poses/idle-confident.webp'),
-patient: asset('assets/mac-poses/idle-patient.webp'),
-casual: asset('assets/mac-poses/idle-casual.webp'),
-seated: asset('assets/mac-poses/idle-seated.webp'),
-hover: asset('assets/mac-poses/reaction-hover.webp'),
-working: asset('assets/mac-poses/working-laptop.webp')
-};
-var idleChoices = [
-{ name: 'thinking', weight: 45 },
-{ name: 'casual', weight: 25 },
-{ name: 'patient', weight: 15 },
-{ name: 'confident', weight: 10 },
-{ name: 'seated', weight: 5 }
-];
 var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 var positionKey = 'mccMacPositionV1';
 var greetingKey = 'mccMacGreetedDateV1';
 var modeKey = 'mccMacModeV1';
 var nudgeShownKey = 'mccMacNudgedV1';
+var introClickKey = 'mccMacIntroducedV1';
+
+/* A rigged, part-based character instead of a set of swapped illustrations —
+each limb is its own group with its own rotation pivot, so moving between
+"poses" is a real interpolated motion (CSS easing a rotation/translate)
+rather than a crossfade between two unrelated pictures. Colors match the
+site's own tokens rather than a separate art palette. */
+function macRigMarkup() {
+return '<svg class="mac-rig" viewBox="0 0 220 250" aria-hidden="true">' +
+'<g class="mac-rig__wrap">' +
+'<ellipse class="mac-rig__shadow" cx="110" cy="236" rx="46" ry="8"></ellipse>' +
+'<g class="mac-rig__leg-l" transform="translate(94,182)"><rect x="-9" y="0" width="18" height="34" rx="7" fill="#0b1626"></rect><ellipse cx="0" cy="38" rx="13" ry="8" fill="#1a1410"></ellipse></g>' +
+'<g class="mac-rig__leg-r" transform="translate(126,182)"><rect x="-9" y="0" width="18" height="34" rx="7" fill="#0b1626"></rect><ellipse cx="0" cy="38" rx="13" ry="8" fill="#1a1410"></ellipse></g>' +
+'<g class="mac-rig__body">' +
+'<path d="M74,150 L146,150 L156,196 L64,196 Z" fill="#c9500a"></path>' +
+'<line x1="80" y1="150" x2="68" y2="196" stroke="#0b1626" stroke-width="3" opacity=".55"></line>' +
+'<line x1="104" y1="150" x2="98" y2="196" stroke="#0b1626" stroke-width="3" opacity=".55"></line>' +
+'<line x1="128" y1="150" x2="130" y2="196" stroke="#0b1626" stroke-width="3" opacity=".55"></line>' +
+'<line x1="140" y1="150" x2="148" y2="196" stroke="#0b1626" stroke-width="3" opacity=".55"></line>' +
+'<path d="M76,96 Q72,86 82,80 L138,80 Q148,86 144,96 L150,152 Q110,166 70,152 Z" fill="#16304e"></path>' +
+'<path d="M82,80 L138,80 L134,92 L86,92 Z" fill="#0b1a2b"></path>' +
+'<g class="mac-rig__arm-l" transform="translate(72,96)"><g class="mac-rig__arm-l-rotor"><path d="M0,-4 Q-20,4 -22,34 Q-23,44 -14,48 Q-4,44 -6,32 Q-8,10 6,4 Z" fill="#16304e"></path><circle cx="-15" cy="47" r="9.5" fill="#e7ad82"></circle></g></g>' +
+'<g class="mac-rig__arm-r" transform="translate(148,96)"><g class="mac-rig__arm-r-rotor"><path d="M0,-4 Q20,4 22,34 Q23,44 14,48 Q4,44 6,32 Q8,10 -6,4 Z" fill="#16304e"></path><circle cx="15" cy="47" r="9.5" fill="#e7ad82"></circle></g></g>' +
+'<circle cx="110" cy="118" r="17" fill="#cfd6de"></circle>' +
+'<circle cx="110" cy="118" r="17" fill="none" stroke="#9aa6b3" stroke-width="2"></circle>' +
+'<circle class="mac-rig__shield-glow" cx="110" cy="118" r="20" fill="none" stroke="#ff6600" stroke-width="3"></circle>' +
+'<text x="110" y="124" text-anchor="middle" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-weight="800" font-size="16" fill="#ff6600">M</text>' +
+'<g class="mac-rig__head" transform="translate(110,58)"><g class="mac-rig__head-rotor">' + macFaceMarkup() + '</g></g>' +
+'</g>' +
+'</g>' +
+'</svg>';
+}
+
+/* The face parts alone, shared between the full-body rig and the small
+static avatar in the panel header (drawn there with its own tight viewBox
+instead of trying to crop the full body into a 46px box). */
+function macFaceMarkup() {
+return '<path d="M-30,-6 Q-30,-32 0,-34 Q30,-32 30,-6 Q30,2 24,4 L-24,4 Q-30,2 -30,-6 Z" fill="#0b1a2b"></path>' +
+'<rect x="-31" y="-2" width="62" height="8" rx="3" fill="#ff6600"></rect>' +
+'<circle cx="0" cy="-32" r="5" fill="#ff6600"></circle>' +
+'<ellipse cx="0" cy="14" rx="24" ry="23" fill="#e7ad82"></ellipse>' +
+'<path d="M-19,18 Q-19,13 0,13 Q19,13 19,18 Q26,32 17,42 Q9,50 0,50 Q-9,50 -17,42 Q-26,32 -19,18 Z" fill="#e0632a"></path>' +
+'<path d="M-18,17 Q-18,14 0,14 Q18,14 18,17 Q18,21 0,22 Q-18,21 -18,17 Z" fill="#b8481c"></path>' +
+'<g class="mac-rig__eyes"><ellipse cx="-9" cy="9" rx="2.6" ry="3.2" fill="#06111f"></ellipse><ellipse cx="9" cy="9" rx="2.6" ry="3.2" fill="#06111f"></ellipse></g>' +
+'<path d="M-13,2 Q-9,-1 -5,1" stroke="#b8481c" stroke-width="2" fill="none" stroke-linecap="round"></path>' +
+'<path d="M5,1 Q9,-1 13,2" stroke="#b8481c" stroke-width="2" fill="none" stroke-linecap="round"></path>' +
+'<path d="M-5,13 Q0,16 5,13" stroke="#06111f" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".8"></path>';
+}
+
+function macAvatarMarkup() {
+return '<svg viewBox="-33 -36 66 88" aria-hidden="true"><g class="mac-rig__head-rotor">' + macFaceMarkup() + '</g></svg>';
+}
 
 var guide = document.createElement('aside');
 guide.className = 'mac-guide';
 guide.setAttribute('aria-label', 'Mac, MCC AI Guide');
 guide.innerHTML = [
 '<button class="mac-guide__launcher" type="button" aria-label="Ask Mac, the draggable MCC site navigator" aria-expanded="false">',
-'<span class="mac-guide__label">Ask Mac<small>Drag me · click for help</small></span>',
-'<img class="mac-guide__character" src="' + poseUrls.wave + '" alt="" draggable="false">',
+'<span class="mac-guide__label"><span class="mac-guide__label-text"><strong>Ask Mac</strong><small>Drag me · click for help</small></span></span>',
+'<span class="mac-guide__character">' + macRigMarkup() + '</span>',
 '</button>',
+'<div class="mac-guide__hello" hidden><strong>Hi, I’m Mac!</strong><span>Your MCC AI guide — click me anytime.</span></div>',
 '<div class="mac-guide__nudge" hidden>',
 '<button class="mac-guide__nudge-close" type="button" aria-label="Dismiss suggestion">×</button>',
 '<p class="mac-guide__nudge-text" data-mac-nudge-text></p>',
@@ -49,7 +83,7 @@ guide.innerHTML = [
 '</div>',
 '<section class="mac-guide__panel" role="dialog" aria-modal="false" aria-labelledby="mac-guide-title">',
 '<header class="mac-guide__head">',
-'<img class="mac-guide__avatar" src="' + poseUrls.wave + '" alt="">',
+'<span class="mac-guide__avatar">' + macAvatarMarkup() + '</span>',
 '<div class="mac-guide__title"><strong id="mac-guide-title">Mac · MCC AI Guide</strong><span>Working on it</span></div>',
 '<button class="mac-guide__close" type="button" aria-label="Close Mac AI Guide">×</button>',
 '</header>',
@@ -78,6 +112,8 @@ document.body.appendChild(guide);
 var launcher = guide.querySelector('.mac-guide__launcher');
 var character = guide.querySelector('.mac-guide__character');
 var labelChip = guide.querySelector('.mac-guide__label');
+var labelText = guide.querySelector('.mac-guide__label-text');
+var hello = guide.querySelector('.mac-guide__hello');
 var nudge = guide.querySelector('.mac-guide__nudge');
 var nudgeText = guide.querySelector('[data-mac-nudge-text]');
 var nudgeLink = guide.querySelector('[data-mac-nudge-link]');
@@ -97,27 +133,24 @@ var catalog = window.MCC_CONTENT || [];
 var currentMode = 'navigator';
 var idleTimer = null;
 var poseHoldTimer = null;
-var poseSwapTimer = null;
 var hoverTimer = null;
 var hoverReturnTimer = null;
 var closeTimer = null;
 var celebrateTimer = null;
 var celebrateHoldTimer = null;
-var celebrateLabelHTML = labelChip ? labelChip.innerHTML : '';
+var labelTextHTML = labelText ? labelText.innerHTML : '';
 var wanderCleanupTimer = null;
 var nudgeAutoHideTimer = null;
+var helloHideTimer = null;
+var introTimer = null;
 var hasOpenedThisSession = false;
-var recentIdlePoses = [];
+var hasIntroducedSelf = false;
+try { hasIntroducedSelf = !!window.localStorage.getItem(introClickKey); } catch (error) {}
 var idleMomentCount = 0;
-var pendingPose = null;
+var currentPose = 'idle';
 var isHovering = false;
 var drag = null;
 var suppressClick = false;
-
-Object.keys(poseUrls).forEach(function (name) {
-var preload = new Image();
-preload.src = poseUrls[name];
-});
 
 function esc(value) {
 return String(value).replace(/[&<>\"]/g, function (characterToEscape) {
@@ -134,51 +167,19 @@ if (timer) window.clearTimeout(timer);
 return null;
 }
 
-function setPose(name, immediate) {
-if (!poseUrls[name]) return;
-poseSwapTimer = clearTimer(poseSwapTimer);
-character.classList.remove('is-changing');
-pendingPose = null;
-if (character.dataset.pose === name) return;
-if (immediate || reducedMotion) {
-character.src = poseUrls[name];
-character.dataset.pose = name;
-return;
-}
-pendingPose = name;
-character.classList.add('is-changing');
-poseSwapTimer = window.setTimeout(function () {
-if (pendingPose !== name) return;
-character.src = poseUrls[name];
-character.dataset.pose = name;
-character.classList.remove('is-changing');
-pendingPose = null;
-poseSwapTimer = null;
-}, 180);
+/* Poses are now just a data attribute the CSS reacts to — swapping between
+them eases the affected limb's own rotation/position, so "changing pose"
+is continuous motion instead of a cut between two different pictures. */
+function setPose(name) {
+if (currentPose === name) return;
+currentPose = name;
+if (name === 'idle') character.removeAttribute('data-pose');
+else character.setAttribute('data-pose', name);
 }
 
 function stopIdle() {
 idleTimer = clearTimer(idleTimer);
 poseHoldTimer = clearTimer(poseHoldTimer);
-}
-
-function chooseIdlePose() {
-var available = idleChoices.filter(function (choice) {
-return recentIdlePoses.indexOf(choice.name) === -1;
-});
-if (!available.length) available = idleChoices.slice();
-var total = available.reduce(function (sum, choice) { return sum + choice.weight; }, 0);
-var draw = Math.random() * total;
-var chosen = available[available.length - 1].name;
-available.some(function (choice) {
-draw -= choice.weight;
-if (draw > 0) return false;
-chosen = choice.name;
-return true;
-});
-recentIdlePoses.push(chosen);
-if (recentIdlePoses.length > 2) recentIdlePoses.shift();
-return chosen;
 }
 
 function nextIdleDelay() {
@@ -187,6 +188,18 @@ if (idleMomentCount % 3 === 0 || Math.random() < 0.18) {
 return randomBetween(45000, 90000);
 }
 return randomBetween(18000, 45000);
+}
+
+/* A brief "hand to chin" gesture — the closest thing to the old discrete
+"thinking" pose, but now a real limb movement layered on the constant
+idle breathing/blinking rather than a separate picture. */
+function ponder() {
+setPose('think');
+poseHoldTimer = window.setTimeout(function () {
+poseHoldTimer = null;
+if (!isHovering && !drag && !guide.classList.contains('is-open')) setPose('idle');
+startIdle();
+}, randomBetween(2200, 3200));
 }
 
 function startIdle(delay) {
@@ -198,16 +211,16 @@ if (isHovering || drag || document.hidden || guide.classList.contains('is-open')
 startIdle(randomBetween(12000, 24000));
 return;
 }
-if (window.innerWidth > 600 && Math.random() < 0.2) {
+var roll = Math.random();
+if (window.innerWidth > 600 && roll < 0.16) {
 wander();
 return;
 }
-setPose(chooseIdlePose());
-poseHoldTimer = window.setTimeout(function () {
-poseHoldTimer = null;
-if (!isHovering && !drag && !guide.classList.contains('is-open')) setPose('neutral');
+if (roll < 0.38) {
+ponder();
+return;
+}
 startIdle();
-}, randomBetween(4000, 9000));
 }, delay === undefined ? nextIdleDelay() : delay);
 }
 
@@ -276,7 +289,8 @@ if (guide.classList.contains('is-open')) positionPanel();
 /* A rare, self-initiated stroll instead of only swapping pose in place. He
 sticks to a "home" corner most of the time and occasionally visits the
 other three, always landing near an edge rather than drifting over page
-content, with a soft glide driven by the .is-wandering transition. */
+content, with a soft glide driven by the .is-wandering transition and a
+real walk cycle (leg swing + arm swing + step bob) on the rig itself. */
 function pickWanderSpot() {
 var margin = 24;
 var width = launcher.offsetWidth;
@@ -304,12 +318,12 @@ top: chosen.y + randomBetween(-30, 30)
 
 function wander() {
 var spot = pickWanderSpot();
-setPose('casual');
+setPose('wander');
 moveTo(spot.left, spot.top, true);
 savePosition();
 poseHoldTimer = window.setTimeout(function () {
 poseHoldTimer = null;
-if (!isHovering && !drag && !guide.classList.contains('is-open')) setPose('neutral');
+if (!isHovering && !drag && !guide.classList.contains('is-open')) setPose('idle');
 startIdle();
 }, randomBetween(3000, 6000));
 }
@@ -375,7 +389,7 @@ statusLabel.textContent = 'Ready when you are';
 closeTimer = window.setTimeout(function () {
 closeTimer = null;
 if (!guide.classList.contains('is-open') && !isHovering) {
-setPose('neutral');
+setPose('idle');
 startIdle(randomBetween(18000, 36000));
 }
 }, reducedMotion ? 0 : randomBetween(500, 850));
@@ -385,15 +399,15 @@ launcher.focus();
 /* Reacts to real events instead of only idle randomness — currently the
 'mcc:activity-complete' signal that activity pages already dispatch when a
 learner finishes something (Find Your Ten Hours' plan, The Safe
-Hypothetical's copy button, and so on). Mac holds a confident pose and, if
-his panel is closed, briefly swaps his floating label to a short
+Hypothetical's copy button, and so on). Mac hops with both arms up and, if
+his panel is closed, briefly expands his floating label to a short
 acknowledgement so the reaction is visible without anyone opening him. */
 function celebrate() {
 if (guide.hidden) return;
 celebrateTimer = clearTimer(celebrateTimer);
 celebrateHoldTimer = clearTimer(celebrateHoldTimer);
 stopIdle();
-setPose('confident');
+setPose('celebrate');
 guide.classList.add('is-celebrating');
 if (guide.classList.contains('is-open')) {
 statusLabel.textContent = 'Nice — that’s progress logged';
@@ -401,18 +415,18 @@ celebrateHoldTimer = window.setTimeout(function () {
 celebrateHoldTimer = null;
 if (guide.classList.contains('is-open')) statusLabel.textContent = 'Ready to help';
 }, 4200);
-} else if (labelChip) {
-labelChip.innerHTML = 'Nice work!<small>That’s progress logged</small>';
+} else if (labelText) {
+labelText.innerHTML = 'Nice work!<small>That’s progress logged</small>';
 celebrateHoldTimer = window.setTimeout(function () {
 celebrateHoldTimer = null;
-labelChip.innerHTML = celebrateLabelHTML;
+labelText.innerHTML = labelTextHTML;
 }, 4200);
 }
 celebrateTimer = window.setTimeout(function () {
 celebrateTimer = null;
 guide.classList.remove('is-celebrating');
 if (!isHovering && !drag && !guide.classList.contains('is-open')) {
-setPose('neutral');
+setPose('idle');
 startIdle(randomBetween(18000, 36000));
 }
 }, 4600);
@@ -481,6 +495,24 @@ nudgeClose.addEventListener('click', function (event) {
 event.stopPropagation();
 hideNudge();
 });
+}
+
+/* A one-time-ever self-introduction on the very first click, before the
+panel opens — after that he assumes you already know who he is. */
+function showHello(onDone) {
+if (!hello) { onDone(); return; }
+hideNudge();
+setPose('wave');
+hello.hidden = false;
+window.requestAnimationFrame(function () {
+hello.classList.add('is-visible');
+});
+helloHideTimer = clearTimer(helloHideTimer);
+helloHideTimer = window.setTimeout(function () {
+hello.classList.remove('is-visible');
+window.setTimeout(function () { hello.hidden = true; }, 250);
+onDone();
+}, reducedMotion ? 500 : 1500);
 }
 
 function words(value) {
@@ -654,6 +686,7 @@ if (!drag || drag.pointerId !== event.pointerId) return;
 var deltaX = event.clientX - drag.startX;
 var deltaY = event.clientY - drag.startY;
 if (!drag.moved && Math.hypot(deltaX, deltaY) < 6) return;
+if (!drag.moved) setPose('drag');
 drag.moved = true;
 guide.classList.add('is-dragging');
 stopIdle();
@@ -671,7 +704,7 @@ window.setTimeout(function () { suppressClick = false; }, 0);
 guide.classList.remove('is-dragging');
 drag = null;
 if (!guide.classList.contains('is-open')) {
-setPose('neutral');
+setPose('idle');
 startIdle(randomBetween(18000, 36000));
 }
 }
@@ -682,8 +715,17 @@ launcher.addEventListener('dragstart', function (event) { event.preventDefault()
 
 launcher.addEventListener('click', function () {
 if (suppressClick) return;
-if (guide.classList.contains('is-open')) shutGuide();
-else openGuide();
+if (guide.classList.contains('is-open')) {
+shutGuide();
+return;
+}
+if (!hasIntroducedSelf) {
+hasIntroducedSelf = true;
+try { window.localStorage.setItem(introClickKey, '1'); } catch (error) {}
+showHello(openGuide);
+return;
+}
+openGuide();
 });
 
 launcher.addEventListener('pointerenter', function (event) {
@@ -704,7 +746,7 @@ if (guide.classList.contains('is-open') || drag) return;
 hoverReturnTimer = window.setTimeout(function () {
 hoverReturnTimer = null;
 if (!isHovering && !guide.classList.contains('is-open') && !drag) {
-setPose('neutral');
+setPose('idle');
 startIdle(randomBetween(18000, 36000));
 }
 }, randomBetween(400, 700));
@@ -772,7 +814,7 @@ document.addEventListener('mcc:activity-complete', celebrate);
 document.addEventListener('visibilitychange', function () {
 if (document.hidden) stopIdle();
 else if (!guide.classList.contains('is-open') && !isHovering) {
-setPose('neutral');
+setPose('idle');
 startIdle(randomBetween(18000, 36000));
 }
 });
@@ -804,6 +846,15 @@ renderMode(currentMode);
 revealForHub();
 restorePosition();
 scheduleNudge();
+/* The label starts as a small badge (see CSS) and briefly expands on every
+page load so it stays discoverable without sitting there permanently. */
+if (!reducedMotion) {
+guide.classList.add('is-intro');
+introTimer = window.setTimeout(function () {
+introTimer = null;
+guide.classList.remove('is-intro');
+}, 4200);
+}
 /* Once per calendar day rather than once per browser session — he greets
 you again tomorrow instead of only the first time a tab is opened, which
 is what actually gives him a daily rhythm instead of a session reset. */
@@ -816,13 +867,13 @@ window.localStorage.setItem(greetingKey, todayKey);
 shouldWave = true;
 }
 if (reducedMotion || !shouldWave) {
-setPose('neutral', true);
+setPose('idle');
 startIdle();
 return;
 }
-character.dataset.pose = 'wave';
+setPose('wave');
 window.setTimeout(function () {
-if (!guide.classList.contains('is-open') && !isHovering) setPose('neutral');
+if (!guide.classList.contains('is-open') && !isHovering) setPose('idle');
 startIdle();
 }, randomBetween(1800, 2400));
 }
