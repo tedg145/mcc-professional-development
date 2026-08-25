@@ -455,7 +455,7 @@ nudgeLink.href = new URL(suggestion.item.path, siteRoot).href;
 wandered anywhere, not just his default bottom-right home. */
 var rect = guide.getBoundingClientRect();
 nudge.classList.toggle('mac-guide__nudge--below', rect.top < window.innerHeight / 2);
-nudge.classList.toggle('mac-guide__nudge--left', rect.left > window.innerWidth / 2);
+nudge.classList.toggle('mac-guide__nudge--left', rect.left < window.innerWidth / 2);
 nudge.hidden = false;
 window.requestAnimationFrame(function () {
 nudge.classList.add('is-visible');
