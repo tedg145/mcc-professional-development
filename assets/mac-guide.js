@@ -30,39 +30,15 @@ return '<defs>' +
 '<radialGradient id="mgSkin" cx="38%" cy="28%" r="80%"><stop offset="0%" stop-color="#f8d3a6"/><stop offset="55%" stop-color="#e7ad82"/><stop offset="100%" stop-color="#bd815a"/></radialGradient>' +
 '<linearGradient id="mgBeard" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f6924c"/><stop offset="55%" stop-color="#e0632a"/><stop offset="100%" stop-color="#96370f"/></linearGradient>' +
 '<linearGradient id="mgBeardDeep" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#cf6530"/><stop offset="100%" stop-color="#87310d"/></linearGradient>' +
+'<linearGradient id="mgHat" x1="0" y1="0" x2="0.9" y2="1"><stop offset="0%" stop-color="#2a4b74"/><stop offset="55%" stop-color="#102540"/><stop offset="100%" stop-color="#040a14"/></linearGradient>' +
 '<linearGradient id="mgTorso" x1="0" y1="0" x2="0.9" y2="1"><stop offset="0%" stop-color="#2c5484"/><stop offset="50%" stop-color="#173355"/><stop offset="100%" stop-color="#071322"/></linearGradient>' +
 '<linearGradient id="mgTorsoDeep" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#152a46"/><stop offset="100%" stop-color="#040a14"/></linearGradient>' +
+'<linearGradient id="mgKilt" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f18f45"/><stop offset="55%" stop-color="#c9500a"/><stop offset="100%" stop-color="#7a2905"/></linearGradient>' +
 '<radialGradient id="mgShield" cx="35%" cy="26%" r="85%"><stop offset="0%" stop-color="#ffffff"/><stop offset="45%" stop-color="#dee4ea"/><stop offset="100%" stop-color="#87939f"/></radialGradient>' +
 '<radialGradient id="mgShoe" cx="35%" cy="20%" r="90%"><stop offset="0%" stop-color="#463523"/><stop offset="100%" stop-color="#0c0805"/></radialGradient>' +
-'<radialGradient id="mgGlove" cx="38%" cy="26%" r="85%"><stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#f2eee3"/><stop offset="100%" stop-color="#cdc6b3"/></radialGradient>' +
-'<linearGradient id="mgSockWhite" x1="0" y1="0" x2="0.8" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="60%" stop-color="#f0ece0"/><stop offset="100%" stop-color="#cfc8b6"/></linearGradient>' +
-'<pattern id="mgTartan" width="14" height="14" patternUnits="userSpaceOnUse">' +
-'<rect width="14" height="14" fill="#8a1c24"/>' +
-'<rect width="14" height="4.4" y="0" fill="#1c3324"/>' +
-'<rect width="14" height="4.4" y="9.6" fill="#1c3324"/>' +
-'<rect x="0" width="4.4" height="14" fill="#1c3324"/>' +
-'<rect x="9.6" width="4.4" height="14" fill="#1c3324"/>' +
-'<rect width="14" height="1.4" y="6.3" fill="#0a1120"/>' +
-'<rect x="6.3" width="1.4" height="14" fill="#0a1120"/>' +
-'<rect width="14" height=".7" y="2" fill="#5c0f16" opacity=".6"/>' +
-'<rect width="14" height=".7" y="11.3" fill="#5c0f16" opacity=".6"/>' +
-'</pattern>' +
+'<linearGradient id="mgSock" x1="0" y1="0" x2="0.8" y2="1"><stop offset="0%" stop-color="#20395a"/><stop offset="100%" stop-color="#040a14"/></linearGradient>' +
 '<filter id="mgLift" x="-60%" y="-60%" width="220%" height="220%"><feDropShadow dx="0" dy="2.4" stdDeviation="2.1" flood-color="#000" flood-opacity=".4"/></filter>' +
 '</defs>';
-}
-
-/* Small rivets ringing the shield border, matching the real costume shield's
-riveted-edge look. Computed rather than hand-typed so the spacing stays even. */
-function macShieldRivets(cx, cy, r) {
-var out = '';
-var count = 10;
-for (var i = 0; i < count; i++) {
-var a = (Math.PI * 2 * i) / count;
-var x = cx + Math.cos(a) * r;
-var y = cy + Math.sin(a) * r;
-out += '<circle cx="' + x.toFixed(2) + '" cy="' + y.toFixed(2) + '" r="1.3" fill="#9aa4ae" stroke="#5f6874" stroke-width=".4"></circle>';
-}
-return out;
 }
 
 function macRigMarkup() {
@@ -70,32 +46,25 @@ return '<svg class="mac-rig" viewBox="0 0 220 250" aria-hidden="true">' +
 macDefsMarkup() +
 '<g class="mac-rig__wrap">' +
 '<ellipse class="mac-rig__shadow" cx="110" cy="236" rx="46" ry="8"></ellipse>' +
-'<g class="mac-rig__leg-l" transform="translate(94,182)"><rect x="-9" y="0" width="18" height="34" rx="7" fill="url(#mgSockWhite)"></rect><ellipse cx="0" cy="38" rx="13" ry="8" fill="url(#mgShoe)"></ellipse><path d="M-9,35 L-2,41" stroke="#fff" stroke-width="1.3" stroke-linecap="round" opacity=".85"></path><path d="M-5,33 L2,40" stroke="#fff" stroke-width="1.3" stroke-linecap="round" opacity=".85"></path><path d="M-1,32 L6,39" stroke="#fff" stroke-width="1.3" stroke-linecap="round" opacity=".85"></path></g>' +
-'<g class="mac-rig__leg-r" transform="translate(126,182)"><rect x="-9" y="0" width="18" height="34" rx="7" fill="url(#mgSockWhite)"></rect><ellipse cx="0" cy="38" rx="13" ry="8" fill="url(#mgShoe)"></ellipse><path d="M-9,35 L-2,41" stroke="#fff" stroke-width="1.3" stroke-linecap="round" opacity=".85"></path><path d="M-5,33 L2,40" stroke="#fff" stroke-width="1.3" stroke-linecap="round" opacity=".85"></path><path d="M-1,32 L6,39" stroke="#fff" stroke-width="1.3" stroke-linecap="round" opacity=".85"></path></g>' +
+'<g class="mac-rig__leg-l" transform="translate(94,182)"><rect x="-9" y="0" width="18" height="34" rx="7" fill="url(#mgSock)"></rect><ellipse cx="0" cy="38" rx="13" ry="8" fill="url(#mgShoe)"></ellipse><ellipse cx="-3" cy="35" rx="3.2" ry="1.6" fill="#fff" opacity=".22"></ellipse></g>' +
+'<g class="mac-rig__leg-r" transform="translate(126,182)"><rect x="-9" y="0" width="18" height="34" rx="7" fill="url(#mgSock)"></rect><ellipse cx="0" cy="38" rx="13" ry="8" fill="url(#mgShoe)"></ellipse><ellipse cx="-3" cy="35" rx="3.2" ry="1.6" fill="#fff" opacity=".22"></ellipse></g>' +
 '<g class="mac-rig__body">' +
-'<path d="M74,150 L146,150 L156,196 L64,196 Z" fill="url(#mgTartan)"></path>' +
-'<path d="M78,151 L110,150 L104,196 L70,196 Z" fill="#fff" opacity=".06"></path>' +
+'<path d="M74,150 L146,150 L156,196 L64,196 Z" fill="url(#mgKilt)"></path>' +
+'<line x1="80" y1="150" x2="68" y2="196" stroke="#5c2004" stroke-width="3" opacity=".5"></line>' +
+'<line x1="104" y1="150" x2="98" y2="196" stroke="#5c2004" stroke-width="3" opacity=".5"></line>' +
+'<line x1="128" y1="150" x2="130" y2="196" stroke="#5c2004" stroke-width="3" opacity=".5"></line>' +
+'<line x1="140" y1="150" x2="148" y2="196" stroke="#5c2004" stroke-width="3" opacity=".5"></line>' +
+'<path d="M78,151 L110,150 L104,196 L70,196 Z" fill="#fff" opacity=".08"></path>' +
 '<path d="M76,96 Q72,86 82,80 L138,80 Q148,86 144,96 L150,152 Q110,166 70,152 Z" fill="url(#mgTorso)"></path>' +
 '<path d="M82,80 L138,80 L134,92 L86,92 Z" fill="url(#mgTorsoDeep)"></path>' +
 '<path d="M84,84 L92,148" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".07"></path>' +
-'<g class="mac-rig__arm-l" transform="translate(72,96)" filter="url(#mgLift)"><g class="mac-rig__arm-l-rotor"><path d="M0,-4 Q-20,4 -22,34 Q-23,44 -14,48 Q-4,44 -6,32 Q-8,10 6,4 Z" fill="url(#mgTorso)"></path><circle cx="-15" cy="47" r="9.5" fill="url(#mgGlove)"></circle><ellipse cx="-18" cy="43" rx="2.6" ry="1.8" fill="#fff" opacity=".5"></ellipse></g></g>' +
-'<g class="mac-rig__arm-r" transform="translate(148,96)" filter="url(#mgLift)"><g class="mac-rig__arm-r-rotor"><path d="M0,-4 Q20,4 22,34 Q23,44 14,48 Q4,44 6,32 Q8,10 -6,4 Z" fill="url(#mgTorso)"></path><circle cx="15" cy="47" r="9.5" fill="url(#mgGlove)"></circle><ellipse cx="12" cy="43" rx="2.6" ry="1.8" fill="#fff" opacity=".5"></ellipse></g></g>' +
-'<rect x="72" y="145" width="76" height="7" rx="1.5" fill="#4a2f1a"></rect>' +
-'<rect x="72" y="145" width="76" height="2" fill="#6b4726" opacity=".6"></rect>' +
-'<rect x="103" y="143" width="14" height="11" rx="2" fill="none" stroke="#9aa3ac" stroke-width="2.4"></rect>' +
-'<rect x="107" y="146.5" width="6" height="4" fill="none" stroke="#9aa3ac" stroke-width="1.6"></rect>' +
-'<ellipse cx="110" cy="168" rx="12" ry="10" fill="#5a4a3a"></ellipse>' +
-'<ellipse cx="110" cy="165" rx="12" ry="7" fill="#8a99a3"></ellipse>' +
-'<circle cx="110" cy="165" r="3.2" fill="#c7d0d8"></circle>' +
-'<rect x="106" y="174" width="3" height="13" rx="1.5" fill="#2a2118"></rect>' +
-'<rect x="115" y="174" width="3" height="13" rx="1.5" fill="#2a2118"></rect>' +
+'<g class="mac-rig__arm-l" transform="translate(72,96)" filter="url(#mgLift)"><g class="mac-rig__arm-l-rotor"><path d="M0,-4 Q-20,4 -22,34 Q-23,44 -14,48 Q-4,44 -6,32 Q-8,10 6,4 Z" fill="url(#mgTorso)"></path><circle cx="-15" cy="47" r="9.5" fill="url(#mgSkin)"></circle><ellipse cx="-18" cy="43" rx="2.6" ry="1.8" fill="#fff" opacity=".35"></ellipse></g></g>' +
+'<g class="mac-rig__arm-r" transform="translate(148,96)" filter="url(#mgLift)"><g class="mac-rig__arm-r-rotor"><path d="M0,-4 Q20,4 22,34 Q23,44 14,48 Q4,44 6,32 Q8,10 -6,4 Z" fill="url(#mgTorso)"></path><circle cx="15" cy="47" r="9.5" fill="url(#mgSkin)"></circle><ellipse cx="12" cy="43" rx="2.6" ry="1.8" fill="#fff" opacity=".35"></ellipse></g></g>' +
 '<circle cx="110" cy="118" r="17" fill="url(#mgShield)"></circle>' +
 '<circle cx="110" cy="118" r="17" fill="none" stroke="#7c8895" stroke-width="1.6"></circle>' +
-macShieldRivets(110, 118, 14.6) +
 '<ellipse cx="104" cy="112" rx="5.5" ry="3.4" fill="#fff" opacity=".6"></ellipse>' +
 '<circle class="mac-rig__shield-glow" cx="110" cy="118" r="20" fill="none" stroke="#ff6600" stroke-width="3"></circle>' +
-'<text x="110" y="120" text-anchor="middle" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-weight="800" font-size="14" fill="#e05e00">M</text>' +
-'<text x="110" y="128" text-anchor="middle" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-weight="700" font-size="4.4" letter-spacing=".2" fill="#1b2e4d">MCLENNAN</text>' +
+'<text x="110" y="124" text-anchor="middle" font-family="Inter,ui-sans-serif,system-ui,sans-serif" font-weight="800" font-size="16" fill="#e05e00">M</text>' +
 '<g class="mac-rig__head" transform="translate(110,58)" filter="url(#mgLift)"><g class="mac-rig__head-rotor">' + macFaceMarkup() + '</g></g>' +
 '</g>' +
 '</g>' +
@@ -106,21 +75,17 @@ macShieldRivets(110, 118, 14.6) +
 static avatar in the panel header (drawn there with its own tight viewBox
 instead of trying to crop the full body into a 46px box). */
 function macFaceMarkup() {
-return '<path d="M-30,-6 Q-30,-32 0,-34 Q30,-32 30,-6 Q30,2 24,4 L-24,4 Q-30,2 -30,-6 Z" fill="url(#mgTartan)"></path>' +
-'<path d="M-27,-16 Q-22,-28 -4,-31" stroke="#000" stroke-width="1.4" stroke-linecap="round" fill="none" opacity=".2"></path>' +
-'<rect x="-31" y="-2" width="62" height="7" rx="3" fill="#141c28"></rect>' +
-'<rect x="-31" y="-2" width="62" height="2.4" rx="1.2" fill="#2c3b52" opacity=".6"></rect>' +
-'<circle cx="0" cy="-32" r="4.2" fill="#141c28"></circle>' +
-'<circle cx="-1.4" cy="-33.4" r="1.3" fill="#3a4b66" opacity=".8"></circle>' +
+return '<path d="M-30,-6 Q-30,-32 0,-34 Q30,-32 30,-6 Q30,2 24,4 L-24,4 Q-30,2 -30,-6 Z" fill="url(#mgHat)"></path>' +
+'<path d="M-27,-16 Q-22,-28 -4,-31" stroke="#5b81ac" stroke-width="2.6" stroke-linecap="round" fill="none" opacity=".5"></path>' +
+'<rect x="-31" y="-2" width="62" height="8" rx="3" fill="#ff6600"></rect>' +
+'<rect x="-31" y="-2" width="62" height="3" rx="1.5" fill="#ffb27a" opacity=".55"></rect>' +
+'<circle cx="0" cy="-32" r="5" fill="#ff6600"></circle>' +
+'<circle cx="-1.6" cy="-33.6" r="1.6" fill="#ffcda1" opacity=".8"></circle>' +
 '<ellipse cx="0" cy="14" rx="24" ry="23" fill="url(#mgSkin)"></ellipse>' +
 '<ellipse cx="-9" cy="1" rx="8.5" ry="6" fill="#fff" opacity=".2"></ellipse>' +
 '<path d="M-19,18 Q-19,13 0,13 Q19,13 19,18 Q26,32 17,42 Q9,50 0,50 Q-9,50 -17,42 Q-26,32 -19,18 Z" fill="url(#mgBeard)"></path>' +
 '<path d="M-18,17 Q-18,14 0,14 Q18,14 18,17 Q18,21 0,22 Q-18,21 -18,17 Z" fill="url(#mgBeardDeep)"></path>' +
-'<g class="mac-rig__eyes">' +
-'<ellipse cx="-9" cy="8.5" rx="5.4" ry="6.4" fill="#fff"></ellipse><ellipse cx="9" cy="8.5" rx="5.4" ry="6.4" fill="#fff"></ellipse>' +
-'<ellipse cx="-9" cy="9" rx="4.3" ry="5.3" fill="#0a0a0a"></ellipse><ellipse cx="9" cy="9" rx="4.3" ry="5.3" fill="#0a0a0a"></ellipse>' +
-'<circle cx="-7.6" cy="6.8" r="1.1" fill="#fff" opacity=".9"></circle><circle cx="10.4" cy="6.8" r="1.1" fill="#fff" opacity=".9"></circle>' +
-'</g>' +
+'<g class="mac-rig__eyes"><ellipse cx="-9" cy="9" rx="2.6" ry="3.2" fill="#06111f"></ellipse><ellipse cx="9" cy="9" rx="2.6" ry="3.2" fill="#06111f"></ellipse><circle cx="-8" cy="7.8" r=".8" fill="#fff" opacity=".85"></circle><circle cx="10" cy="7.8" r=".8" fill="#fff" opacity=".85"></circle></g>' +
 '<path d="M-13,2 Q-9,-1 -5,1" stroke="#8f350f" stroke-width="2" fill="none" stroke-linecap="round"></path>' +
 '<path d="M5,1 Q9,-1 13,2" stroke="#8f350f" stroke-width="2" fill="none" stroke-linecap="round"></path>' +
 '<path d="M-5,13 Q0,16 5,13" stroke="#4a1c08" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".8"></path>';
