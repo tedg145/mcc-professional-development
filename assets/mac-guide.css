@@ -1,211 +1,231 @@
 :root {
-  --mac-navy: #06111f;
-  --mac-panel: #0b1a2b;
-  --mac-line: rgba(157, 180, 204, .22);
-  --mac-text: #f7fafc;
-  --mac-muted: #9eb2c7;
-  --mac-orange: #ff6600;
-  --mac-cyan: #22bfd5;
+--mac-navy: #06111f;
+--mac-panel: #0b1a2b;
+--mac-line: rgba(157, 180, 204, .22);
+--mac-text: #f7fafc;
+--mac-muted: #9eb2c7;
+--mac-orange: #ff6600;
+--mac-cyan: #22bfd5;
 }
 
 .mac-guide {
-  position: fixed;
-  right: 20px;
-  bottom: 18px;
-  z-index: 160;
-  width: 164px;
-  height: 140px;
-  color: var(--mac-text);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+position: fixed;
+right: 20px;
+bottom: 18px;
+z-index: 160;
+width: 164px;
+height: 140px;
+color: var(--mac-text);
+font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 .mac-guide[hidden] { display: none !important; }
 .mac-guide .sr-only {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
+position: absolute !important;
+width: 1px !important;
+height: 1px !important;
+padding: 0 !important;
+margin: -1px !important;
+overflow: hidden !important;
+clip: rect(0, 0, 0, 0) !important;
+white-space: nowrap !important;
+border: 0 !important;
 }
 
 .mac-guide__launcher {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  width: 164px;
-  height: 140px;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  cursor: grab;
-  filter: drop-shadow(0 12px 22px rgba(0, 0, 0, .38));
-  touch-action: none;
-  user-select: none;
-  -webkit-user-select: none;
+position: relative;
+z-index: 2;
+display: flex;
+align-items: flex-end;
+justify-content: flex-end;
+width: 164px;
+height: 140px;
+padding: 0;
+border: 0;
+background: none;
+color: inherit;
+cursor: grab;
+filter: drop-shadow(0 12px 22px rgba(0, 0, 0, .38));
+touch-action: none;
+user-select: none;
+-webkit-user-select: none;
 }
 .mac-guide__launcher:active,
 .mac-guide.is-dragging .mac-guide__launcher { cursor: grabbing; }
 .mac-guide__launcher:focus-visible {
-  outline: 3px solid var(--mac-cyan);
-  outline-offset: 4px;
-  border-radius: 18px;
+outline: 3px solid var(--mac-cyan);
+outline-offset: 4px;
+border-radius: 18px;
 }
 .mac-guide__character {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: auto;
-  max-width: 146px;
-  height: 118px;
-  object-fit: contain;
-  object-position: right bottom;
-  pointer-events: none;
-  transform-origin: bottom right;
-  transition: opacity .3s ease, transform .34s cubic-bezier(.22, .72, .28, 1);
-  will-change: opacity, transform;
+position: absolute;
+right: 0;
+bottom: 0;
+width: auto;
+max-width: 146px;
+height: 118px;
+object-fit: contain;
+object-position: right bottom;
+pointer-events: none;
+transform-origin: bottom right;
+transition: opacity .3s ease, transform .34s cubic-bezier(.22, .72, .28, 1);
+will-change: opacity, transform;
+animation: mac-breathe 4400ms ease-in-out infinite;
 }
-.mac-guide__character.is-changing { opacity: .38; transform: translateY(2px) scale(.985); }
-.mac-guide__launcher:hover .mac-guide__character { transform: translateY(-3px) scale(1.025); }
+@keyframes mac-breathe {
+0%, 100% { transform: scale(1); }
+50% { transform: scale(1.018); }
+}
+.mac-guide__character.is-changing { opacity: .38; transform: translateY(2px) scale(.985); animation-play-state: paused; }
+.mac-guide__launcher:hover .mac-guide__character { transform: translateY(-3px) scale(1.025); animation-play-state: paused; }
 .mac-guide.is-dragging .mac-guide__character,
 .mac-guide.is-open .mac-guide__launcher:hover .mac-guide__character { transform: none; }
+.mac-guide.is-dragging .mac-guide__character { animation-play-state: paused; }
 .mac-guide.is-open .mac-guide__character {
-  max-width: 154px;
-  height: 116px;
+max-width: 154px;
+height: 116px;
+}
+.mac-guide.is-celebrating .mac-guide__character {
+animation: mac-breathe 4400ms ease-in-out infinite, mac-celebrate-glow 800ms ease-in-out 2;
+}
+@keyframes mac-celebrate-glow {
+0%, 100% { filter: drop-shadow(0 0 0 rgba(255, 102, 0, 0)); }
+50% { filter: drop-shadow(0 0 14px rgba(255, 102, 0, .65)); }
 }
 .mac-guide__label {
-  position: absolute;
-  right: 82px;
-  bottom: 76px;
-  z-index: 3;
-  min-width: max-content;
-  padding: 8px 11px;
-  border: 1px solid rgba(255, 102, 0, .55);
-  border-radius: 999px;
-  background: rgba(5, 15, 27, .94);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .02em;
-  pointer-events: none;
-  transition: opacity .16s ease;
+position: absolute;
+right: 82px;
+bottom: 76px;
+z-index: 3;
+min-width: max-content;
+padding: 8px 11px;
+border: 1px solid rgba(255, 102, 0, .55);
+border-radius: 999px;
+background: rgba(5, 15, 27, .94);
+box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+font-size: 10px;
+font-weight: 800;
+letter-spacing: .02em;
+pointer-events: none;
+transition: opacity .16s ease;
 }
 .mac-guide__label small {
-  display: block;
-  margin-top: 2px;
-  color: var(--mac-muted);
-  font-size: 7px;
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
+display: block;
+margin-top: 2px;
+color: var(--mac-muted);
+font-size: 7px;
+font-weight: 600;
+letter-spacing: .1em;
+text-transform: uppercase;
 }
 .mac-guide.is-open .mac-guide__label,
 .mac-guide.is-dragging .mac-guide__label { opacity: 0; }
+.mac-guide.is-celebrating .mac-guide__label {
+border-color: rgba(111, 215, 155, .75);
+box-shadow: 0 8px 24px rgba(0, 0, 0, .35), 0 0 0 1px rgba(111, 215, 155, .3);
+}
+.mac-guide.is-celebrating .mac-guide__label small { color: #8fe3b4; }
 
 .mac-guide__panel {
-  position: fixed;
-  right: 184px;
-  bottom: 18px;
-  z-index: 1;
-  display: none;
-  width: min(390px, calc(100vw - 28px));
-  max-height: min(660px, calc(100vh - 24px));
-  overflow: hidden;
-  border: 1px solid var(--mac-line);
-  border-radius: 18px;
-  background: linear-gradient(155deg, rgba(12, 31, 49, .99), rgba(5, 15, 27, .995));
-  box-shadow: 0 24px 70px rgba(0, 0, 0, .55);
+position: fixed;
+right: 184px;
+bottom: 18px;
+z-index: 1;
+display: none;
+width: min(390px, calc(100vw - 28px));
+max-height: min(660px, calc(100vh - 24px));
+overflow: hidden;
+border: 1px solid var(--mac-line);
+border-radius: 18px;
+background: linear-gradient(155deg, rgba(12, 31, 49, .99), rgba(5, 15, 27, .995));
+box-shadow: 0 24px 70px rgba(0, 0, 0, .55);
 }
 .mac-guide.is-open .mac-guide__panel {
-  display: flex;
-  flex-direction: column;
+display: flex;
+flex-direction: column;
 }
 .mac-guide__head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 17px;
-  border-bottom: 1px solid var(--mac-line);
+display: flex;
+align-items: center;
+gap: 12px;
+padding: 16px 17px;
+border-bottom: 1px solid var(--mac-line);
 }
 .mac-guide__avatar {
-  width: 46px;
-  height: 46px;
-  object-fit: contain;
-  object-position: center bottom;
-  border-radius: 12px;
-  background: linear-gradient(145deg, rgba(34, 191, 213, .12), rgba(255, 102, 0, .12));
+width: 46px;
+height: 46px;
+object-fit: contain;
+object-position: center bottom;
+border-radius: 12px;
+background: linear-gradient(145deg, rgba(34, 191, 213, .12), rgba(255, 102, 0, .12));
 }
 .mac-guide__title { min-width: 0; flex: 1; }
 .mac-guide__title strong { display: block; font-size: 14px; }
 .mac-guide__title span {
-  display: block;
-  margin-top: 3px;
-  color: var(--mac-cyan);
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: .13em;
-  text-transform: uppercase;
+display: block;
+margin-top: 3px;
+color: var(--mac-cyan);
+font-size: 8px;
+font-weight: 700;
+letter-spacing: .13em;
+text-transform: uppercase;
+transition: color .2s ease;
 }
+.mac-guide.is-celebrating .mac-guide__title span { color: #6fd79b; }
 .mac-guide__close {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--mac-line);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, .035);
-  color: #fff;
-  font-size: 18px;
-  cursor: pointer;
+display: grid;
+place-items: center;
+width: 34px;
+height: 34px;
+border: 1px solid var(--mac-line);
+border-radius: 10px;
+background: rgba(255, 255, 255, .035);
+color: #fff;
+font-size: 18px;
+cursor: pointer;
 }
 .mac-guide__close:hover { border-color: rgba(255, 102, 0, .55); }
 .mac-guide__modes {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
-  padding: 9px 12px;
-  border-bottom: 1px solid var(--mac-line);
-  background: rgba(0, 0, 0, .12);
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 5px;
+padding: 9px 12px;
+border-bottom: 1px solid var(--mac-line);
+background: rgba(0, 0, 0, .12);
 }
 .mac-guide__mode {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  min-height: 35px;
-  border: 1px solid transparent;
-  border-radius: 9px;
-  background: transparent;
-  color: var(--mac-muted);
-  font-size: 9px;
-  font-weight: 750;
-  cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 5px;
+min-height: 35px;
+border: 1px solid transparent;
+border-radius: 9px;
+background: transparent;
+color: var(--mac-muted);
+font-size: 9px;
+font-weight: 750;
+cursor: pointer;
 }
 .mac-guide__mode span { color: var(--mac-cyan); font-size: 10px; }
 .mac-guide__mode:hover { color: #fff; background: rgba(255, 255, 255, .035); }
 .mac-guide__mode[aria-selected="true"] {
-  border-color: rgba(34, 191, 213, .34);
-  background: rgba(34, 191, 213, .1);
-  color: #fff;
-  box-shadow: inset 0 -2px 0 var(--mac-cyan);
+border-color: rgba(34, 191, 213, .34);
+background: rgba(34, 191, 213, .1);
+color: #fff;
+box-shadow: inset 0 -2px 0 var(--mac-cyan);
 }
 .mac-guide__mode:focus-visible { outline: 2px solid var(--mac-cyan); outline-offset: 1px; }
 .mac-guide__body { overflow: auto; padding: 16px 17px 12px; }
 .mac-guide__location { margin-bottom: 9px; color: var(--mac-muted); font-size: 8px; letter-spacing: .05em; text-transform: uppercase; }
 .mac-guide__location strong { color: #fff; }
 .mac-guide__context {
-  display: grid;
-  gap: 4px;
-  margin-bottom: 13px;
-  padding: 11px 12px;
-  border: 1px solid rgba(34, 191, 213, .18);
-  border-radius: 11px;
-  background: linear-gradient(120deg, rgba(34, 191, 213, .075), rgba(255, 102, 0, .035));
+display: grid;
+gap: 4px;
+margin-bottom: 13px;
+padding: 11px 12px;
+border: 1px solid rgba(34, 191, 213, .18);
+border-radius: 11px;
+background: linear-gradient(120deg, rgba(34, 191, 213, .075), rgba(255, 102, 0, .035));
 }
 .mac-guide__context span { color: var(--mac-cyan); font-size: 7px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .mac-guide__context strong { color: #fff; font-size: 11px; }
@@ -213,45 +233,45 @@
 .mac-guide__intro { margin: 0; color: #d9e4ed; font-size: 12px; line-height: 1.55; }
 .mac-guide__quick { display: flex; flex-wrap: wrap; gap: 7px; margin: 14px 0; }
 .mac-guide__chip {
-  padding: 8px 10px;
-  border: 1px solid var(--mac-line);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, .035);
-  color: #dfe9f2;
-  font-size: 9px;
-  font-weight: 650;
-  cursor: pointer;
+padding: 8px 10px;
+border: 1px solid var(--mac-line);
+border-radius: 999px;
+background: rgba(255, 255, 255, .035);
+color: #dfe9f2;
+font-size: 9px;
+font-weight: 650;
+cursor: pointer;
 }
 .mac-guide__chip:hover,
 .mac-guide__chip:focus-visible { border-color: var(--mac-cyan); color: #fff; }
 .mac-guide__results { display: grid; gap: 8px; margin-top: 12px; }
 .mac-guide__empty {
-  padding: 13px;
-  border: 1px dashed var(--mac-line);
-  border-radius: 12px;
-  color: var(--mac-muted);
-  font-size: 10px;
-  line-height: 1.5;
+padding: 13px;
+border: 1px dashed var(--mac-line);
+border-radius: 12px;
+color: var(--mac-muted);
+font-size: 10px;
+line-height: 1.5;
 }
 .mac-guide__result {
-  display: block;
-  padding: 12px;
-  border: 1px solid var(--mac-line);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, .035);
-  color: #fff;
-  text-decoration: none;
-  transition: transform .18s ease, border-color .18s ease;
+display: block;
+padding: 12px;
+border: 1px solid var(--mac-line);
+border-radius: 12px;
+background: rgba(255, 255, 255, .035);
+color: #fff;
+text-decoration: none;
+transition: transform .18s ease, border-color .18s ease;
 }
 .mac-guide__result:hover { transform: translateY(-1px); border-color: rgba(34, 191, 213, .52); }
 .mac-guide__result small { color: var(--mac-orange); font-size: 7px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .mac-guide__result strong { display: block; margin: 5px 0 4px; font-size: 11px; }
 .mac-guide__result span { display: block; color: var(--mac-muted); font-size: 9px; line-height: 1.45; }
 .mac-guide__answer {
-  padding: 13px;
-  border: 1px solid rgba(34, 191, 213, .24);
-  border-radius: 12px;
-  background: rgba(7, 26, 43, .72);
+padding: 13px;
+border: 1px solid rgba(34, 191, 213, .24);
+border-radius: 12px;
+background: rgba(7, 26, 43, .72);
 }
 .mac-guide__answer small { display: block; color: var(--mac-orange); font-size: 7px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .mac-guide__answer strong { display: block; margin: 6px 0 5px; color: #fff; font-size: 12px; }
@@ -259,75 +279,76 @@
 .mac-guide__answer ul { margin: 8px 0 0; padding-left: 17px; color: #c8d6e2; font-size: 9px; line-height: 1.55; }
 .mac-guide__answer li + li { margin-top: 4px; }
 .mac-guide__action-link {
-  display: inline-flex;
-  margin-top: 10px;
-  color: var(--mac-cyan);
-  font-size: 9px;
-  font-weight: 800;
-  text-decoration: none;
+display: inline-flex;
+margin-top: 10px;
+color: var(--mac-cyan);
+font-size: 9px;
+font-weight: 800;
+text-decoration: none;
 }
 .mac-guide__action-link:hover { color: #fff; }
 .mac-guide__form {
-  display: flex;
-  gap: 8px;
-  padding: 12px 17px 16px;
-  border-top: 1px solid var(--mac-line);
+display: flex;
+gap: 8px;
+padding: 12px 17px 16px;
+border-top: 1px solid var(--mac-line);
 }
 .mac-guide__input {
-  min-width: 0;
-  flex: 1;
-  height: 42px;
-  padding: 0 12px;
-  border: 1px solid var(--mac-line);
-  border-radius: 11px;
-  background: rgba(0, 0, 0, .18);
-  color: #fff;
-  font: 11px inherit;
+min-width: 0;
+flex: 1;
+height: 42px;
+padding: 0 12px;
+border: 1px solid var(--mac-line);
+border-radius: 11px;
+background: rgba(0, 0, 0, .18);
+color: #fff;
+font: 11px inherit;
 }
 .mac-guide__input::placeholder { color: #8196aa; }
 .mac-guide__input:focus { outline: 2px solid var(--mac-cyan); outline-offset: 1px; }
 .mac-guide__send {
-  height: 42px;
-  padding: 0 14px;
-  border: 1px solid var(--mac-orange);
-  border-radius: 11px;
-  background: var(--mac-orange);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 800;
-  cursor: pointer;
+height: 42px;
+padding: 0 14px;
+border: 1px solid var(--mac-orange);
+border-radius: 11px;
+background: var(--mac-orange);
+color: #fff;
+font-size: 10px;
+font-weight: 800;
+cursor: pointer;
 }
 .mac-guide__note { padding: 0 17px 14px; color: #71869a; font-size: 8px; line-height: 1.4; }
 
 @media (max-width: 600px) {
-  .mac-guide { right: 10px; bottom: 8px; width: 126px; height: 108px; }
-  .mac-guide__launcher { width: 126px; height: 108px; }
-  .mac-guide__character { max-width: 112px; height: 88px; }
-  .mac-guide.is-open .mac-guide__character { max-width: 120px; height: 88px; }
-  .mac-guide__label { right: 58px; bottom: 58px; padding: 7px 9px; font-size: 9px; }
-  .mac-guide__label small { font-size: 6px; }
-  .mac-guide.is-open:not(.is-positioned) { bottom: calc(78vh - 34px); }
-  .mac-guide__panel {
-    top: auto !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    width: 100%;
-    max-height: 78vh;
-    border-right: 0;
-    border-bottom: 0;
-    border-left: 0;
-    border-radius: 18px 18px 0 0;
-  }
-  .mac-guide__body { padding-top: 14px; }
+.mac-guide { right: 10px; bottom: 8px; width: 126px; height: 108px; }
+.mac-guide__launcher { width: 126px; height: 108px; }
+.mac-guide__character { max-width: 112px; height: 88px; }
+.mac-guide.is-open .mac-guide__character { max-width: 120px; height: 88px; }
+.mac-guide__label { right: 58px; bottom: 58px; padding: 7px 9px; font-size: 9px; }
+.mac-guide__label small { font-size: 6px; }
+.mac-guide.is-open:not(.is-positioned) { bottom: calc(78vh - 34px); }
+.mac-guide__panel {
+top: auto !important;
+right: 0 !important;
+bottom: 0 !important;
+left: 0 !important;
+width: 100%;
+max-height: 78vh;
+border-right: 0;
+border-bottom: 0;
+border-left: 0;
+border-radius: 18px 18px 0 0;
+}
+.mac-guide__body { padding-top: 14px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mac-guide__character,
-  .mac-guide__label,
-  .mac-guide__result { transition: none !important; }
-  .mac-guide__launcher:hover .mac-guide__character,
-  .mac-guide__result:hover { transform: none; }
+.mac-guide__character,
+.mac-guide__label,
+.mac-guide__result { transition: none !important; }
+.mac-guide__character { animation: none !important; }
+.mac-guide__launcher:hover .mac-guide__character,
+.mac-guide__result:hover { transform: none; }
 }
 
 @media print { .mac-guide { display: none !important; } }
