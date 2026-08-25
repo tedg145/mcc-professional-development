@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Safe Hypothetical — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="Turn a real advising situation into a version safe to ask AI about, then see it scored for identifiability.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+--ink:#0A1A2E; --navy:#003366; --orange:#FF6600; --gold:#F9DD56; --teal:#008DA7;
+--ondk:#A7B7C9; --dimdk:#5C6E82; --line:rgba(255,255,255,.12);
+--green:#6FD79B; --red:#FF8A78;
+--sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+--mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--ink);color:#fff;-webkit-font-smoothing:antialiased;
+display:flex;flex-direction:column;min-height:100vh}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+textarea{font:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--orange);outline-offset:2px;border-radius:4px}
+
+main{flex:1;width:100%;max-width:1120px;margin:0 auto;padding:clamp(22px,5vw,44px) clamp(16px,4vw,30px) 60px}
+
+h2.sec{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+color:var(--gold);margin:38px 0 14px;display:flex;align-items:center;gap:10px}
+h2.sec::after{content:'';flex:1;height:1px;background:var(--line)}
+h2.sec .n{font-family:var(--mono);color:var(--orange);border:1px solid rgba(255,102,0,.4);
+background:rgba(255,102,0,.1);border-radius:6px;padding:1px 7px;font-size:11px;letter-spacing:0}
+
+.privacy{display:flex;gap:12px;align-items:flex-start;margin-top:6px;padding:14px 16px;
+border:1px solid rgba(111,215,155,.38);background:rgba(111,215,155,.08);border-radius:12px;max-width:74ch}
+.privacy svg{flex-shrink:0;width:19px;height:19px;color:var(--green);margin-top:1px}
+.privacy p{font-size:13px;line-height:1.6;color:#CFE9DA}
+.privacy strong{color:#8FE3B4}
+
+.panel{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04);padding:20px}
+.panel p.hint{font-size:13.5px;color:var(--ondk);line-height:1.6;margin-bottom:16px;max-width:70ch}
+label.lb{display:block;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+color:var(--dimdk);margin-bottom:8px}
+textarea{width:100%;min-height:100px;resize:vertical;background:rgba(255,255,255,.06);
+border:1px solid var(--line);border-radius:10px;padding:13px 14px;color:#fff;font-size:14.5px;line-height:1.6}
+textarea::placeholder{color:#5c6e82}
+textarea:focus{outline:none;border-color:var(--orange);background:rgba(255,255,255,.09)}
+.note-small{margin-top:9px;font-size:12px;color:var(--dimdk);display:flex;gap:7px;align-items:flex-start}
+
+.btnrow{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.btn{border-radius:10px;padding:11px 19px;font-size:13.5px;font-weight:600;border:1px solid var(--line);color:var(--ondk);transition:background .2s,color .2s}
+.btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.btn.primary{background:var(--orange);border-color:var(--orange);color:#fff}
+.btn.primary:hover{background:#e25c00}
+
+/* ---- results ---- */
+#results{display:none;margin-top:22px;padding-top:20px;border-top:1px dashed var(--line)}
+#results.show{display:block}
+.meter-row{display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.meter{flex:1;min-width:220px;height:9px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid var(--line)}
+.meter-fill{height:100%;width:0%;border-radius:6px;transition:width .4s ease,background-color .4s ease}
+.verdict{display:flex;align-items:center;gap:10px}
+.verdict .dot{width:9px;height:9px;border-radius:50%;flex:none}
+.verdict-label{font-size:14.5px;font-weight:700;font-family:var(--mono)}
+.verdict-detail{font-size:13px;color:var(--ondk);margin-top:2px}
+
+.annotated{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:10px;
+padding:15px 17px;font-size:15px;line-height:1.75;white-space:pre-wrap;margin-bottom:18px}
+mark{background:transparent;padding:0 1px;border-radius:3px;color:inherit}
+mark.w1{border-bottom:2px solid var(--dimdk)}
+mark.w2{border-bottom:2px solid var(--gold);background:rgba(249,221,86,.14)}
+mark.w3{border-bottom:2px solid var(--red);background:rgba(255,138,120,.14)}
+
+.findings{list-style:none;display:flex;flex-direction:column;gap:9px}
+.finding{display:flex;gap:12px;border:1px solid var(--line);border-radius:11px;padding:12px 14px;background:rgba(255,255,255,.03)}
+.finding .sev{flex:none;width:25px;height:25px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11.5px;font-weight:700;margin-top:1px}
+.finding-body strong{display:block;font-size:14px;margin-bottom:3px}
+.finding-body span.fnote{font-size:12.5px;color:var(--ondk)}
+.finding-body span.fix{display:block;font-size:12.5px;color:var(--orange);margin-top:5px}
+
+.facilitator{border:1px solid rgba(255,102,0,.4);background:rgba(255,102,0,.08);border-radius:12px;padding:16px 18px;font-size:13.5px;color:var(--ondk);line-height:1.6;max-width:74ch}
+.facilitator strong{color:#fff}
+
+details.notes{margin-top:44px;border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.03);overflow:hidden}
+details.notes summary{padding:17px 21px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:11px;list-style:none}
+details.notes summary::-webkit-details-marker{display:none}
+details.notes summary .chev{color:var(--orange);transition:transform .2s;display:inline-block}
+details.notes[open] summary .chev{transform:rotate(90deg)}
+details.notes .nbody{padding:0 21px 24px;font-size:14px;line-height:1.72;color:var(--ondk);max-width:76ch}
+details.notes h4{color:#fff;font-size:13.5px;margin:19px 0 7px;font-weight:600}
+details.notes ul{margin:8px 0 0;padding-left:20px}
+details.notes li{margin:6px 0}
+details.notes strong{color:#fff}
+.how-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px}
+.how-table th{text-align:left;color:var(--dimdk);font-weight:700;text-transform:uppercase;font-size:10px;letter-spacing:.06em;padding:6px 10px 6px 0;border-bottom:1px solid var(--line)}
+.how-table td{padding:9px 10px 9px 0;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ondk)}
+.how-table td.wcol{font-family:var(--mono);color:#fff}
+
+footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
+display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--dimdk)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+.mcc-activity-bar,.btnrow,details.notes,footer,.facilitator{display:none!important}
+main{padding:0}
+}
+</style>
+<link rel="stylesheet" href="../assets/mcc-activity-shell.css">
+</head>
+<body data-mcc-activity="safe-hypothetical" data-activity-target="#hypo">
+
+<main>
+<div data-activity-shell-mount></div>
+
+<div class="privacy">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>
+</svg>
+<p><strong>Stays in this browser.</strong> Nothing you type here — including the real situation in Step 1 —
+is uploaded, logged, or sent anywhere. Closing the tab clears all of it.</p>
+</div>
+
+<h2 class="sec"><span class="n">01</span>Write it the way you actually would</h2>
+<div class="panel">
+<p class="hint">A real, recurring situation — the way you'd normally describe it to a colleague, name and
+all. This box is never scanned and never leaves your screen. Its only job is giving you something to
+compare against once you build the safe version.</p>
+<label class="lb" for="real">Your real situation (private — not checked, not saved)</label>
+<textarea id="real" placeholder="e.g. Maria Alvarez, a third-semester Nursing student with a 2.1 GPA, came to me on October 14th saying she's about to lose her financial aid because of academic probation..."></textarea>
+</div>
+
+<h2 class="sec"><span class="n">02</span>Build the version you could actually use</h2>
+<div class="panel">
+<p class="hint">Rewrite it so a stranger reading it couldn't identify the student — not just the name, but
+the combination of details. Then check it.</p>
+<label class="lb" for="hypo">Your de-identified hypothetical</label>
+<textarea id="hypo" placeholder="e.g. A third-semester Nursing student with a 2.1 GPA came to me on October 14th about losing financial aid due to academic probation..."></textarea>
+<div class="btnrow">
+<button class="btn primary" id="checkBtn" type="button">Check for identifiability risk</button>
+<button class="btn" id="exampleBtn" type="button">Load a worked example</button>
+<button class="btn" id="fixedBtn" type="button" style="display:none">See the generalized version instead</button>
+</div>
+
+<div id="results">
+<div class="meter-row">
+<div class="verdict">
+<span class="dot" id="dot"></span>
+<div><div class="verdict-label" id="verdictLabel">—</div><div class="verdict-detail" id="verdictDetail">—</div></div>
+</div>
+</div>
+<div class="meter"><div class="meter-fill" id="meterFill"></div></div>
+<div style="height:18px"></div>
+<label class="lb">What the checker sees</label>
+<div class="annotated" id="annotated"></div>
+<label class="lb" id="findingsLabel" style="display:none">Why, and what to try instead</label>
+<ul class="findings" id="findings"></ul>
+</div>
+</div>
+
+<details class="notes" style="margin-top:22px">
+<summary><span class="chev">&#9654;</span> How the checker works</summary>
+<div class="nbody">
+<p>It isn't AI, and it isn't a real statistical disclosure tool — it's a transparent, rule-based scan
+for eight kinds of detail that tend to narrow a description down to one person, the same categories the
+"major + GPA + term" example already points at. Each category it finds adds points; the total sets the verdict.</p>
+<table class="how-table">
+<tr><th>Detail</th><th>Weight</th><th>Why it's risky</th></tr>
+<tr><td>Program or major</td><td class="wcol">2</td><td>Narrows the pool fast in a small program</td></tr>
+<tr><td>Class standing / term</td><td class="wcol">1</td><td>Pins the timeframe</td></tr>
+<tr><td>GPA or academic standing</td><td class="wcol">2</td><td>A number is more identifying than a description</td></tr>
+<tr><td>A specific date</td><td class="wcol">2</td><td>"Recently" carries the same information you need</td></tr>
+<tr><td>A rare or unusual circumstance</td><td class="wcol">3</td><td>The single most identifying thing you can include</td></tr>
+<tr><td>A 4+ digit number</td><td class="wcol">3</td><td>Reads as a student or case ID</td></tr>
+<tr><td>Text in quotation marks</td><td class="wcol">2</td><td>A verbatim quote is a fingerprint</td></tr>
+<tr><td>A possible name</td><td class="wcol">4</td><td>Defeats the exercise outright</td></tr>
+</table>
+<p style="margin-top:14px"><strong>Honest limit:</strong> this is a teaching heuristic, not a compliance
+check. A green score means "worth a second look," not "cleared" — which is why Step 3 still puts a
+second person on it, whatever the checker says.</p>
+</div>
+</details>
+
+<h2 class="sec"><span class="n">03</span>The adversarial round</h2>
+<div class="facilitator">
+<strong>Running this in a session:</strong> trade your green- or yellow-scored hypothetical with a
+neighbor, without your own context. Their job is to guess who it is, or say plainly they can't. If they
+can guess — even with a hedge, even "probably" — it's not safe yet, whatever the checker said. Working
+solo? Ask yourself the same question about anyone you already know is in that program this term.
+</div>
+
+<h2 class="sec"><span class="n">04</span>Keep it</h2>
+<div class="panel">
+<p class="hint">The pattern matters more than this one example. Name it before you move on.</p>
+<label class="lb" for="pattern">One thing you generalized, and what you replaced it with</label>
+<textarea id="pattern" style="min-height:64px" placeholder="e.g. Swapped the specific program name for &quot;a competitive-admission program&quot; — I didn't need AI to know which one."></textarea>
+<div class="btnrow">
+<button class="btn primary" id="copyBtn" type="button">Copy safe hypothetical</button>
+<button class="btn" type="button" onclick="window.print()">Print this page</button>
+</div>
+</div>
+
+<details class="notes">
+<summary><span class="chev">&#9654;</span> Teaching notes — running this in a session</summary>
+<div class="nbody">
+<h4>Where it goes</h4>
+<p>Track C (Advising &amp; Student-Facing Roles), after the sole-possession trap has already landed in
+Tier 1 Session 3. This lab is where that idea turns into a habit instead of a fact people nod at.</p>
+
+<h4>Demo the pair before anyone tries it solo</h4>
+<p>Load the worked example on the projector. Run the risky first draft, let the room see it score red,
+then click through to the generalized version and watch it go green. Seeing the same situation twice —
+once risky, once safe — is more persuasive than any explanation of why.</p>
+
+<h4>The score is a floor, not a ceiling</h4>
+<p>A green score means the obvious patterns are gone, not that the hypothetical is safe. Step 3 is not
+optional — it's the part that catches what a room this small could still recognize, which no rule list
+can know. Say this out loud before anyone starts Step 3, or people will treat the score as the answer.</p>
+
+<h4>Pair people who don't share a program</h4>
+<p>If you can arrange it, pair an advisor with someone from a different department for the swap. Someone
+in the same small program as the real student is exactly who's most likely to guess right — and exactly
+who most needs to see that they can.</p>
+
+<h4>What "I can't guess" is worth</h4>
+<p>A partner who genuinely can't guess is doing real verification work, not being polite. If partners are
+guessing correctly more often than not, that's the signal to slow down and spend longer on Step 2 as a
+group before anyone moves on.</p>
+</div>
+</details>
+</main>
+
+<footer>
+<div>Ted Gonzalez, JD/MBA</div>
+<div>&copy; 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
+</footer>
+
+<script src="../assets/mcc-qr.js" defer></script>
+<script src="../assets/mcc-content.js" defer></script>
+<script src="../assets/mcc-activity-shell.js" defer></script>
+<script>
+(function(){
+'use strict';
+
+var CATEGORIES = [
+{ key:'program', label:'Program or major', weight:2,
+regex:/\b(nursing|welding|cosmetology|hvac|criminal justice|radiography|paramedic|emt|dental hygiene|culinary|automotive technology|electrical technology|biology|chemistry|respiratory (?:care|therapy)|veterinary tech\w*|aviation (?:maintenance|science)|drafting|machining|surgical tech\w*|physical therapist assistant|early childhood|cybersecurity|welding technology|diesel technology)\b/gi,
+note:'Names a specific program. In a small program this alone can narrow the pool to a handful of people.',
+fix:'Try a broad category instead — "a student in a competitive-admission program" or "a health sciences student."' },
+{ key:'standing', label:'Class standing or term', weight:1,
+regex:/\b(freshman|sophomore|junior|senior|first-semester|second-semester|third-semester|fourth-semester|first-year|class of \d{4}|graduating this (?:spring|fall|summer))\b/gi,
+note:'Narrows the timeframe. Fine alone; it adds up fast in combination.',
+fix:'Try "earlier this year," or drop it if the question doesn’t depend on it.' },
+{ key:'academic', label:'GPA or academic standing', weight:2,
+regex:/\b(\d\.\d{1,2}\s*gpa|gpa of \d\.\d{1,2}|academic probation|academic suspension|dean's list|\d{1,3}\s?%)\b/gi,
+note:'A specific number is more identifying than a description.',
+fix:'Try "below the aid-eligibility threshold" instead of the number.' },
+{ key:'date', label:'A specific date', weight:2,
+regex:/\b(?:january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{1,2}(?:st|nd|rd|th)?\b|\b\d{1,2}\/\d{1,2}(?:\/\d{2,4})?\b/gi,
+note:'Pins the situation to a day.',
+fix:'Try "recently" or "this term" — it carries the same information for your purposes.' },
+{ key:'rare', label:'A rare or unusual circumstance', weight:3,
+regex:/\b(wheelchair|service animal|only (?:student|one) who|set of twins|a twin|veteran|single parent of \w+|youngest of \w+|oldest of \w+|survivor of|recovering from surgery|in foster care|experiencing homelessness|undocumented|was adopted|military spouse|primary caregiver)\b/gi,
+note:'The single most identifying kind of detail you can include, name or no name.',
+fix:'Hardest one to generalize safely. Ask whether you need AI’s help with this exact detail, or only with what’s around it.' },
+{ key:'idnum', label:'A number that could be an ID', weight:3,
+regex:/\b\d{4,}\b/g,
+note:'Any four-or-more-digit number reads as a student or case ID.',
+fix:'Remove it — it adds nothing an AI tool needs to help you.' },
+{ key:'quote', label:'Text copied in quotation marks', weight:2,
+regex:/"[^"]{8,}"/g,
+note:'A verbatim quote from a real note is a fingerprint on its own.',
+fix:'Paraphrase in your own words instead of pasting the original line.' },
+{ key:'name', label:'A possible name', weight:4,
+regex:/\b([A-Z][a-z]+ [A-Z][a-z]+)\b/g,
+note:'Two capitalized words in a row often means a name slipped in.',
+fix:'If it’s a name, remove it — every name used defeats the exercise.',
+exclude:['Financial Aid','Dean List','Title IX','Student Services','Academic Affairs','Fall Semester','Spring Semester','Summer Semester','General Counsel','What Should'] }
+];
+
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function analyze(text){
+var spans = [];
+CATEGORIES.forEach(function(cat){
+var re = new RegExp(cat.regex.source, cat.regex.flags);
+var m;
+while((m = re.exec(text))){
+var matched = m[0];
+if(cat.exclude && cat.exclude.some(function(x){return x.toLowerCase() === matched.toLowerCase();})) continue;
+spans.push({start:m.index, end:m.index+matched.length, cat:cat});
+if(m.index === re.lastIndex) re.lastIndex++;
+}
+});
+spans.sort(function(a,b){ return a.start - b.start || (b.end-b.start)-(a.end-a.start); });
+var kept = [], cursor = -1;
+spans.forEach(function(s){ if(s.start >= cursor){ kept.push(s); cursor = s.end; } });
+var foundCats = {};
+kept.forEach(function(s){ foundCats[s.cat.key] = s.cat; });
+var score = 0;
+Object.keys(foundCats).forEach(function(k){ score += foundCats[k].weight; });
+return { spans:kept, score:score, foundCats:foundCats };
+}
+
+function wClass(weight){ return weight >= 3 ? 'w3' : (weight === 2 ? 'w2' : 'w1'); }
+
+function render(text, result){
+document.getElementById('results').classList.add('show');
+
+var html = '', pos = 0;
+result.spans.forEach(function(s){
+html += escapeHtml(text.slice(pos, s.start));
+html += '<mark class="'+wClass(s.cat.weight)+'" title="'+escapeHtml(s.cat.label)+'">'+escapeHtml(text.slice(s.start, s.end))+'</mark>';
+pos = s.end;
+});
+html += escapeHtml(text.slice(pos));
+document.getElementById('annotated').innerHTML = html || '<span style="color:var(--dimdk)">Nothing to check yet — write a hypothetical above.</span>';
+
+var dot = document.getElementById('dot'), label = document.getElementById('verdictLabel'),
+detail = document.getElementById('verdictDetail'), fill = document.getElementById('meterFill');
+var score = result.score, color, text1, text2, pct;
+if(score <= 2){ color='var(--green)'; text1='SAFER'; text2='A colleague probably couldn’t narrow this to one person.'; }
+else if(score <= 6){ color='var(--gold)'; text1='GETTING SPECIFIC'; text2='This combination is worth generalizing further.'; }
+else { color='var(--red)'; text1='LIKELY IDENTIFIABLE'; text2='In a program MCC’s size, this combination could point to one person.'; }
+pct = Math.min(100, Math.round((score/12)*100));
+dot.style.background = color; label.textContent = text1 + '  ·  score ' + score;
+label.style.color = color; detail.textContent = text2;
+fill.style.width = pct + '%'; fill.style.background = color;
+
+var findingsEl = document.getElementById('findings'), findingsLabel = document.getElementById('findingsLabel');
+findingsEl.innerHTML = '';
+var keys = Object.keys(result.foundCats);
+if(!keys.length){ findingsLabel.style.display = 'none'; }
+else{
+findingsLabel.style.display = 'block';
+keys.sort(function(a,b){ return result.foundCats[b].weight - result.foundCats[a].weight; });
+keys.forEach(function(k){
+var cat = result.foundCats[k];
+var li = document.createElement('li');
+li.className = 'finding';
+li.innerHTML = '<div class="sev" style="background:'+(cat.weight>=3?'rgba(255,138,120,.16)':'rgba(249,221,86,.16)')+
+';color:'+(cat.weight>=3?'var(--red)':'var(--gold)')+'">'+cat.weight+'</div>'+
+'<div class="finding-body"><strong>'+escapeHtml(cat.label)+'</strong>'+
+'<span class="fnote">'+escapeHtml(cat.note)+'</span>'+
+'<span class="fix">'+escapeHtml(cat.fix)+'</span></div>';
+findingsEl.appendChild(li);
+});
+}
+}
+
+var hypo = document.getElementById('hypo'), real = document.getElementById('real');
+
+document.getElementById('checkBtn').addEventListener('click', function(){
+var text = hypo.value.trim();
+render(text, analyze(text));
+});
+
+document.getElementById('exampleBtn').addEventListener('click', function(){
+real.value = "Maria Alvarez, a third-semester Nursing student with a 2.1 GPA, came to me on October 14th saying she's about to lose her financial aid because of academic probation. She's a single parent of two and has been missing class because her car broke down. Student ID 00483920. I don't know whether to tell her to appeal now or wait for grades to post.";
+hypo.value = "A third-semester Nursing student with a 2.1 GPA came to me on October 14th about losing financial aid due to academic probation. She's a single parent of two dealing with transportation issues. What should I tell her about appealing?";
+render(hypo.value, analyze(hypo.value));
+document.getElementById('fixedBtn').style.display = 'inline-block';
+});
+
+document.getElementById('fixedBtn').addEventListener('click', function(){
+hypo.value = "A student came to me recently asking about the financial aid appeal process after some academic trouble. They mentioned some ongoing personal circumstances affecting attendance. What should I cover when I explain how appeals work, and what should I be careful not to promise?";
+render(hypo.value, analyze(hypo.value));
+});
+
+document.getElementById('copyBtn').addEventListener('click', function(){
+var btn = this;
+navigator.clipboard.writeText(hypo.value.trim()).then(function(){
+var original = btn.textContent;
+btn.textContent = 'Copied';
+document.dispatchEvent(new CustomEvent('mcc:activity-complete'));
+setTimeout(function(){ btn.textContent = original; }, 1400);
+}).catch(function(){
+btn.textContent = 'Select the text above to copy';
+});
+});
+})();
+</script>
+</body>
+</html>
