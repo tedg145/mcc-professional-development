@@ -30,8 +30,9 @@ var idleChoices = [
 ];
 var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 var positionKey = 'mccMacPositionV1';
-var greetingKey = 'mccMacGreetedV1';
+var greetingKey = 'mccMacGreetedDateV1';
 var modeKey = 'mccMacModeV1';
+var nudgeShownKey = 'mccMacNudgedV1';
 
 var guide = document.createElement('aside');
 guide.className = 'mac-guide';
@@ -41,6 +42,11 @@ guide.innerHTML = [
 '<span class="mac-guide__label">Ask Mac<small>Drag me · click for help</small></span>',
 '<img class="mac-guide__character" src="' + poseUrls.wave + '" alt="" draggable="false">',
 '</button>',
+'<div class="mac-guide__nudge" hidden>',
+'<button class="mac-guide__nudge-close" type="button" aria-label="Dismiss suggestion">×</button>',
+'<p class="mac-guide__nudge-text" data-mac-nudge-text></p>',
+'<a class="mac-guide__nudge-link" data-mac-nudge-link href="#"></a>',
+'</div>',
 '<section class="mac-guide__panel" role="dialog" aria-modal="false" aria-labelledby="mac-guide-title">',
 '<header class="mac-guide__head">',
 '<img class="mac-guide__avatar" src="' + poseUrls.wave + '" alt="">',
@@ -72,6 +78,10 @@ document.body.appendChild(guide);
 var launcher = guide.querySelector('.mac-guide__launcher');
 var character = guide.querySelector('.mac-guide__character');
 var labelChip = guide.querySelector('.mac-guide__label');
+var nudge = guide.querySelector('.mac-guide__nudge');
+var nudgeText = guide.querySelector('[data-mac-nudge-text]');
+var nudgeLink = guide.querySelector('[data-mac-nudge-link]');
+var nudgeClose = guide.querySelector('.mac-guide__nudge-close');
 var panel = guide.querySelector('.mac-guide__panel');
 var close = guide.querySelector('.mac-guide__close');
 var input = guide.querySelector('.mac-guide__input');
@@ -94,6 +104,9 @@ var closeTimer = null;
 var celebrateTimer = null;
 var celebrateHoldTimer = null;
 var celebrateLabelHTML = labelChip ? labelChip.innerHTML : '';
+var wanderCleanupTimer = null;
+var nudgeAutoHideTimer = null;
+var hasOpenedThisSession = false;
 var recentIdlePoses = [];
 var idleMomentCount = 0;
 var pendingPose = null;
@@ -181,8 +194,12 @@ stopIdle();
 if (reducedMotion || guide.classList.contains('is-open') || document.hidden) return;
 idleTimer = window.setTimeout(function () {
 idleTimer = null;
-if (isHovering || drag || document.hidden || guide.classList.contains('is-open')) {
+if (isHovering || drag || document.hidden || guide.classList.contains('is-open') || guide.hidden) {
 startIdle(randomBetween(12000, 24000));
+return;
+}
+if (window.innerWidth > 600 && Math.random() < 0.2) {
+wander();
 return;
 }
 setPose(chooseIdlePose());
@@ -192,6 +209,25 @@ if (!isHovering && !drag && !guide.classList.contains('is-open')) setPose('neutr
 startIdle();
 }, randomBetween(4000, 9000));
 }, delay === undefined ? nextIdleDelay() : delay);
+}
+
+/* Independent of the pose-idle loop above on purpose: a suggestion carries
+real information, so — unlike the breathing loop and wandering, which are
+pure motion flourishes — it still runs for anyone with reduced motion set,
+just without the slide/fade transition (handled in CSS). */
+function scheduleNudge() {
+if (hasOpenedThisSession) return;
+try {
+if (window.sessionStorage.getItem(nudgeShownKey)) return;
+} catch (error) {}
+window.setTimeout(function () {
+if (hasOpenedThisSession) return;
+if (document.hidden || guide.classList.contains('is-open') || guide.hidden || isHovering || drag) {
+scheduleNudge();
+return;
+}
+attemptNudge();
+}, randomBetween(24000, 42000));
 }
 
 function activityHere() {
@@ -214,17 +250,68 @@ function clamp(value, minimum, maximum) {
 return Math.min(Math.max(value, minimum), maximum);
 }
 
-function moveTo(left, top) {
+function moveTo(left, top, animated) {
 var width = launcher.offsetWidth;
 var height = launcher.offsetHeight;
 var safeLeft = clamp(left, 8, Math.max(8, window.innerWidth - width - 8));
 var safeTop = clamp(top, 8, Math.max(8, window.innerHeight - height - 8));
 guide.classList.add('is-positioned');
+if (animated && !reducedMotion) {
+guide.classList.add('is-wandering');
+wanderCleanupTimer = clearTimer(wanderCleanupTimer);
+wanderCleanupTimer = window.setTimeout(function () {
+wanderCleanupTimer = null;
+guide.classList.remove('is-wandering');
+}, 950);
+} else {
+guide.classList.remove('is-wandering');
+}
 guide.style.left = safeLeft + 'px';
 guide.style.top = safeTop + 'px';
 guide.style.right = 'auto';
 guide.style.bottom = 'auto';
 if (guide.classList.contains('is-open')) positionPanel();
+}
+
+/* A rare, self-initiated stroll instead of only swapping pose in place. He
+sticks to a "home" corner most of the time and occasionally visits the
+other three, always landing near an edge rather than drifting over page
+content, with a soft glide driven by the .is-wandering transition. */
+function pickWanderSpot() {
+var margin = 24;
+var width = launcher.offsetWidth;
+var height = launcher.offsetHeight;
+var zones = [
+{ x: window.innerWidth - width - margin, y: window.innerHeight - height - margin, weight: 45 },
+{ x: margin, y: window.innerHeight - height - margin, weight: 25 },
+{ x: window.innerWidth - width - margin, y: margin + 60, weight: 15 },
+{ x: margin, y: margin + 60, weight: 15 }
+];
+var total = zones.reduce(function (sum, zone) { return sum + zone.weight; }, 0);
+var draw = Math.random() * total;
+var chosen = zones[zones.length - 1];
+zones.some(function (zone) {
+draw -= zone.weight;
+if (draw > 0) return false;
+chosen = zone;
+return true;
+});
+return {
+left: chosen.x + randomBetween(-40, 40),
+top: chosen.y + randomBetween(-30, 30)
+};
+}
+
+function wander() {
+var spot = pickWanderSpot();
+setPose('casual');
+moveTo(spot.left, spot.top, true);
+savePosition();
+poseHoldTimer = window.setTimeout(function () {
+poseHoldTimer = null;
+if (!isHovering && !drag && !guide.classList.contains('is-open')) setPose('neutral');
+startIdle();
+}, randomBetween(3000, 6000));
 }
 
 function savePosition() {
@@ -264,6 +351,8 @@ function openGuide() {
 closeTimer = clearTimer(closeTimer);
 hoverTimer = clearTimer(hoverTimer);
 hoverReturnTimer = clearTimer(hoverReturnTimer);
+hasOpenedThisSession = true;
+hideNudge();
 guide.classList.add('is-open');
 launcher.setAttribute('aria-expanded', 'true');
 statusLabel.textContent = 'Ready to help';
@@ -327,6 +416,66 @@ setPose('neutral');
 startIdle(randomBetween(18000, 36000));
 }
 }, 4600);
+}
+
+/* An occasional, unprompted suggestion — capped hard to once per browser
+session, only while genuinely idle, and only before the learner has opened
+Mac themselves (once they have, he assumes they know how to ask). Content
+comes from the same catalog relationships already used elsewhere: the
+current activity's first related item, or a sensible starting point when
+there is no current activity. */
+function pickNudgeSuggestion() {
+var here = activityHere();
+if (here && here.related && here.related.length) {
+var next = itemById(here.related[0]);
+if (next) return { text: 'Haven’t tried ' + next.title + ' yet — it builds well on this one.', item: next };
+}
+if (!here) {
+var starter = itemById('llm-works');
+if (starter) return { text: 'New here? How an LLM Works is a good place to start.', item: starter };
+}
+return null;
+}
+
+function hideNudge() {
+if (!nudge) return;
+nudgeAutoHideTimer = clearTimer(nudgeAutoHideTimer);
+nudge.classList.remove('is-visible');
+window.setTimeout(function () {
+if (!nudge.classList.contains('is-visible')) nudge.hidden = true;
+}, 260);
+}
+
+function showNudge(suggestion) {
+if (!nudge || !nudgeText || !nudgeLink) return;
+nudgeText.textContent = suggestion.text;
+nudgeLink.textContent = (suggestion.item.cta || 'Take a look') + ' →';
+nudgeLink.href = new URL(suggestion.item.path, siteRoot).href;
+nudge.hidden = false;
+window.requestAnimationFrame(function () {
+nudge.classList.add('is-visible');
+});
+nudgeAutoHideTimer = clearTimer(nudgeAutoHideTimer);
+nudgeAutoHideTimer = window.setTimeout(hideNudge, 12000);
+}
+
+function attemptNudge() {
+if (hasOpenedThisSession || guide.hidden) return false;
+try {
+if (window.sessionStorage.getItem(nudgeShownKey)) return false;
+} catch (error) {}
+var suggestion = pickNudgeSuggestion();
+if (!suggestion) return false;
+try { window.sessionStorage.setItem(nudgeShownKey, '1'); } catch (error) {}
+showNudge(suggestion);
+return true;
+}
+
+if (nudgeClose) {
+nudgeClose.addEventListener('click', function (event) {
+event.stopPropagation();
+hideNudge();
+});
 }
 
 function words(value) {
@@ -649,10 +798,15 @@ if (['navigator','coach','builder'].indexOf(storedMode) > -1) currentMode = stor
 renderMode(currentMode);
 revealForHub();
 restorePosition();
+scheduleNudge();
+/* Once per calendar day rather than once per browser session — he greets
+you again tomorrow instead of only the first time a tab is opened, which
+is what actually gives him a daily rhythm instead of a session reset. */
 var shouldWave = false;
 try {
-shouldWave = !window.sessionStorage.getItem(greetingKey);
-window.sessionStorage.setItem(greetingKey, '1');
+var todayKey = new Date().toDateString();
+shouldWave = window.localStorage.getItem(greetingKey) !== todayKey;
+window.localStorage.setItem(greetingKey, todayKey);
 } catch (error) {
 shouldWave = true;
 }
