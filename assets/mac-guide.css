@@ -19,9 +19,6 @@ color: var(--mac-text);
 font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 .mac-guide[hidden] { display: none !important; }
-.mac-guide.is-wandering {
-transition: left .9s cubic-bezier(.32, .72, .35, 1), top .9s cubic-bezier(.32, .72, .35, 1);
-}
 .mac-guide .sr-only {
 position: absolute !important;
 width: 1px !important;
@@ -109,7 +106,9 @@ font-size: 10px;
 font-weight: 800;
 letter-spacing: .02em;
 pointer-events: none;
-transition: opacity .16s ease;
+opacity: 0;
+transform: translateY(4px);
+transition: opacity .16s ease, transform .16s ease;
 }
 .mac-guide__label small {
 display: block;
@@ -120,8 +119,16 @@ font-weight: 600;
 letter-spacing: .1em;
 text-transform: uppercase;
 }
+/* Hidden by default — only appears on hover/focus, or during a celebration
+acknowledgement, instead of sitting next to Mac permanently. */
+.mac-guide__launcher:hover .mac-guide__label,
+.mac-guide__launcher:focus-visible .mac-guide__label,
+.mac-guide.is-celebrating .mac-guide__label {
+opacity: 1;
+transform: none;
+}
 .mac-guide.is-open .mac-guide__label,
-.mac-guide.is-dragging .mac-guide__label { opacity: 0; }
+.mac-guide.is-dragging .mac-guide__label { opacity: 0 !important; }
 .mac-guide.is-celebrating .mac-guide__label {
 border-color: rgba(111, 215, 155, .75);
 box-shadow: 0 8px 24px rgba(0, 0, 0, .35), 0 0 0 1px rgba(111, 215, 155, .3);
