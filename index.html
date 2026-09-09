@@ -208,6 +208,48 @@ text-decoration-color:rgba(255,255,255,.2)}
 <div class="hub-filter-status" id="filter-status" aria-live="polite"></div>
 </section>
 
+<section class="hub-faculty-studio" id="faculty-studio" aria-label="Faculty Studio — Caring Campus commitments" hidden>
+<div class="hub-section-heading">
+<div><small>Caring Campus at MCC</small><h2>Faculty Studio</h2></div>
+<p>Six commitments behind MCC's Caring Campus work. Three are quick habits you can start today. Three are AI-assisted tools we're building this semester.</p>
+</div>
+<div class="fs-grid">
+<div class="fs-card">
+<div class="fs-card__top"><span class="fs-card__badge fs-card__badge--practice">Practice today</span></div>
+<h3>Welcome Students</h3>
+<p>The first sixty seconds of a class or meeting sets the tone for the term — a name, a greeting, a moment of eye contact before anything else happens.</p>
+<div class="fs-card__tip"><b>Try:</b> greet students by name at the door for the first two weeks of a new course.</div>
+</div>
+<div class="fs-card">
+<div class="fs-card__top"><span class="fs-card__badge fs-card__badge--practice">Practice today</span></div>
+<h3>Learn &amp; Use Names</h3>
+<p>Students who are known by name are far more likely to feel like they belong here — and far more likely to stay.</p>
+<div class="fs-card__tip"><b>Try:</b> a "call me ___" syllabus question, or a seating chart with photos, turns strangers into names by week three.</div>
+</div>
+<div class="fs-card">
+<div class="fs-card__top"><span class="fs-card__badge fs-card__badge--practice">Practice today</span></div>
+<h3>Situational Fairness</h3>
+<p>When a student's work changes shape suddenly, ask before you assume. Flex for what's happening in someone's life without lowering the bar.</p>
+<div class="fs-card__tip"><b>Try:</b> know your nearest referral points — your dean's office, Advising, Student Services — before you need them.</div>
+</div>
+<div class="fs-card fs-card--building">
+<div class="fs-card__top"><span class="fs-card__badge fs-card__badge--building">Coming this semester</span></div>
+<h3>Comprehensive Syllabi</h3>
+<p>A generator that pairs your AI-use statement with a plain-language situational-fairness policy and a warm handoff to real support resources — every syllabus, not just the ones with time to spare.</p>
+</div>
+<div class="fs-card fs-card--building">
+<div class="fs-card__top"><span class="fs-card__badge fs-card__badge--building fs-card__badge--next">Up next</span></div>
+<h3>Moments That Matter</h3>
+<p>A short prep assistant for the highest-value, easiest-to-skip commitment: two or three specific things to ask before a quick individual check-in — never a score, never a prediction.</p>
+</div>
+<div class="fs-card fs-card--building">
+<div class="fs-card__top"><span class="fs-card__badge fs-card__badge--building">Coming this semester</span></div>
+<h3>Assess Early &amp; Often</h3>
+<p>Turn early, low-stakes work into fast, personal feedback — drafted in your voice, ready to personalize and send, so students hear from you before the drop deadline, not after.</p>
+</div>
+</div>
+</section>
+
 <section class="hub-featured" id="featured" aria-label="Featured learning activities">
 <div class="hub-featured__heading"><h2>Featured Learning Activities</h2><button id="toggle-all" type="button" aria-expanded="false">View all activities →</button></div>
 <div class="hub-feature-grid" id="featured-grid"></div>
@@ -246,7 +288,7 @@ const SECTIONS = (window.MCC_CONTENT || []).map(s => Object.assign({},s,{href:s.
 
 const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const ZONES = {Learn:{number:'01',desc:'Understand what AI is doing.'},Practice:{number:'02',desc:'Strengthen judgment through guided activity.'},Build:{number:'03',desc:'Create useful tools with safeguards.'},Use:{number:'04',desc:'Apply AI to real professional work.'}};
-const FEATURED_IDS=['how-it-works','context-lab','workshop','scenarios'];
+const FEATURED_IDS=['llm-works','context-lab','workshop','scenarios'];
 const featuredRoot=document.getElementById('featured-grid');
 featuredRoot.innerHTML=FEATURED_IDS.map(id=>SECTIONS.find(s=>s.id===id)).filter(Boolean).map(s=>'<a class="featured-card" href="'+s.href+'" data-progress-card data-title="'+esc(s.title)+'"><div class="featured-card__icon" aria-hidden="true">'+({Learn:'◇',Practice:'◎',Build:'△',Use:'□'}[s.zone]||'◇')+'</div><h3>'+esc(s.title)+'</h3><p>'+esc(s.desc)+'</p><div class="featured-card__meta"><span>◷ '+esc(s.duration)+'</span><span>'+esc(s.level)+'</span><span>'+esc(s.type)+'</span></div></a>').join('');
 const zoneRoot = document.getElementById('activity-zones');
@@ -262,6 +304,7 @@ const cards=[...document.querySelectorAll('.activity-card')];
 const pathButtons=[...document.querySelectorAll('[data-audience]')];
 const allActivities=document.getElementById('all-activities');
 const toggleAll=document.getElementById('toggle-all');
+const facultyStudio=document.getElementById('faculty-studio');
 let activeAudience='';
 function setCatalogOpen(open,scroll){allActivities.hidden=!open;toggleAll.setAttribute('aria-expanded',String(open));toggleAll.textContent=open?'Hide all activities ↑':'View all activities →';if(open&&scroll)allActivities.scrollIntoView({behavior:'smooth',block:'start'});}
 function applyFilters(){
@@ -275,7 +318,7 @@ const clear=document.getElementById('clear-filter');if(clear)clear.addEventListe
 }
 searchInput.addEventListener('input',()=>{if(searchInput.value.trim())setCatalogOpen(true,false);applyFilters();});
 toggleAll.addEventListener('click',()=>setCatalogOpen(allActivities.hidden,true));
-pathButtons.forEach(button=>button.addEventListener('click',()=>{activeAudience=activeAudience===button.dataset.audience?'':button.dataset.audience;pathButtons.forEach(b=>b.classList.toggle('is-active',b.dataset.audience===activeAudience));setCatalogOpen(true,false);applyFilters();allActivities.scrollIntoView({behavior:'smooth',block:'start'});}));
+pathButtons.forEach(button=>button.addEventListener('click',()=>{activeAudience=activeAudience===button.dataset.audience?'':button.dataset.audience;pathButtons.forEach(b=>b.classList.toggle('is-active',b.dataset.audience===activeAudience));facultyStudio.hidden=activeAudience!=='faculty';setCatalogOpen(true,false);applyFilters();(activeAudience==='faculty'?facultyStudio:allActivities).scrollIntoView({behavior:'smooth',block:'start'});}));
 window.addEventListener('keydown',e=>{if(e.key==='/'&&!/input|textarea/i.test(document.activeElement.tagName)){e.preventDefault();searchInput.focus();}});
 cards.forEach(card=>card.addEventListener('pointermove',e=>{const r=card.getBoundingClientRect();card.style.setProperty('--mx',(e.clientX-r.left)+'px');card.style.setProperty('--my',(e.clientY-r.top)+'px');}));
 document.querySelectorAll('[data-progress-card],.activity-card').forEach(card=>card.addEventListener('click',()=>{try{localStorage.setItem('mcc-last-page-v1',JSON.stringify({path:card.getAttribute('href'),title:card.dataset.title,at:Date.now()}));}catch(e){}}));
