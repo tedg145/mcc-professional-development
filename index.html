@@ -138,6 +138,30 @@ text-decoration-color:rgba(255,255,255,.2)}
 }
 </style>
 <link rel="stylesheet" href="assets/mcc-hub.css">
+<style>
+.hub-start{border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:20px;background:rgba(255,255,255,.025)}
+.hub-start__label{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.hub-start__row{display:flex;gap:14px;align-items:flex-start;padding:13px 0;border-top:1px solid rgba(255,255,255,.09);text-decoration:none;transition:opacity .2s}
+.hub-start__row:first-of-type{border-top:0;padding-top:0}
+.hub-start__row:hover{opacity:.78}
+.hub-start__row span{flex-shrink:0;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
+font-family:var(--mono);font-size:11.5px;background:rgba(0,141,167,.16);border:1px solid rgba(0,141,167,.5);color:var(--teal)}
+.hub-start__row strong{display:block;font-size:15px;font-weight:600}
+.hub-start__row small{display:block;margin-top:4px;font-size:12.5px;line-height:1.55;color:var(--ondk)}
+.hub-start__note{margin-top:14px;padding-top:13px;border-top:1px solid rgba(255,255,255,.09);font-size:12px;color:var(--dimdk);line-height:1.55}
+.hub-doors{margin:0 0 38px}
+.hub-door-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.hub-door{display:block;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.12);border-radius:14px;
+padding:20px 18px;background:rgba(255,255,255,.025);text-decoration:none;transition:border-color .2s,transform .2s,background .2s}
+.hub-door::before{content:'';position:absolute;inset:0 0 auto 0;height:3px;background:var(--dc)}
+.hub-door:hover{border-color:rgba(255,255,255,.3);transform:translateY(-2px);background:rgba(255,255,255,.045)}
+.hub-door__n{font-family:var(--mono);font-size:11px;color:var(--dc);letter-spacing:.1em}
+.hub-door h3{font-size:19px;font-weight:700;margin-top:10px;letter-spacing:-.01em}
+.hub-door p{color:var(--ondk);font-size:13px;line-height:1.6;margin-top:8px}
+.hub-door__meta{margin-top:14px;font-size:11px;color:var(--dimdk);font-family:var(--mono)}
+@media(max-width:1000px){.hub-door-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.hub-door-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 
@@ -173,10 +197,10 @@ text-decoration-color:rgba(255,255,255,.2)}
 <span class="hub-search__hint">/</span>
 </label>
 <nav class="hub-nav" aria-label="Hub navigation">
-<a href="#featured">Resources</a>
-<a href="#policy">Policy</a>
-<a href="#pathways">Pathways</a>
-<a href="#my-learning">My Learning</a>
+<a href="foundations/">Foundations</a>
+<a href="legal-boundaries/">Legal Boundaries</a>
+<a href="#your-work">Your Work</a>
+<a href="#policy">Library</a>
 </nav>
 </div>
 <div class="wrap hub-shell" style="flex:1;display:flex;flex-direction:column">
@@ -186,27 +210,48 @@ text-decoration-color:rgba(255,255,255,.2)}
 <h1><span class="hub-headline--white">Learn it.</span><br><span class="hub-headline--teal">Question it.</span><br><span class="hub-headline--orange">Build with it.</span></h1>
 <p class="sub">Practical AI learning for the MCC community.<br>Build skills. Solve real problems. Make an impact.</p>
 </div>
-<aside class="hub-journey" aria-label="Professional development journey">
-<div class="hub-journey__label">Your development path</div>
-<ol>
-<li><span>01</span><div><strong>Learn</strong><small>Build a useful mental model.</small></div></li>
-<li><span>02</span><div><strong>Practice</strong><small>Test judgment in guided activities.</small></div></li>
-<li><span>03</span><div><strong>Build</strong><small>Create tools and workflows.</small></div></li>
-<li><span>04</span><div><strong>Use</strong><small>Apply AI to real MCC work.</small></div></li>
-</ol>
-<p class="hub-journey__note">Move through the stages in order, or begin wherever your work calls for support.</p>
+<aside class="hub-start" aria-label="Where to begin">
+<div class="hub-start__label">Where to begin</div>
+<a class="hub-start__row" href="foundations/"><span>01</span><div><strong>Foundations</strong><small>What it is, why it fails, what to do about it. About an hour, everyone, once.</small></div></a>
+<a class="hub-start__row" href="legal-boundaries/"><span>02</span><div><strong>Legal Boundaries</strong><small>What may go into an AI tool at MCC &mdash; and what comes back out as a public record.</small></div></a>
+<p class="hub-start__note">Do these two in order. Everything else on this site assumes them.</p>
 </aside>
 </section>
 
+<section class="hub-doors" aria-label="The four doors">
+<div class="hub-section-heading">
+<div><small>Four doors</small><h2>Where everything lives</h2></div>
+<p>Every activity on this site sits behind exactly one of these.</p>
+</div>
+<div class="hub-door-grid">
+<a class="hub-door" href="foundations/" style="--dc:#008DA7">
+<div class="hub-door__n">01</div><h3>Foundations</h3>
+<p>What the thing is, why it fails, and the habit that catches it. One sequence, everyone, once.</p>
+<div class="hub-door__meta">~55 min &middot; 4 steps</div></a>
+<a class="hub-door" href="legal-boundaries/" style="--dc:#FF8A78">
+<div class="hub-door__n">02</div><h3>Legal Boundaries</h3>
+<p>FERPA, GLBA, Title IX and Texas public records &mdash; what must stay out, and what becomes discoverable.</p>
+<div class="hub-door__meta">~35 min &middot; everyone</div></a>
+<a class="hub-door" href="#your-work" style="--dc:#FF6600">
+<div class="hub-door__n">03</div><h3>Your Work</h3>
+<p>Tools for the job you actually hold. Faculty, staff, advising, builders.</p>
+<div class="hub-door__meta">11 tools &middot; by role</div></a>
+<a class="hub-door" href="#policy" style="--dc:#F9DD56">
+<div class="hub-door__n">04</div><h3>Library</h3>
+<p>Decks to teach from and templates to adapt. Reference, not a stage of learning.</p>
+<div class="hub-door__meta">4 decks &middot; 4 templates</div></a>
+</div>
+</section>
+
+<a id="your-work" aria-hidden="true"></a>
 <section class="hub-pathways" id="pathways">
 <div class="hub-section-heading">
-<div><small>Choose your path</small><h2>What brings you here?</h2></div>
-<p>Select a role to emphasize the activities most useful to you. Nothing disappears permanently.</p>
+<div><small>Your Work</small><h2>What brings you here?</h2></div>
+<p>Pick a role to sort the tools. Foundations and Legal Boundaries stay visible either way &mdash; they are not optional by role.</p>
 </div>
 <div class="hub-path-grid" role="group" aria-label="Filter by audience">
 <button class="hub-path" type="button" data-audience="faculty"><span class="hub-path__icon">◇</span><strong>Faculty</strong><small>Enhance teaching, design learning experiences, and support student success.</small><span class="hub-path__cta">Explore for Faculty →</span></button>
 <button class="hub-path" type="button" data-audience="staff"><span class="hub-path__icon">◎</span><strong>Staff</strong><small>Streamline workflows, improve communication, and boost productivity.</small><span class="hub-path__cta">Explore for Staff →</span></button>
-<button class="hub-path" type="button" data-audience="supervisor"><span class="hub-path__icon">△</span><strong>Supervisor</strong><small>Lead with AI, support your teams, and drive responsible change.</small><span class="hub-path__cta hub-path__cta--gold">Explore for Supervisor →</span></button>
 <button class="hub-path" type="button" data-audience="builder"><span class="hub-path__icon">&lt;/&gt;</span><strong>Builder</strong><small>Design, develop, and integrate AI solutions across the college.</small><span class="hub-path__cta hub-path__cta--orange">Explore for Builder →</span></button>
 <button class="hub-path" type="button" data-audience="advising"><span class="hub-path__icon">◈</span><strong>Advising</strong><small>Build safe habits for real conversations with students — before AI ever sees the details.</small><span class="hub-path__cta hub-path__cta--green">Explore for Advising &amp; Student-Facing Roles →</span></button>
 </div>
@@ -316,7 +361,7 @@ text-decoration-color:rgba(255,255,255,.2)}
 
 <section class="hub-zones" id="all-activities" aria-label="All learning activities" hidden>
 <div class="hub-section-heading">
-<div><small>Explore the environment</small><h2>Four clear zones. One growing curriculum.</h2></div>
+<div><small>Explore the environment</small><h2>Every activity, by door.</h2></div>
 <p>Every activity includes an estimated time, level, format, and audience fit.</p>
 </div>
 <div id="activity-zones"></div>
@@ -340,10 +385,10 @@ hub and search use the same activity information.
 const SECTIONS = (window.MCC_CONTENT || []).map(s => Object.assign({},s,{href:s.path,desc:s.description}));
 
 const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const ZONES = {Learn:{number:'01',desc:'Understand what AI is doing.'},Practice:{number:'02',desc:'Strengthen judgment through guided activity.'},Build:{number:'03',desc:'Create useful tools with safeguards.'},Use:{number:'04',desc:'Apply AI to real professional work.'}};
+const ZONES = {Foundations:{number:'01',desc:'What it is, why it fails, and the habit that catches it.'},'Legal Boundaries':{number:'02',desc:'What may go into an AI tool at MCC, and what comes back out.'},'Your Work':{number:'03',desc:'Tools for the job you actually hold.'},Library:{number:'04',desc:'Decks to teach from and templates to adapt.'}};
 const FEATURED_IDS=['llm-works','context-lab','workshop','scenarios'];
 const featuredRoot=document.getElementById('featured-grid');
-featuredRoot.innerHTML=FEATURED_IDS.map(id=>SECTIONS.find(s=>s.id===id)).filter(Boolean).map(s=>'<a class="featured-card" href="'+s.href+'" data-progress-card data-title="'+esc(s.title)+'"><div class="featured-card__icon" aria-hidden="true">'+({Learn:'◇',Practice:'◎',Build:'△',Use:'□'}[s.zone]||'◇')+'</div><h3>'+esc(s.title)+'</h3><p>'+esc(s.desc)+'</p><div class="featured-card__meta"><span>◷ '+esc(s.duration)+'</span><span>'+esc(s.level)+'</span><span>'+esc(s.type)+'</span></div></a>').join('');
+featuredRoot.innerHTML=FEATURED_IDS.map(id=>SECTIONS.find(s=>s.id===id)).filter(Boolean).map(s=>'<a class="featured-card" href="'+s.href+'" data-progress-card data-title="'+esc(s.title)+'"><div class="featured-card__icon" aria-hidden="true">'+({Foundations:'◇','Legal Boundaries':'◈','Your Work':'□',Library:'▤'}[s.zone]||'◇')+'</div><h3>'+esc(s.title)+'</h3><p>'+esc(s.desc)+'</p><div class="featured-card__meta"><span>◷ '+esc(s.duration)+'</span><span>'+esc(s.level)+'</span><span>'+esc(s.type)+'</span></div></a>').join('');
 const zoneRoot = document.getElementById('activity-zones');
 zoneRoot.innerHTML = Object.keys(ZONES).map(zone => {
 const items = SECTIONS.filter(s => s.zone === zone);
