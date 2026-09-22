@@ -12,7 +12,7 @@ function esc(value){return String(value).replace(/[&<>\"]/g,function(c){return {
 
 if(!document.querySelector('.mcc-activity-bar')){
 var bar=document.createElement('header');bar.className='mcc-activity-bar';
-bar.innerHTML='<a class="mcc-activity-brand" href="../#hub" aria-label="MCC AI Professional Development home"><span class="mcc-activity-brand__mark"><img src="'+assetBase+'mcc-m-mark.png" alt="MCC" width="40" height="40"></span><span><strong>AI Professional Development</strong><small>Learn · Practice · Build · Use</small></span></a><nav class="mcc-activity-nav" aria-label="Activity navigation"><a href="../#featured">Resources</a><a href="../#pathways">Pathways</a><a href="../#my-learning">My Learning</a><a class="mcc-activity-home" href="../#hub">Hub</a></nav>';
+bar.innerHTML='<a class="mcc-activity-brand" href="../#hub" aria-label="MCC AI Professional Development home"><span class="mcc-activity-brand__mark"><img src="'+assetBase+'mcc-m-mark.png" alt="MCC" width="40" height="40"></span><span><strong>AI Professional Development</strong><small>Learn · Practice · Build · Use</small></span></a><nav class="mcc-activity-nav" aria-label="Activity navigation"><a href="../foundations/">Foundations</a><a href="../legal-boundaries/">Legal Boundaries</a><a href="../presentations/">Presentations</a><a class="mcc-activity-home" href="../#hub">Hub</a></nav>';
 body.insertBefore(bar,body.firstChild);
 }
 
