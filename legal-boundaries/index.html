@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legal Boundaries — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="FERPA, GLBA, Title IX, personnel records and Texas public records — what must stay out of an AI tool at MCC, and what becomes discoverable once you use one.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0A1A2E;--navy:#003366;--orange:#FF6600;--gold:#F9DD56;--teal:#008DA7;
+--ondk:#A7B7C9;--dimdk:#5C6E82;--line:rgba(255,255,255,.12);--green:#6FD79B;--red:#FF8A78;
+--sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+--mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--ink);color:#fff;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+.bar{display:flex;align-items:center;gap:14px;padding:12px clamp(16px,4vw,30px);border-bottom:1px solid var(--line);
+background:rgba(6,16,30,.92);position:sticky;top:0;z-index:40;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.bar__mark{display:grid;place-items:center;width:40px;height:40px}
+.bar__mark img{width:100%;height:100%;object-fit:contain;display:block}
+.bar strong{display:block;font-size:13px;letter-spacing:.04em}
+.bar small{display:block;margin-top:2px;color:var(--dimdk);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+.bar nav{margin-left:auto;display:flex;gap:8px}
+.bar nav a{font-size:12.5px;border:1px solid var(--line);border-radius:9px;padding:7px 13px;color:var(--ondk);transition:background .2s,color .2s}
+.bar nav a:hover{background:rgba(255,255,255,.08);color:#fff}
+
+main{flex:1;width:100%;max-width:1160px;margin:0 auto;padding:clamp(24px,5vw,46px) clamp(16px,4vw,30px) 64px}
+.kicker{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--orange)}
+h1{font-size:clamp(28px,5vw,46px);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:12px}
+h1 span{color:var(--dimdk)}
+.lede{color:var(--ondk);font-size:clamp(15px,1.8vw,18px);line-height:1.65;margin-top:18px;max-width:72ch}
+.lede strong{color:#fff}
+
+.caveat{display:flex;gap:13px;align-items:flex-start;margin-top:20px;padding:14px 16px;max-width:72ch;
+border:1px solid rgba(255,138,120,.38);background:rgba(255,138,120,.07);border-radius:12px}
+.caveat svg{flex-shrink:0;width:19px;height:19px;color:var(--red);margin-top:1px}
+.caveat p{font-size:13px;line-height:1.6;color:#FFD9D0}
+.caveat strong{color:#FFB8A8}
+
+h2.sec{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
+margin:44px 0 6px;display:flex;align-items:center;gap:10px}
+h2.sec::after{content:'';flex:1;height:1px;background:var(--line)}
+.secsub{color:var(--dimdk);font-size:13.5px;line-height:1.6;margin-bottom:18px;max-width:72ch}
+
+.regime{display:flex;gap:15px;align-items:flex-start;padding:15px 0;border-bottom:1px solid var(--line)}
+.regime:last-child{border-bottom:0}
+.regime__k{flex-shrink:0;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;
+font-family:var(--mono);font-size:14px;font-weight:600;background:rgba(0,141,167,.14);border:1px solid rgba(0,141,167,.45);color:var(--teal)}
+.regime h3{font-size:15.5px;font-weight:600}
+.regime p{font-size:13px;color:var(--ondk);line-height:1.6;margin-top:5px;max-width:82ch}
+
+.rag{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.ragc{border-radius:13px;padding:18px;border:1px solid var(--c);background:var(--bg)}
+.ragc .lab{font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--c)}
+.ragc h3{font-size:17px;font-weight:700;margin-top:9px}
+.ragc p{font-size:13px;line-height:1.6;margin-top:9px;color:var(--ondk)}
+.ragnote{margin-top:14px;font-size:14px;font-weight:600;color:var(--gold)}
+
+.behav{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.bc{border:1px solid var(--line);border-radius:13px;padding:18px;background:rgba(255,255,255,.025)}
+.bc .n{font-family:var(--mono);font-size:11px;color:var(--orange);letter-spacing:.1em}
+.bc h3{font-size:16px;font-weight:600;margin-top:10px}
+.bc p{font-size:13px;color:var(--ondk);line-height:1.6;margin-top:9px}
+.bc .rule{margin-top:11px;padding-top:11px;border-top:1px solid var(--line);font-size:12.5px;color:#fff;font-weight:600}
+
+.labs{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.lab-card{display:block;border:1px solid var(--line);border-radius:13px;padding:18px;background:rgba(255,255,255,.025);transition:border-color .2s,transform .2s}
+.lab-card:hover{border-color:rgba(255,102,0,.5);transform:translateY(-2px)}
+.lab-card h3{font-size:16.5px;font-weight:600}
+.lab-card p{font-size:13px;color:var(--ondk);line-height:1.55;margin-top:8px}
+.lab-card .t{font-size:11px;color:var(--dimdk);font-family:var(--mono);margin-top:11px}
+.lab-card .go{margin-top:11px;font-size:12.5px;color:var(--orange);font-weight:600}
+
+.tmpl{margin-top:16px;border:1px solid var(--line);border-radius:13px;padding:18px 20px;background:rgba(255,255,255,.02)}
+.tmpl h3{font-size:16px;font-weight:600}
+.tmpl p{font-size:13px;color:var(--ondk);line-height:1.6;margin-top:8px;max-width:76ch}
+.tmpl a{display:inline-block;margin-top:12px;font-size:13px;color:var(--orange);font-weight:600}
+
+footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--dimdk);font-size:12px}
+@media(max-width:900px){.rag,.behav,.labs{grid-template-columns:1fr}}
+@media(max-width:560px){.bar nav{display:none}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <a class="bar__mark" href="../#hub" aria-label="MCC AI Professional Development home"><img src="../assets/mcc-m-mark.png" alt="MCC" width="40" height="40"></a>
+  <a href="../#hub"><strong>AI Professional Development</strong><small>Learn &middot; Practice &middot; Build &middot; Use</small></a>
+  <nav>
+    <a href="../foundations/">Foundations</a>
+    <a href="../#your-work">Your Work</a>
+    <a href="../#hub">Hub</a>
+  </nav>
+</div>
+
+<main>
+  <div class="kicker">Everyone &middot; regardless of role</div>
+  <h1>Legal Boundaries<br><span>What may go in, and what comes back out</span></h1>
+  <p class="lede">This runs in both directions. There is information that must not go into an AI tool at all,
+    and there is the fact that what you type into one may itself become a public record.
+    <strong>This is the only part of the site where being wrong has a regulator attached.</strong></p>
+
+  <div class="caveat">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 9v4m0 4h.01M10.29 3.86l-8.18 14.14A1 1 0 0 0 3 19.5h18a1 1 0 0 0 .89-1.5L13.71 3.86a1 1 0 0 0-1.72 0z"/>
+    </svg>
+    <p><strong>Working guidance, not legal advice.</strong> This page translates the rules into practical terms
+      for everyday work. It does not replace the College's official policies, and it is not a legal opinion for
+      your specific situation. When a real matter turns on any of this, ask [General Counsel] before you act.</p>
+  </div>
+
+  <h2 class="sec">Five regimes, in plain language</h2>
+  <div class="secsub">You do not need to know which statute applies. You need to recognise the category in
+    front of you and stop.</div>
+
+  <div class="regime"><div class="regime__k">F</div><div>
+    <h3>FERPA &mdash; student education records</h3>
+    <p>Grades, rosters, advising notes, conduct records, transcripts. The most common category on this campus
+      and the easiest to hand over without noticing, because it is the everyday material of the job.</p>
+  </div></div>
+  <div class="regime"><div class="regime__k">G</div><div>
+    <h3>GLBA and the FTC Safeguards Rule &mdash; financial aid</h3>
+    <p>FAFSA data, ISIRs, Social Security numbers. Enforceable since 2023 and it reaches Title IV eligibility.
+      FERPA's worst case is a letter; this one reaches the College's ability to disburse aid.</p>
+  </div></div>
+  <div class="regime"><div class="regime__k">H</div><div>
+    <h3>Health, counseling and disability documentation</h3>
+    <p>Make the category itself the stop sign rather than trying to work out which statute governs. If the
+      document exists because someone disclosed a condition, it does not go into a tool.</p>
+  </div></div>
+  <div class="regime"><div class="regime__k">T</div><div>
+    <h3>Title IX, conduct and HR investigations</h3>
+    <p>A hard stop. No drafting, no summarizing, no AI notetakers, no "just help me organise my notes."</p>
+  </div></div>
+  <div class="regime"><div class="regime__k">P</div><div>
+    <h3>Personnel and HR data</h3>
+    <p>Not FERPA, still sensitive. Note that student-employee records <em>are</em> education records, which
+      catches people who assume the employment context changes the category.</p>
+  </div></div>
+
+  <h2 class="sec">The line: green, yellow, red</h2>
+  <div class="secsub">One decision, made before you paste anything.</div>
+  <div class="rag">
+    <div class="ragc" style="--c:#6FD79B;--bg:rgba(111,215,155,.07)">
+      <div class="lab">Green &mdash; any tool</div>
+      <h3>Already public</h3>
+      <p>Published catalog and marketing text. Public policy language. Generic drafting that carries no
+        institutional data at all.</p>
+    </div>
+    <div class="ragc" style="--c:#F9DD56;--bg:rgba(249,221,86,.07)">
+      <div class="lab">Yellow &mdash; licensed tools</div>
+      <h3>Internal, not personal</h3>
+      <p>Draft procedures, agendas, internal communications, planning documents, aggregate enrolment
+        figures. Signed in with your MCC account.</p>
+    </div>
+    <div class="ragc" style="--c:#FF8A78;--bg:rgba(255,138,120,.07)">
+      <div class="lab">Red &mdash; no AI tool</div>
+      <h3>About a person</h3>
+      <p>Student records, financial aid, health and disability, Title IX, conduct and HR, personnel files,
+        Social Security numbers.</p>
+    </div>
+  </div>
+  <div class="ragnote">When in doubt, it is red.</div>
+
+  <h2 class="sec">Three behaviours</h2>
+  <div class="secsub">The line above is the principle. These are the three places people actually get caught.</div>
+  <div class="behav">
+    <div class="bc">
+      <div class="n">01</div>
+      <h3>The sign-in check</h3>
+      <p>The distinction is never the brand. It is the contract &mdash; and the protection attaches to the
+        authenticated session, not to the product name on the tab.</p>
+      <div class="rule">If you did not sign in with your MCC account, treat it as publishing to the open internet.</div>
+    </div>
+    <div class="bc">
+      <div class="n">02</div>
+      <h3>AI notetakers</h3>
+      <p>Otter, Teams recap, Zoom AI Companion, Read.ai &mdash; anything that joins a meeting and starts
+        transcribing. It is the highest-frequency accidental disclosure in higher education right now, because
+        it attaches without anyone deciding to use it.</p>
+      <div class="rule">Never in an advising, counseling, Title IX, conduct, HR investigation or grievance meeting. No exceptions without written authorization from the Title IX Coordinator or General Counsel.</div>
+    </div>
+    <div class="bc">
+      <div class="n">03</div>
+      <h3>Texas public records</h3>
+      <p>MCC is a governmental body. Prompts and outputs created in the course of official business are very
+        likely public records. Using a personal account does not put the record out of reach &mdash; it makes it
+        harder to produce, and adds a problem.</p>
+      <div class="rule">Write every prompt as though it could be printed in the Waco Tribune-Herald.</div>
+    </div>
+  </div>
+
+  <h2 class="sec">Two labs</h2>
+  <div class="secsub">Reading the rules is not the same as being able to apply them at speed. These are the
+    two places to practise.</div>
+  <div class="labs">
+    <a class="lab-card" href="../hypothetical/">
+      <h3>The Safe Hypothetical</h3>
+      <p>Take a real advising situation and generalize it until no combination of details points back to one
+        student &mdash; then see it scored for identifiability. A private note sits outside FERPA only while it
+        stays in your sole possession.</p>
+      <div class="t">15 MIN &middot; INTERMEDIATE</div>
+      <div class="go">Build a hypothetical &rarr;</div>
+    </a>
+    <a class="lab-card" href="../inspector/">
+      <h3>Metadata Inspector</h3>
+      <p>See what photos and documents carry before you share them &mdash; author fields, timestamps, location
+        data, revision history. Runs locally in your browser; nothing is uploaded.</p>
+      <div class="t">10 MIN &middot; INTERMEDIATE</div>
+      <div class="go">Inspect a file &rarr;</div>
+    </a>
+  </div>
+
+  <h2 class="sec">Templates</h2>
+  <div class="tmpl">
+    <h3>Policy Template Repository</h3>
+    <p>Starting points for AI-related policy language at MCC &mdash; a syllabus AI Use Statement on the
+      red/yellow/green model, a Digital Tool Charter, situational fairness language, and a one-page data
+      handling quick reference. Adapt before you adopt, and confirm office names and contacts locally.</p>
+    <a href="../#policy">Open the repository &rarr;</a>
+  </div>
+</main>
+
+<footer>
+  <div>Ted Gonzalez, JD/MBA</div>
+  <div>&copy; 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
