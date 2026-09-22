@@ -107,10 +107,14 @@ a.hub-resume-card:hover{transform:translateY(-3px);border-color:var(--hub-line-s
 .fs-card__badge--practice{background:rgba(0,141,167,.16);color:#56d3e4}
 .fs-card__badge--building{background:rgba(249,221,86,.14);color:var(--gold)}
 .fs-card__badge--next{background:rgba(255,102,0,.15);color:var(--orange)}
+.fs-card__badge--live{background:rgba(111,215,155,.16);color:#6FD79B}
 .fs-card h3{margin:13px 0 8px;font-size:15px}
 .fs-card p{color:var(--ondk);font-size:12px;line-height:1.6}
 .fs-card__tip{margin-top:12px;padding-top:12px;border-top:1px solid var(--hub-line);color:#8da2b6;font-size:11px;line-height:1.55}
 .fs-card__tip b{color:var(--teal);font-weight:700}
+a.fs-card{display:block;text-decoration:none;color:inherit}
+a.fs-card:hover{border-color:var(--orange)}
+.fs-card__go{margin-top:12px;padding-top:12px;border-top:1px solid var(--hub-line);color:var(--orange);font-size:11px;font-weight:700}
 .policy-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
 .policy-card{display:flex;flex-direction:column;padding:20px;border:1px solid var(--hub-line);border-radius:16px;
 background:var(--hub-panel-soft);transition:.22s}
@@ -122,6 +126,8 @@ font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
 .policy-card p{color:var(--ondk);font-size:12px;line-height:1.6;flex:1}
 .policy-card__actions{margin-top:14px;padding-top:12px;border-top:1px solid var(--hub-line)}
 .policy-card__soon{color:var(--gold);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.policy-card__go{color:var(--orange);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none}
+.policy-card__go:hover{color:#ff7f26}
 .policy-note{margin:16px 0 0;padding:14px 16px;border:1px dashed var(--hub-line-strong);border-radius:12px;
 color:var(--ondk);font-size:11px;line-height:1.6}
 .hub-lex-promo{margin:0 0 28px}
