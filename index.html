@@ -236,10 +236,10 @@ padding:20px 18px;background:rgba(255,255,255,.025);text-decoration:none;transit
 <div class="hub-door__n">03</div><h3>Your Work</h3>
 <p>Tools for the job you actually hold. Faculty, staff, advising, builders.</p>
 <div class="hub-door__meta">11 tools &middot; by role</div></a>
-<a class="hub-door" href="#policy" style="--dc:#F9DD56">
+<a class="hub-door" href="presentations/" style="--dc:#F9DD56">
 <div class="hub-door__n">04</div><h3>Library</h3>
-<p>Decks to teach from and templates to adapt. Reference, not a stage of learning.</p>
-<div class="hub-door__meta">4 decks &middot; 4 templates</div></a>
+<p>Decks to teach from, in the browser or as editable PowerPoint. The policy template repository is still being built.</p>
+<div class="hub-door__meta">4 decks live &middot; templates in progress</div></a>
 </div>
 </section>
 
@@ -321,8 +321,8 @@ padding:20px 18px;background:rgba(255,255,255,.025);text-decoration:none;transit
 
 <section class="hub-zones" id="policy" aria-label="Policy template repository">
 <div class="hub-section-heading">
-<div><small>Templates &amp; guidance</small><h2>Policy Template Repository</h2></div>
-<p>Starting points for AI-related policy language at MCC — adapt before you adopt.</p>
+<div><small>Templates &amp; guidance &middot; <span style="color:var(--gold)">Coming soon</span></small><h2>Policy Template Repository</h2></div>
+<p>Starting points for AI-related policy language at MCC. Two entries open into the Syllabus Builder today; the standalone documents are still being written.</p>
 </div>
 <div class="policy-grid">
 <div class="policy-card">
@@ -350,7 +350,7 @@ padding:20px 18px;background:rgba(255,255,255,.025);text-decoration:none;transit
 <div class="policy-card__actions"><span class="policy-card__soon">Template coming soon</span></div>
 </div>
 </div>
-<p class="policy-note">Two of these four are live in the Syllabus Builder above — the other two (Digital Tool Charter, Data Handling Quick Reference) are placeholders showing the shape of the repo, with real templates coming soon.</p>
+<p class="policy-note">This repository is not finished, and the cards below show its intended shape rather than four ready documents. Two of them — the AI Use Statement and Situational Fairness Language — open into the Syllabus Builder, where the language is live and editable today. The Digital Tool Charter and the Data Handling Quick Reference are not written yet.</p>
 </section>
 
 <a class="hub-continue" id="my-learning" href="how-it-works/">
@@ -726,7 +726,7 @@ boot.classList.add('gone');
 hub.classList.add('on');
 document.documentElement.style.overflow = 'auto';
 document.body.style.overflow = 'auto';
-if(location.hash !== '#hub') history.replaceState(null, '', '#hub');
+if(!location.hash) history.replaceState(null, '', '#hub');
 /* The QR button stays out of the intro and appears with the hub. */
 if(window.MCCQR) window.MCCQR.show();
 setTimeout(function(){
@@ -740,8 +740,19 @@ window.addEventListener('keydown', function(e){
 if(!entered && (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape')){ e.preventDefault(); enter(); }
 });
 
-/* Bookmark …/#hub to land straight on the menu — handy mid-class. */
-if(location.hash === '#hub'){ boot.style.transition = 'none'; enter(true); }
+/* Bookmark …/#hub to land straight on the menu — handy mid-class.
+   Any other section anchor (#policy, #your-work, #featured …) does the same
+   and then scrolls there, so deep links from other pages actually arrive. */
+(function(){
+var incoming = location.hash;
+if(!incoming || incoming.length < 2) return;
+boot.style.transition = 'none';
+enter(true);
+if(incoming === '#hub') return;
+var target = null;
+try { target = document.querySelector(incoming); } catch(e) { target = null; }
+if(target) setTimeout(function(){ target.scrollIntoView({block:'start'}); }, 60);
+})();
 
 document.getElementById('replay').addEventListener('click', function(){
 location.hash = '';
