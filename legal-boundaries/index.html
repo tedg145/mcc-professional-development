@@ -51,7 +51,14 @@ h2.sec::after{content:'';flex:1;height:1px;background:var(--line)}
 .regime__k{flex-shrink:0;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;
 font-family:var(--mono);font-size:14px;font-weight:600;background:rgba(0,141,167,.14);border:1px solid rgba(0,141,167,.45);color:var(--teal)}
 .regime h3{font-size:15.5px;font-weight:600}
-.regime p{font-size:13px;color:var(--ondk);line-height:1.6;margin-top:5px;max-width:82ch}
+.regime__sub{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-top:4px}
+.regime p{font-size:13px;color:var(--ondk);line-height:1.6;margin-top:7px;max-width:82ch}
+.cites{list-style:none;margin-top:10px;display:flex;flex-wrap:wrap;gap:6px 8px}
+.cites li{font-family:var(--mono);font-size:11px;line-height:1.5;color:#9FB0C2;
+border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.035);border-radius:7px;padding:4px 9px}
+.cites li b{color:#fff;font-weight:500}
+.asof{margin-top:16px;padding:13px 16px;border:1px dashed rgba(255,255,255,.2);border-radius:12px;
+font-size:12px;line-height:1.6;color:var(--dimdk);max-width:82ch}
 
 .rag{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
 .ragc{border-radius:13px;padding:18px;border:1px solid var(--c);background:var(--bg)}
@@ -121,29 +128,80 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px);displa
     front of you and stop.</div>
 
   <div class="regime"><div class="regime__k">F</div><div>
-    <h3>FERPA &mdash; student education records</h3>
-    <p>Grades, rosters, advising notes, conduct records, transcripts. The most common category on this campus
-      and the easiest to hand over without noticing, because it is the everyday material of the job.</p>
+    <h3>FERPA &mdash; the Family Educational Rights and Privacy Act</h3>
+    <div class="regime__sub">Student education records</div>
+    <p>Grades, rosters, advising notes, conduct records, transcripts. The most common category on this
+      campus and the easiest to hand over without noticing, because it is the everyday material of the job.</p>
+    <ul class="cites">
+      <li><b>20 U.S.C. &sect; 1232g</b></li>
+      <li><b>34 C.F.R. Part 99</b> &mdash; implementing rules</li>
+      <li><b>34 C.F.R. &sect; 99.3</b> &mdash; "education records" defined</li>
+    </ul>
   </div></div>
   <div class="regime"><div class="regime__k">G</div><div>
-    <h3>GLBA and the FTC Safeguards Rule &mdash; financial aid</h3>
-    <p>FAFSA data, ISIRs, Social Security numbers. Enforceable since 2023 and it reaches Title IV eligibility.
-      FERPA's worst case is a letter; this one reaches the College's ability to disburse aid.</p>
+    <h3>GLBA &mdash; the Gramm-Leach-Bliley Act, and the FTC Safeguards Rule</h3>
+    <div class="regime__sub">Financial aid data</div>
+    <p>Free Application for Federal Student Aid (FAFSA) data, Institutional Student Information Records
+      (ISIRs), Social Security numbers. The amended Safeguards Rule has been enforceable since 9 June 2023
+      and reaches Title IV eligibility through the College's Program Participation Agreement and its Student
+      Aid Internet Gateway (SAIG) enrollment agreement. FERPA's worst case is a letter; this one reaches the
+      College's ability to disburse aid.</p>
+    <ul class="cites">
+      <li><b>15 U.S.C. &sect;&sect; 6801&ndash;6809</b></li>
+      <li><b>16 C.F.R. Part 314</b> &mdash; FTC Safeguards Rule</li>
+      <li><b>34 C.F.R. &sect; 668.16(c)</b> &mdash; administrative capability</li>
+    </ul>
   </div></div>
   <div class="regime"><div class="regime__k">H</div><div>
     <h3>Health, counseling and disability documentation</h3>
-    <p>Make the category itself the stop sign rather than trying to work out which statute governs. If the
-      document exists because someone disclosed a condition, it does not go into a tool.</p>
+    <div class="regime__sub">HIPAA, Section 504 and the ADA</div>
+    <p>Make the category itself the stop sign rather than working out which statute governs &mdash; and note
+      that the obvious answer is usually wrong here. Most student health and counseling records at a
+      postsecondary institution are FERPA <em>treatment records</em>, which are excluded from FERPA's
+      "education records" and also excluded from the Health Insurance Portability and Accountability Act
+      (HIPAA) definition of protected health information. Disability documentation carries its own
+      confidentiality duties under Section 504 of the Rehabilitation Act of 1973 and the Americans with
+      Disabilities Act (ADA). Whichever regime applies, the answer for an AI tool is the same one.</p>
+    <ul class="cites">
+      <li><b>34 C.F.R. &sect; 99.3</b> &mdash; treatment records</li>
+      <li><b>45 C.F.R. &sect; 160.103</b> &mdash; HIPAA exclusion</li>
+      <li><b>29 U.S.C. &sect; 794</b> &middot; <b>34 C.F.R. Part 104</b></li>
+      <li><b>42 U.S.C. &sect; 12101</b> et seq. &middot; <b>28 C.F.R. Part 35</b></li>
+    </ul>
   </div></div>
   <div class="regime"><div class="regime__k">T</div><div>
-    <h3>Title IX, conduct and HR investigations</h3>
-    <p>A hard stop. No drafting, no summarizing, no AI notetakers, no "just help me organise my notes."</p>
+    <h3>Title IX, student conduct and HR investigations</h3>
+    <div class="regime__sub">Sex discrimination, campus crime, mandatory reporting</div>
+    <p>A hard stop. No drafting, no summarizing, no AI notetakers, no "just help me organise my notes."
+      Texas adds a duty most employees do not know they carry: Senate Bill 212 requires an employee of a
+      postsecondary institution who learns of sexual harassment, sexual assault, dating violence or stalking
+      involving a student to report it, with criminal penalties for failing to do so.</p>
+    <ul class="cites">
+      <li><b>20 U.S.C. &sect; 1681</b> et seq.</li>
+      <li><b>34 C.F.R. Part 106</b> &mdash; 2020 rule (see note)</li>
+      <li><b>20 U.S.C. &sect; 1092(f)</b> &middot; <b>34 C.F.R. &sect; 668.46</b> &mdash; Clery Act</li>
+      <li><b>Tex. Educ. Code &sect;&sect; 51.252&ndash;51.259</b> &mdash; SB 212</li>
+    </ul>
   </div></div>
   <div class="regime"><div class="regime__k">P</div><div>
-    <h3>Personnel and HR data</h3>
+    <h3>Personnel and human resources data</h3>
+    <div class="regime__sub">Employment records</div>
     <p>Not FERPA, still sensitive. Note that student-employee records <em>are</em> education records, which
-      catches people who assume the employment context changes the category.</p>
+      catches people who assume the employment context changes the category. Medical information about an
+      employee has to be kept separate from the personnel file under the ADA, and personnel records held by
+      a Texas governmental body sit inside the Texas Public Information Act with specific exceptions rather
+      than outside it.</p>
+    <ul class="cites">
+      <li><b>34 C.F.R. &sect; 99.3</b> &mdash; student-employee records</li>
+      <li><b>42 U.S.C. &sect; 12112(d)(3)(B)</b> &mdash; separate medical file</li>
+      <li><b>Tex. Gov't Code &sect;&sect; 552.102, 552.117</b></li>
+    </ul>
   </div></div>
+
+  <div class="asof">Citations are given for reference and were checked on 22 September 2026. One is moving:
+    the Department of Education's 2024 Title IX rule was vacated nationwide in January 2025, so the 2020
+    version of 34 C.F.R. Part 106 is the operative text. Confirm the current posture with [General Counsel]
+    before relying on any of this in a real matter.</div>
 
   <h2 class="sec">The line: green, yellow, red</h2>
   <div class="secsub">One decision, made before you paste anything.</div>
@@ -194,6 +252,7 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px);displa
         likely public records. Using a personal account does not put the record out of reach &mdash; it makes it
         harder to produce, and adds a problem.</p>
       <div class="rule">Write every prompt as though it could be printed in the Waco Tribune-Herald.</div>
+      <ul class="cites"><li><b>Tex. Gov't Code ch. 552</b></li><li><b>Tex. Loc. Gov't Code chs. 201&ndash;205</b></li></ul>
     </div>
   </div>
 
