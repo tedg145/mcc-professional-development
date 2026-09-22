@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foundations — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="Start here. What a language model actually is, why it fails, and the habit that catches it — four short activities, about an hour, everyone once.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0A1A2E;--navy:#003366;--orange:#FF6600;--gold:#F9DD56;--teal:#008DA7;
+--ondk:#A7B7C9;--dimdk:#5C6E82;--line:rgba(255,255,255,.12);--green:#6FD79B;
+--sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+--mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--ink);color:#fff;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+.bar{display:flex;align-items:center;gap:14px;padding:12px clamp(16px,4vw,30px);border-bottom:1px solid var(--line);
+background:rgba(6,16,30,.92);position:sticky;top:0;z-index:40;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.bar__mark{display:grid;place-items:center;width:40px;height:40px}
+.bar__mark img{width:100%;height:100%;object-fit:contain;display:block}
+.bar strong{display:block;font-size:13px;letter-spacing:.04em}
+.bar small{display:block;margin-top:2px;color:var(--dimdk);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+.bar nav{margin-left:auto;display:flex;gap:8px}
+.bar nav a{font-size:12.5px;border:1px solid var(--line);border-radius:9px;padding:7px 13px;color:var(--ondk);transition:background .2s,color .2s}
+.bar nav a:hover{background:rgba(255,255,255,.08);color:#fff}
+
+main{flex:1;width:100%;max-width:1160px;margin:0 auto;padding:clamp(24px,5vw,46px) clamp(16px,4vw,30px) 64px}
+.kicker{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--orange)}
+h1{font-size:clamp(28px,5vw,46px);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:12px}
+h1 span{color:var(--dimdk)}
+.lede{color:var(--ondk);font-size:clamp(15px,1.8vw,18px);line-height:1.65;margin-top:18px;max-width:72ch}
+.lede strong{color:#fff}
+
+.deckref{display:flex;gap:14px;align-items:flex-start;margin-top:22px;padding:15px 17px;max-width:72ch;
+border:1px solid rgba(249,221,86,.38);background:rgba(249,221,86,.07);border-radius:12px}
+.deckref__mark{flex-shrink:0;display:grid;place-items:center;width:34px;height:34px;border-radius:9px;
+border:1px solid rgba(249,221,86,.5);background:rgba(249,221,86,.10);color:var(--gold);font-size:15px}
+.deckref__kicker{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+.deckref p{margin-top:5px;font-size:13px;line-height:1.6;color:#EDE3BC}
+.deckref a{color:#fff;border-bottom:1px solid rgba(255,255,255,.4)}
+
+h2.sec{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);
+margin:44px 0 6px;display:flex;align-items:center;gap:10px}
+h2.sec::after{content:'';flex:1;height:1px;background:var(--line)}
+.secsub{color:var(--dimdk);font-size:13.5px;line-height:1.6;margin-bottom:18px;max-width:72ch}
+
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.step{display:block;border:1px solid var(--line);border-radius:13px;padding:18px;background:rgba(255,255,255,.025);
+position:relative;transition:border-color .2s,transform .2s,background .2s}
+.step:hover{border-color:rgba(255,102,0,.5);transform:translateY(-2px);background:rgba(255,255,255,.045)}
+.step__n{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-family:var(--mono);font-size:11.5px;
+background:rgba(0,141,167,.16);border:1px solid rgba(0,141,167,.5);color:var(--teal)}
+.step.is-done .step__n{background:rgba(111,215,155,.16);border-color:rgba(111,215,155,.55);color:var(--green)}
+.step h3{font-size:16px;font-weight:600;margin-top:12px}
+.step .t{font-size:11px;color:var(--dimdk);font-family:var(--mono);margin-top:5px}
+.step p{font-size:13px;color:var(--ondk);line-height:1.55;margin-top:10px}
+.step .go{margin-top:13px;font-size:12.5px;color:var(--orange);font-weight:600}
+.step .done-flag{display:none;margin-top:10px;font-size:11px;color:var(--green);letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.step.is-done .done-flag{display:block}
+
+.extras{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:13px}
+.extra{display:block;border:1px dashed rgba(255,255,255,.2);border-radius:13px;padding:17px;background:rgba(255,255,255,.015);transition:border-color .2s}
+.extra:hover{border-color:rgba(255,255,255,.4)}
+.extra .tag{display:inline-block;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:3px 8px;border-radius:5px;background:rgba(255,255,255,.07);color:var(--ondk)}
+.extra .tag.cap{background:rgba(249,221,86,.14);color:var(--gold)}
+.extra h3{font-size:15.5px;font-weight:600;margin-top:10px}
+.extra p{font-size:12.5px;color:var(--ondk);line-height:1.55;margin-top:7px}
+.extra .t{font-size:11px;color:var(--dimdk);font-family:var(--mono);margin-top:9px}
+
+.next{margin-top:44px;border:1px solid rgba(255,138,120,.35);background:rgba(255,138,120,.06);border-radius:13px;padding:20px 22px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.next div{flex:1;min-width:260px}
+.next small{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#FFB8A8}
+.next h3{font-size:19px;font-weight:700;margin-top:7px}
+.next p{font-size:13px;color:#FFD9D0;line-height:1.6;margin-top:7px;max-width:62ch}
+.next a{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:11px 18px;font-size:13.5px;font-weight:600;white-space:nowrap}
+.next a:hover{background:rgba(255,255,255,.18)}
+
+footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--dimdk);font-size:12px}
+@media(max-width:900px){.steps{grid-template-columns:1fr 1fr}.extras{grid-template-columns:1fr}}
+@media(max-width:560px){.steps{grid-template-columns:1fr}.bar nav{display:none}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <a class="bar__mark" href="../#hub" aria-label="MCC AI Professional Development home"><img src="../assets/mcc-m-mark.png" alt="MCC" width="40" height="40"></a>
+  <a href="../#hub"><strong>AI Professional Development</strong><small>Learn &middot; Practice &middot; Build &middot; Use</small></a>
+  <nav>
+    <a href="../legal-boundaries/">Legal Boundaries</a>
+    <a href="../#your-work">Your Work</a>
+    <a href="../#hub">Hub</a>
+  </nav>
+</div>
+
+<main>
+  <div class="kicker">Start here &middot; everyone, once</div>
+  <h1>Foundations<br><span>What it is, why it fails, what to do about it</span></h1>
+  <p class="lede">Four short activities in order, about an hour in total. By the end you will have a working
+    mental model of what a language model is actually doing, you will have caught a confident answer being
+    wrong, and you will have a repeatable habit for checking the next one.
+    <strong>Everything else on this site assumes this hour.</strong></p>
+
+  <div class="deckref">
+    <div class="deckref__mark" aria-hidden="true">&#9636;</div>
+    <div>
+      <div class="deckref__kicker">Same curriculum, facilitated</div>
+      <p>This is the self-serve version of <a href="../presentations/#foundations">Leveraging AI at MCC &mdash;
+        Foundations</a>, the Tier 1 deck. Same six ideas, three sessions of ninety minutes if you are running
+        it for a group. Do one or the other, not both.</p>
+    </div>
+  </div>
+
+  <h2 class="sec">The sequence</h2>
+  <div class="secsub">In order. Each one sets up the next, and the last one is the only one you keep using
+    after today.</div>
+  <div class="steps">
+    <a class="step" href="../how-it-works/" data-activity="llm-works">
+      <div class="step__n">1</div>
+      <h3>How an LLM Works</h3>
+      <div class="t">15 MIN &middot; BEGINNER</div>
+      <p>What the model learned, how it predicts, and why a fluent answer can still be wrong.</p>
+      <div class="go">Start the walkthrough &rarr;</div>
+      <div class="done-flag">&#10003; Completed</div>
+    </a>
+    <a class="step" href="../find-the-error/" data-activity="find-error">
+      <div class="step__n">2</div>
+      <h3>Find the Error</h3>
+      <div class="t">8&ndash;12 MIN &middot; BEGINNER</div>
+      <p>Break a confident answer into checkable claims and spot the one that does not belong.</p>
+      <div class="go">Take the challenge &rarr;</div>
+      <div class="done-flag">&#10003; Completed</div>
+    </a>
+    <a class="step" href="../context-lab/" data-activity="context-lab">
+      <div class="step__n">3</div>
+      <h3>Context Lab</h3>
+      <div class="t">10 MIN &middot; BEGINNER</div>
+      <p>Change one variable at a time and watch what the output does. Prompting, from the inside.</p>
+      <div class="go">Open the lab &rarr;</div>
+      <div class="done-flag">&#10003; Completed</div>
+    </a>
+    <a class="step" href="../verification/" data-activity="verification">
+      <div class="step__n">4</div>
+      <h3>Verification</h3>
+      <div class="t">15 MIN &middot; INTERMEDIATE</div>
+      <p>The habit that outlasts the hour: what would make this wrong, where did it come from, who is accountable.</p>
+      <div class="go">Practice verification &rarr;</div>
+      <div class="done-flag">&#10003; Completed</div>
+    </a>
+  </div>
+
+  <h2 class="sec">If you want more</h2>
+  <div class="secsub">Neither is required. The first goes deeper into the mechanism; the second proves the
+    habit stuck.</div>
+  <div class="extras">
+    <a class="extra" href="../language-math/" data-activity="language-math">
+      <span class="tag">Optional depth</span>
+      <h3>Language &amp; Math</h3>
+      <p>Tokens, vectors, probability, attention. For people who want the actual mechanism rather than the analogy.</p>
+      <div class="t">15&ndash;20 MIN &middot; INTERMEDIATE</div>
+    </a>
+    <a class="extra" href="../scenarios/" data-activity="scenarios">
+      <span class="tag cap">Capstone</span>
+      <h3>AI Decision Scenarios</h3>
+      <p>Missions where citations, redactions, policies and confident answers fail on purpose. Judgment under pressure.</p>
+      <div class="t">10&ndash;20 MIN &middot; INTERMEDIATE</div>
+    </a>
+  </div>
+
+  <div class="next">
+    <div>
+      <small>Next door</small>
+      <h3>Legal Boundaries</h3>
+      <p>Knowing how it fails is half of it. The other half is knowing what you are allowed to put into it &mdash;
+        FERPA, GLBA, Title IX, personnel records, and the Texas public-records question nobody expects.</p>
+    </div>
+    <a href="../legal-boundaries/">Open Legal Boundaries &rarr;</a>
+  </div>
+</main>
+
+<footer>
+  <div>Ted Gonzalez, JD/MBA</div>
+  <div>&copy; 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem('mcc-activity-progress-v1') || '{}') || {}; } catch (e) { done = {}; }
+  document.querySelectorAll('[data-activity]').forEach(function (el) {
+    var rec = done[el.dataset.activity];
+    if (rec && rec.status === 'completed') el.classList.add('is-done');
+  });
+  document.querySelectorAll('a[href]').forEach(function (a) {
+    a.addEventListener('click', function () {
+      var h3 = a.querySelector('h3');
+      if (!h3) return;
+      try {
+        localStorage.setItem('mcc-last-page-v1', JSON.stringify({
+          path: a.getAttribute('href').replace(/^\.\.\//, ''), title: h3.textContent, at: Date.now()
+        }));
+      } catch (e) {}
+    });
+  });
+})();
+</script>
+</body>
+</html>
