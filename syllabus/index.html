@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Syllabus Builder — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="Pick a clause for each section of your syllabus — grading, attendance, AI use, accessibility, and more — and assemble a syllabus you can print or download.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A1A2E; --navy:#003366; --orange:#FF6600; --gold:#F9DD56; --teal:#008DA7;
+  --ondk:#A7B7C9; --dimdk:#5C6E82; --line:rgba(255,255,255,.12);
+  --green:#6FD79B; --red:#FF8A78;
+  --sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--ink);color:#fff;-webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;min-height:100vh}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font:inherit}
+a{color:inherit}
+
+.bar{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,30px);
+  border-bottom:1px solid var(--line);background:rgba(6,16,30,.92);position:sticky;top:0;z-index:40;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);flex-wrap:wrap}
+.bar .home{font-size:14.5px;font-weight:700;text-decoration:none;white-space:nowrap}
+.bar .home span{color:var(--orange)}
+.bar .sep{width:1px;height:20px;background:var(--line)}
+.bar .where{font-size:13.5px;color:var(--ondk)}
+.bar .right{margin-left:auto;display:flex;gap:8px}
+.bar .right a{font-size:12.5px;text-decoration:none;border:1px solid var(--line);border-radius:9px;
+  padding:7px 13px;color:var(--ondk);transition:background .2s,color .2s}
+.bar .right a:hover{background:rgba(255,255,255,.08);color:#fff}
+
+main{flex:1;width:100%;max-width:1320px;margin:0 auto;padding:clamp(22px,5vw,44px) clamp(16px,4vw,30px) 60px}
+.kicker{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--orange)}
+h1{font-size:clamp(27px,5vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:12px}
+h1 span{color:var(--dimdk)}
+.lede{color:var(--ondk);font-size:clamp(15px,1.8vw,18px);line-height:1.65;margin-top:18px;max-width:74ch}
+.lede strong{color:#fff}
+
+.privacy{display:flex;gap:12px;align-items:flex-start;margin-top:20px;padding:14px 16px;
+  border:1px solid rgba(111,215,155,.38);background:rgba(111,215,155,.08);border-radius:12px;max-width:74ch}
+.privacy svg{flex-shrink:0;width:19px;height:19px;color:var(--green);margin-top:1px}
+.privacy p{font-size:13px;line-height:1.6;color:#CFE9DA}
+.privacy strong{color:#8FE3B4}
+
+.legal{display:flex;gap:12px;align-items:flex-start;margin-top:12px;padding:14px 16px;
+  border:1px solid rgba(255,138,120,.38);background:rgba(255,138,120,.08);border-radius:12px;max-width:74ch}
+.legal svg{flex-shrink:0;width:19px;height:19px;color:var(--red);margin-top:1px}
+.legal p{font-size:13px;line-height:1.6;color:#FFD9D0}
+.legal strong{color:#FFB8A8}
+
+h2.sec{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold);margin:38px 0 14px;display:flex;align-items:center;gap:10px}
+h2.sec::after{content:'';flex:1;height:1px;background:var(--line)}
+
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:30px;margin-top:6px;align-items:start}
+.controls{min-width:0}
+.preview-col{position:sticky;top:86px;max-height:calc(100vh - 106px);display:flex;flex-direction:column}
+
+/* ---------- course info ---------- */
+.entry{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04);padding:20px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.f label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--dimdk);margin-bottom:6px}
+.f input,.f textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--line);
+  border-radius:10px;padding:11px 12px;color:#fff;font-size:14px}
+.f textarea{resize:vertical;min-height:64px;line-height:1.55;font-family:var(--sans)}
+.f input:focus,.f textarea:focus{outline:none;border-color:var(--orange);background:rgba(255,255,255,.09)}
+
+/* ---------- clause categories ---------- */
+.cat{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.035);
+  padding:20px;margin-top:14px}
+.cat-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.cat-head h3{font-size:16px;font-weight:600}
+.cat-head p{font-size:12.5px;color:var(--ondk);margin-top:5px;line-height:1.55;max-width:56ch}
+.toggle{display:flex;align-items:center;gap:8px;flex-shrink:0;padding-top:2px}
+.toggle input{appearance:none;width:38px;height:22px;border-radius:20px;background:rgba(255,255,255,.14);
+  border:1px solid var(--line);position:relative;cursor:pointer;transition:background .2s}
+.toggle input::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;
+  background:#fff;transition:transform .2s}
+.toggle input:checked{background:var(--green);border-color:var(--green)}
+.toggle input:checked::after{transform:translateX(16px)}
+.toggle span{font-size:11px;color:var(--dimdk);white-space:nowrap}
+
+.opts{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.cat.is-off .opts,.cat.is-off .txts{opacity:.35;pointer-events:none}
+.opt{border:1px solid var(--line);border-radius:13px;padding:14px 16px;cursor:pointer;
+  background:rgba(255,255,255,.025);transition:border-color .2s,background .2s}
+.opt:hover{border-color:rgba(255,255,255,.28)}
+.opt.is-sel{border-color:var(--orange);background:rgba(255,102,0,.08)}
+.opt-top{display:flex;align-items:center;gap:10px}
+.opt-top input{accent-color:var(--orange);width:15px;height:15px;flex-shrink:0}
+.opt-tag{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.09);color:var(--ondk)}
+.opt-label{font-size:14px;font-weight:600}
+.opt-body{font-size:12.5px;color:var(--ondk);line-height:1.65;margin-top:10px;padding-left:25px;
+  white-space:pre-wrap}
+
+.txts{display:flex;flex-direction:column;gap:14px;margin-top:16px}
+.txts .f label{color:var(--ondk)}
+
+/* ---------- phrase bank chips ---------- */
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.chips button{border:1px solid var(--line);border-radius:18px;padding:6px 13px;font-size:11.5px;
+  color:var(--ondk);transition:background .2s,color .2s}
+.chips button:hover{background:rgba(255,255,255,.09);color:#fff}
+
+/* ---------- preview panel ---------- */
+.preview{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04);
+  display:flex;flex-direction:column;overflow:hidden;flex:1;min-height:0}
+.preview-head{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;
+  justify-content:space-between;gap:10px}
+.preview-head h3{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.wordcount{font-size:11px;color:var(--dimdk)}
+#previewBody{padding:20px 22px;overflow-y:auto;flex:1;min-height:220px;max-height:48vh}
+#previewBody h4{font-size:13px;font-weight:700;color:var(--orange);margin:16px 0 6px;
+  text-transform:uppercase;letter-spacing:.04em}
+#previewBody h4:first-child{margin-top:0}
+#previewBody p{font-size:12.5px;line-height:1.7;color:#e7edf3;white-space:pre-wrap;margin-bottom:2px}
+#previewBody .ph1{font-size:16px;font-weight:700;color:#fff}
+#previewBody .ph2{font-size:12px;color:var(--ondk);margin-top:4px;line-height:1.6}
+#previewBody .empty-note{color:var(--dimdk);font-size:12.5px;font-style:italic}
+.preview-acts{padding:14px 18px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap}
+.preview-acts button{border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:12.5px;
+  color:var(--ondk);transition:background .2s,color .2s;flex:1;min-width:120px;text-align:center}
+.preview-acts button:hover{background:rgba(255,255,255,.08);color:#fff}
+.preview-acts button.primary{background:var(--orange);border-color:var(--orange);color:#fff;font-weight:600}
+.preview-acts button.primary:hover{background:#e25c00}
+.draft-row{padding:0 18px 16px;display:flex;gap:8px;flex-wrap:wrap}
+.draft-row button{border:1px solid var(--line);border-radius:9px;padding:8px 12px;font-size:11.5px;
+  color:var(--dimdk);flex:1;min-width:110px}
+.draft-row button:hover{background:rgba(255,255,255,.06);color:#fff}
+.draft-row input[type=file]{display:none}
+.copied-flag{font-size:11px;color:var(--green);padding:0 18px 12px;display:none}
+.copied-flag.show{display:block}
+
+details.notes{margin-top:44px;border:1px solid var(--line);border-radius:17px;
+  background:rgba(255,255,255,.03);overflow:hidden}
+details.notes summary{padding:17px 21px;font-size:15px;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;gap:11px;list-style:none}
+details.notes summary::-webkit-details-marker{display:none}
+details.notes summary .chev{color:var(--orange);transition:transform .2s;display:inline-block}
+details.notes[open] summary .chev{transform:rotate(90deg)}
+details.notes .nbody{padding:0 21px 24px;font-size:14px;line-height:1.72;color:var(--ondk);max-width:76ch}
+details.notes h4{color:#fff;font-size:13.5px;margin:19px 0 7px;font-weight:600}
+details.notes ul{margin:8px 0 0;padding-left:20px}
+details.notes li{margin:6px 0}
+details.notes strong{color:#fff}
+
+footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--dimdk)}
+
+.mobile-jump{display:none}
+@media(max-width:1080px){
+  .layout{grid-template-columns:1fr}
+  .preview-col{position:static;max-height:none}
+  #previewBody{max-height:none}
+  .mobile-jump{display:flex;position:fixed;left:74px;right:88px;bottom:18px;justify-content:center;z-index:60;
+    gap:8px;background:var(--orange);color:#fff;border-radius:30px;padding:12px 14px;font-size:13px;
+    font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.4);align-items:center}
+}
+@media(max-width:640px){ .frow{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+@media print{
+  body{background:#fff;color:#000}
+  .bar,.controls,details.notes,footer,.preview-head,.preview-acts,.draft-row,.copied-flag,.lede,.privacy,.legal,.kicker,h1,
+  .mcc-activity-bar,.mcc-activity-hero,.mcc-related,.mobile-jump{display:none!important}
+  main{padding:0;max-width:none}
+  .layout{display:block}
+  .preview-col{position:static;max-height:none}
+  .preview{border:none;background:#fff}
+  #previewBody{padding:0;overflow:visible;max-height:none;color:#000}
+  #previewBody h4{color:#b34a00}
+  #previewBody p{color:#111}
+  #previewBody .ph1{color:#000}
+  #previewBody .ph2{color:#333}
+}
+</style>
+<link rel="stylesheet" href="../assets/mcc-activity-shell.css">
+</head>
+<body data-mcc-activity="syllabus" data-activity-target="#fld-course">
+
+<div class="bar" data-mcc-legacy-nav>
+  <a class="home" href="../">AI Professional <span>Development</span></a>
+  <div class="sep" aria-hidden="true"></div>
+  <div class="where">Syllabus Builder</div>
+  <div class="right">
+    <a href="../#policy">Policy Repository</a>
+    <a href="../tools/">Tool Bench</a>
+  </div>
+</div>
+
+<main>
+  <div data-activity-shell-mount></div>
+  <div class="kicker">Faculty lab</div>
+  <h1>Syllabus Builder<br><span>Choose clauses, assemble a syllabus</span></h1>
+  <p class="lede">Fill in your course details, pick a variant for each policy section — grading, attendance,
+    AI use, and more — and watch your syllabus assemble itself on the right. <strong>Print it, download it
+    as a Word file, or save your selections to finish later.</strong></p>
+
+  <div class="privacy">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>
+    </svg>
+    <p><strong>Stays in this browser.</strong> Nothing you type is uploaded or saved to a server. Use
+      "Save my draft" below to keep your selections as a small file you can reopen later.</p>
+  </div>
+
+  <div class="legal">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 9v4m0 4h.01M10.29 3.86l-8.18 14.14A1 1 0 0 0 3 19.5h18a1 1 0 0 0 .89-1.5L13.71 3.86a1 1 0 0 0-1.72 0z"/>
+    </svg>
+    <p><strong>Starting language, not final language.</strong> Bracketed text like [Office of Disability
+      Services] needs your confirmation — verify exact office names, contacts, and legal citations with the
+      relevant MCC office before you publish this syllabus.</p>
+  </div>
+
+  <h2 class="sec">Course information</h2>
+  <div class="layout">
+    <div class="controls">
+      <div class="entry" id="fieldsBox"></div>
+      <div id="catsBox"></div>
+    </div>
+
+    <div class="preview-col" id="previewCol">
+      <div class="preview">
+        <div class="preview-head">
+          <h3>Live preview</h3>
+          <span class="wordcount" id="wordcount">0 words</span>
+        </div>
+        <div id="previewBody"></div>
+        <div class="copied-flag" id="copiedFlag">Copied to clipboard.</div>
+        <div class="draft-row">
+          <button type="button" id="saveDraft">Save my draft</button>
+          <button type="button" id="loadDraftBtn">Load a draft</button>
+          <input type="file" id="loadDraft" accept="application/json">
+        </div>
+        <div class="preview-acts">
+          <button type="button" id="copyBtn">Copy text</button>
+          <button type="button" id="printBtn">Print</button>
+          <button class="primary" type="button" id="downloadBtn">Download .doc</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <details class="notes">
+    <summary><span class="chev">&#9654;</span> Teaching notes — running this in a session</summary>
+    <div class="nbody">
+      <h4>Where it goes</h4>
+      <p>Pairs naturally with the Assignment Redesign material — after faculty have thought about the
+        three redesign moves for a specific assignment, this is where they generate the syllabus-level
+        language that backs it up, especially the AI Use Statement.</p>
+
+      <h4>The AI Use section is the one worth slowing down on</h4>
+      <p>The four options map to the red/yellow/green model already used elsewhere in this program. The
+        "Tiered by assignment" option is the most work up front (it asks the instructor to label every
+        assignment) but is also the most honest one — most real courses aren't purely one tier throughout.</p>
+
+      <h4>Every category can be turned off</h4>
+      <p>The toggle next to each section heading removes it from the assembled syllabus entirely — useful
+        for department-mandated syllabi that already carry some of this language elsewhere and don't need
+        it duplicated here.</p>
+
+      <h4>Nothing here replaces official office language</h4>
+      <p>The accessibility, Title IX, and resources sections are deliberately generic with bracketed
+        placeholders. Point faculty to the actual current statement from Disability Services and the Title
+        IX office — this tool gets them a well-structured draft to drop that language into, not a
+        substitute for it.</p>
+    </div>
+  </details>
+</main>
+
+<button type="button" class="mobile-jump" id="mobileJump">Preview &amp; export ↓</button>
+
+<footer>
+  <div>Ted Gonzalez, JD/MBA</div>
+  <div>&copy; 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
+</footer>
+
+<script src="../assets/mcc-qr.js" defer></script>
+<script src="../assets/mcc-content.js" defer></script>
+<script src="../assets/mcc-activity-shell.js" defer></script>
+<script>
+(function () {
+  'use strict';
+
+  var DATA = null;
+  var state = { fields: {}, cats: {} }; // cats[id] = {on:bool, sel:optionId, text:{fieldId:value}}
+
+  function el(id){ return document.getElementById(id); }
+  function esc(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+    });
+  }
+
+  var BLOOM = ['identify','describe','explain','apply','analyze','evaluate','create','compare','design','argue'];
+
+  function buildFields(){
+    var box = el('fieldsBox');
+    var row = document.createElement('div');
+    row.className = 'frow';
+    DATA.fields.forEach(function (f) {
+      var wrap = document.createElement('div');
+      wrap.className = 'f';
+      wrap.innerHTML = '<label for="fld-' + f.id + '">' + esc(f.label) + '</label>' +
+        '<input id="fld-' + f.id + '" type="text" placeholder="' + esc(f.placeholder) + '" autocomplete="off">';
+      row.appendChild(wrap);
+      state.fields[f.id] = '';
+    });
+    box.appendChild(row);
+    box.addEventListener('input', function (e) {
+      if (e.target.tagName !== 'INPUT') return;
+      var id = e.target.id.replace('fld-', '');
+      state.fields[id] = e.target.value;
+      render();
+    });
+  }
+
+  function buildCats(){
+    var box = el('catsBox');
+    DATA.categories.forEach(function (c) {
+      state.cats[c.id] = { on: true, sel: null, text: {} };
+
+      var wrap = document.createElement('div');
+      wrap.className = 'cat';
+      wrap.dataset.cat = c.id;
+      wrap.id = 'cat-' + c.id;
+
+      var head = document.createElement('div');
+      head.className = 'cat-head';
+      head.innerHTML =
+        '<div><h3>' + esc(c.title) + '</h3><p>' + esc(c.blurb) + '</p></div>' +
+        '<label class="toggle"><input type="checkbox" checked data-toggle="' + c.id + '"><span>Include</span></label>';
+      wrap.appendChild(head);
+
+      if (c.type === 'choice') {
+        var opts = document.createElement('div');
+        opts.className = 'opts';
+        c.options.forEach(function (o, i) {
+          if (i === 0) state.cats[c.id].sel = o.id;
+          var od = document.createElement('label');
+          od.className = 'opt' + (i === 0 ? ' is-sel' : '');
+          od.dataset.opt = o.id;
+          od.innerHTML =
+            '<div class="opt-top"><input type="radio" name="opt-' + c.id + '" value="' + o.id + '"' + (i === 0 ? ' checked' : '') + '>' +
+            '<span class="opt-tag">' + esc(o.tag) + '</span><span class="opt-label">' + esc(o.label) + '</span></div>' +
+            '<div class="opt-body">' + esc(o.body) + '</div>';
+          opts.appendChild(od);
+        });
+        wrap.appendChild(opts);
+      } else if (c.type === 'text') {
+        var txts = document.createElement('div');
+        txts.className = 'txts';
+        c.fields.forEach(function (f) {
+          state.cats[c.id].text[f.id] = '';
+          var fd = document.createElement('div');
+          fd.className = 'f';
+          fd.innerHTML = '<label for="txt-' + c.id + '-' + f.id + '">' + esc(f.label) + '</label>' +
+            '<textarea id="txt-' + c.id + '-' + f.id + '" data-cat="' + c.id + '" data-field="' + f.id + '" placeholder="' + esc(f.placeholder) + '"></textarea>';
+          txts.appendChild(fd);
+          if (f.id === 'outcomes') {
+            var chips = document.createElement('div');
+            chips.className = 'chips';
+            BLOOM.forEach(function (v) {
+              var b = document.createElement('button');
+              b.type = 'button';
+              b.textContent = v;
+              b.addEventListener('click', function () {
+                var ta = el('txt-' + c.id + '-' + f.id);
+                var addition = (ta.value && !ta.value.endsWith('\n') ? '\n' : '') + '- ' + v + ' ';
+                ta.value += addition;
+                state.cats[c.id].text[f.id] = ta.value;
+                ta.focus();
+                render();
+              });
+              chips.appendChild(b);
+            });
+            fd.appendChild(chips);
+          }
+        });
+        wrap.appendChild(txts);
+      }
+
+      box.appendChild(wrap);
+    });
+
+    box.addEventListener('change', function (e) {
+      var t = e.target;
+      if (t.dataset.toggle) {
+        var catId = t.dataset.toggle;
+        state.cats[catId].on = t.checked;
+        box.querySelector('.cat[data-cat="' + catId + '"]').classList.toggle('is-off', !t.checked);
+        render();
+      } else if (t.type === 'radio') {
+        var name = t.name.replace('opt-', '');
+        state.cats[name].sel = t.value;
+        var catEl = box.querySelector('.cat[data-cat="' + name + '"]');
+        catEl.querySelectorAll('.opt').forEach(function (o) { o.classList.toggle('is-sel', o.dataset.opt === t.value); });
+        render();
+      }
+    });
+    box.addEventListener('input', function (e) {
+      if (e.target.tagName !== 'TEXTAREA') return;
+      state.cats[e.target.dataset.cat].text[e.target.dataset.field] = e.target.value;
+      render();
+    });
+  }
+
+  function assembled(){
+    var parts = [];
+    var f = state.fields;
+    var headerLines = [f.course, f.section, f.modality, f.credit, f.instructor, f.contact].filter(Boolean);
+    parts.push({ kind:'header', lines: headerLines });
+
+    DATA.categories.forEach(function (c) {
+      var s = state.cats[c.id];
+      if (!s.on) return;
+      if (c.type === 'choice') {
+        var opt = c.options.filter(function (o) { return o.id === s.sel; })[0];
+        if (opt) parts.push({ kind:'section', title: c.title, body: opt.body });
+      } else if (c.type === 'text') {
+        var body = c.fields.map(function (fl) {
+          var v = (s.text[fl.id] || '').trim();
+          return v ? (fl.label + ':\n' + v) : '';
+        }).filter(Boolean).join('\n\n');
+        if (body) parts.push({ kind:'section', title: c.title, body: body });
+      }
+    });
+    return parts;
+  }
+
+  function render(){
+    var parts = assembled();
+    var pb = el('previewBody');
+    var html = '';
+    var wc = 0;
+
+    var header = parts[0];
+    if (header.lines.length) {
+      html += '<div class="ph1">' + esc(header.lines[0] || 'Untitled course') + '</div>';
+      if (header.lines.length > 1) html += '<div class="ph2">' + header.lines.slice(1).map(esc).join(' &middot; ') + '</div>';
+      wc += header.lines.join(' ').split(/\s+/).filter(Boolean).length;
+    }
+
+    var any = false;
+    parts.slice(1).forEach(function (p) {
+      any = true;
+      html += '<h4>' + esc(p.title) + '</h4><p>' + esc(p.body) + '</p>';
+      wc += p.body.split(/\s+/).filter(Boolean).length;
+    });
+
+    if (!any && !header.lines.length) {
+      html += '<p class="empty-note">Fill in course info and pick a few clauses on the left — your syllabus builds itself here as you go.</p>';
+    }
+
+    pb.innerHTML = html;
+    el('wordcount').textContent = wc + (wc === 1 ? ' word' : ' words');
+  }
+
+  function fullText(){
+    var parts = assembled();
+    var out = [];
+    var header = parts[0];
+    if (header.lines.length) out.push(header.lines.join('\n'));
+    parts.slice(1).forEach(function (p) { out.push(p.title.toUpperCase() + '\n' + p.body); });
+    return out.join('\n\n');
+  }
+
+  function serializeState(){
+    return JSON.stringify(state, null, 2);
+  }
+
+  function applyState(loaded){
+    state = loaded;
+    DATA.fields.forEach(function (f) {
+      var v = (state.fields && state.fields[f.id]) || '';
+      var input = el('fld-' + f.id);
+      if (input) input.value = v;
+    });
+    DATA.categories.forEach(function (c) {
+      var s = state.cats[c.id];
+      if (!s) return;
+      var catEl = document.querySelector('.cat[data-cat="' + c.id + '"]');
+      if (!catEl) return;
+      var toggle = catEl.querySelector('[data-toggle]');
+      if (toggle) toggle.checked = s.on;
+      catEl.classList.toggle('is-off', !s.on);
+      if (c.type === 'choice' && s.sel) {
+        catEl.querySelectorAll('.opt').forEach(function (o) {
+          var match = o.dataset.opt === s.sel;
+          o.classList.toggle('is-sel', match);
+          var r = o.querySelector('input[type=radio]');
+          if (r) r.checked = match;
+        });
+      } else if (c.type === 'text') {
+        c.fields.forEach(function (fl) {
+          var ta = el('txt-' + c.id + '-' + fl.id);
+          if (ta) ta.value = (s.text && s.text[fl.id]) || '';
+        });
+      }
+    });
+    render();
+  }
+
+  function init(){
+    fetch('data/clauses.json').then(function (r) { return r.json(); }).then(function (data) {
+      DATA = data;
+      buildFields();
+      buildCats();
+      render();
+      if (location.hash && location.hash.indexOf('#cat-') === 0) {
+        var target = document.getElementById(location.hash.slice(1));
+        if (target) {
+          setTimeout(function () {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            target.style.transition = 'box-shadow .3s';
+            target.style.boxShadow = '0 0 0 2px var(--orange)';
+            setTimeout(function () { target.style.boxShadow = 'none'; }, 2200);
+          }, 250);
+        }
+      }
+    }).catch(function (err) {
+      el('previewBody').innerHTML = '<p class="empty-note">Could not load the clause library. Try reloading the page.</p>';
+      console.error(err);
+    });
+  }
+
+  var jumpBtn = el('mobileJump');
+  if (jumpBtn) {
+    jumpBtn.addEventListener('click', function () {
+      var col = el('previewCol');
+      var atPreview = Math.abs(col.getBoundingClientRect().top) < 80;
+      if (atPreview) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        jumpBtn.textContent = 'Preview & export ↓';
+      } else {
+        col.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        jumpBtn.textContent = 'Back to top ↑';
+      }
+    });
+  }
+
+  el('printBtn').addEventListener('click', function () { window.print(); });
+
+  el('copyBtn').addEventListener('click', function () {
+    var text = fullText();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        var flag = el('copiedFlag');
+        flag.classList.add('show');
+        setTimeout(function () { flag.classList.remove('show'); }, 2200);
+      });
+    }
+  });
+
+  el('downloadBtn').addEventListener('click', function () {
+    var parts = assembled();
+    var header = parts[0];
+    var title = esc(header.lines[0] || 'Course Syllabus');
+    var body = '<h1 style="font-family:Calibri,Arial,sans-serif;font-size:22pt;margin-bottom:4pt">' + title + '</h1>';
+    if (header.lines.length > 1) {
+      body += '<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#444;margin-bottom:18pt">' +
+        header.lines.slice(1).map(esc).join(' &middot; ') + '</p>';
+    }
+    parts.slice(1).forEach(function (p) {
+      body += '<h2 style="font-family:Calibri,Arial,sans-serif;font-size:13pt;color:#b34a00;margin-top:16pt;margin-bottom:4pt">' + esc(p.title) + '</h2>';
+      body += '<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.5;white-space:pre-wrap">' + esc(p.body) + '</p>';
+    });
+    var html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
+      '<head><meta charset="utf-8"><title>' + title + '</title></head><body>' + body + '</body></html>';
+    var blob = new Blob(['﻿', html], { type: 'application/msword' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    var fname = (header.lines[0] || 'syllabus').replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+    a.download = fname + '.doc';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  });
+
+  el('saveDraft').addEventListener('click', function () {
+    var blob = new Blob([serializeState()], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'syllabus-draft.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  });
+
+  el('loadDraftBtn').addEventListener('click', function () { el('loadDraft').click(); });
+  el('loadDraft').addEventListener('change', function (e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var loaded = JSON.parse(reader.result);
+        applyState(loaded);
+      } catch (err) {
+        alert('That file did not look like a saved draft from this tool.');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+
+  init();
+})();
+</script>
+</body>
+</html>
