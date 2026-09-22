@@ -1,0 +1,210 @@
+{
+  "meta": {
+    "note": "A prep sheet for you, not a script to read and not a record about a student. Confirm current office names and contacts before you refer anyone."
+  },
+  "fields": [
+    {
+      "id": "course",
+      "label": "Course or context",
+      "placeholder": "e.g., ENGL 1301 — Week 5, just after the first essay came back"
+    },
+    {
+      "id": "setting",
+      "label": "Where and when this happens",
+      "placeholder": "e.g., Two minutes after class Thursday, by the door"
+    },
+    {
+      "id": "time",
+      "label": "How long you realistically have",
+      "placeholder": "e.g., About five minutes"
+    }
+  ],
+  "categories": [
+    {
+      "id": "trigger",
+      "title": "Why You're Reaching Out",
+      "blurb": "Name the actual reason to yourself first. Everything else in the conversation follows from it.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "absence",
+          "tag": "Attendance",
+          "label": "They have missed class more than once",
+          "body": "What you know: they were not in the room on [dates]. What you do not know: why. Missed class is the single most visible signal and the most commonly misread one — it looks like not caring and is more often a second job, a sick child, a car, or a class they have quietly decided they are already failing. Go in having decided you will not lead with the attendance policy. The policy will still be there in five minutes."
+        },
+        {
+          "id": "grade",
+          "tag": "Performance drop",
+          "label": "A grade well below what they had been doing",
+          "body": "What you know: this piece of work is not like their earlier work. What you do not know: whether something changed in their life, in their understanding, or only in this one assignment. A sharp drop from a student who was steady is worth a conversation precisely because it is unusual for them — that is information their transcript will never carry. Say that out loud: this is not like your other work, which is why I am asking."
+        },
+        {
+          "id": "quiet",
+          "tag": "Disengagement",
+          "label": "They have gone quiet",
+          "body": "What you know: they are physically or digitally present but have stopped submitting, stopped posting, stopped answering. What you do not know: whether they are overwhelmed, lost, or already gone in their own mind. Quiet students rarely get checked on because nothing about them is disruptive. That is exactly why this conversation matters — being noticed at all is often the whole intervention."
+        },
+        {
+          "id": "extension",
+          "tag": "Repeated extensions",
+          "label": "They are asking for more time, again",
+          "body": "What you know: this is the second or third ask. What you do not know: whether the pattern is this course, this semester, or this period of their life. A repeat request is a signal worth following rather than a character judgment to make. The useful question is not whether to grant it — decide that separately — but whether anything is happening that more time will not actually fix."
+        },
+        {
+          "id": "steady",
+          "tag": "Nothing is wrong",
+          "label": "Nothing is wrong — and that is the point",
+          "body": "No trigger at all. This is the version of the conversation that gets skipped every single time, because nothing is on fire. A student who is doing fine, says nothing, and is known by no one is still a student who can disappear between semesters. Two minutes of specific, non-evaluative attention to a student who is quietly succeeding is the highest-return version of this commitment and costs the least."
+        }
+      ]
+    },
+    {
+      "id": "opening",
+      "title": "How You Open",
+      "blurb": "The first sentence decides whether this reads as concern or as a summons.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "name-and-notice",
+          "tag": "Direct",
+          "label": "Say what you noticed, with no verdict attached",
+          "body": "\"I noticed [the specific, observable thing] and I wanted to check in — not to get on your case about it.\" Name one concrete observation, not a pattern you have inferred. \"You missed Tuesday and Thursday\" is an observation. \"You've been slipping\" is a verdict, and students hear a verdict as a decision that has already been made about them."
+        },
+        {
+          "id": "after-class",
+          "tag": "Lowest stakes",
+          "label": "Catch them for two minutes after class",
+          "body": "Stay near the door as the room empties and say their name. \"Hey [name] — got thirty seconds?\" A hallway conversation is not a meeting: nobody had to schedule it, nobody had to walk into an office, and it can end whenever either of you wants. For a student who would never come to office hours, this is the only version of this conversation that is actually going to happen."
+        },
+        {
+          "id": "email-first",
+          "tag": "Written",
+          "label": "A short email that does not read like a warning",
+          "body": "Three sentences, no subject line with the word \"concern\" in it. \"[Name] — I noticed [specific thing]. No action needed on your end, I just wanted to check that things are OK and see if there's anything I can do from my side. If it's easier to talk than type, I'm around [times].\" Long emails from instructors get read as documentation. Short ones get read as people."
+        },
+        {
+          "id": "normalize",
+          "tag": "Routine",
+          "label": "Make it routine rather than singular",
+          "body": "\"I'm doing quick check-ins with everybody around this point in the term.\" If this is true, say it — it takes the spotlight off them entirely and makes the conversation something that happened to them rather than something aimed at them. Only use this framing if you really are doing it broadly; a student who later finds out they were the only one will trust the next thing you say considerably less."
+        }
+      ]
+    },
+    {
+      "id": "questions",
+      "title": "The Two or Three Questions",
+      "blurb": "Not a checklist. Pick the pair you will actually ask, and leave room for the answer.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "open-then-specific",
+          "tag": "General to specific",
+          "label": "One open question, then one specific one",
+          "body": "1. \"How's the semester going — not just this class?\" 2. \"Is there anything getting in the way of [the specific thing] right now?\" The first question gives them room to say something you had no idea about. The second gives them permission to be concrete without having to volunteer the whole story. Ask the open one first; reversing the order turns the conversation into an interrogation about the assignment."
+        },
+        {
+          "id": "logistics-first",
+          "tag": "Practical",
+          "label": "Obstacles before motivation",
+          "body": "1. \"Do you have what you need to do the work — the book, a reliable place to work, time in your week?\" 2. \"What's the hardest part of getting it done?\" Most work that does not get done is blocked by something ordinary and fixable rather than by lack of effort. Asking about obstacles first also spares the student having to defend how much they care, which is a conversation nobody wins."
+        },
+        {
+          "id": "what-would-help",
+          "tag": "Hand over the agenda",
+          "label": "Ask them what would actually help",
+          "body": "1. \"What would make the biggest difference for you in this class right now?\" 2. \"Is that something I can do, or does it need somebody else?\" This assumes the student has already thought about their own situation, which they almost always have. It also surfaces fast whether what they need is within your gift — more time, a different explanation — or belongs to advising, financial aid, or disability services."
+        },
+        {
+          "id": "strengths",
+          "tag": "For a student doing well",
+          "label": "Ask about what comes next",
+          "body": "1. \"You're doing good work in here — do you know what you want to do after this?\" 2. \"Has anybody talked to you about [the program, the transfer path, the scholarship, the job]?\" For students who are quietly succeeding, the most valuable thing you can give is not support but a door they did not know existed. Many students never hear that they are good at something until somebody says it in a hallway."
+        }
+      ]
+    },
+    {
+      "id": "listening",
+      "title": "What You Listen For",
+      "blurb": "And what you deliberately do not conclude.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "obstacle-vs-choice",
+          "tag": "Recommended",
+          "label": "Separate an obstacle from a decision",
+          "body": "Listen for whether something is in the way or whether they have already decided to let this course go. Those need completely different responses — the first needs a resource, the second needs an honest conversation about withdrawal deadlines and what it costs them. Do not assume you can tell which is which from the work alone. Ask."
+        },
+        {
+          "id": "scope",
+          "tag": "Recommended",
+          "label": "Is this one course or all of them",
+          "body": "\"Is it just this class, or is everything like this right now?\" The answer changes who should be involved. One course is yours to work on. Everything at once belongs with advising or student support as well as with you, and the most useful thing you can do is make that handoff warm rather than leaving them to find the office on their own."
+        },
+        {
+          "id": "no-diagnosis",
+          "tag": "The guardrail",
+          "label": "What you do not conclude",
+          "body": "You are not assessing this student. Do not form a view about their mental health, their home situation, their likelihood of passing, or their character — and do not write one down. If a student discloses something serious, your job is to connect them to the people whose job it is, not to handle it yourself. Listening well and referring promptly are the whole of the role here, and they are enough."
+        }
+      ]
+    },
+    {
+      "id": "offer",
+      "title": "What You Offer",
+      "blurb": "One concrete thing, within your actual power to give.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "one-step",
+          "tag": "Recommended",
+          "label": "One next step, and let them choose it",
+          "body": "\"Here's what I'd suggest — [one specific, small, doable thing]. Does that work, or would something else be more useful?\" One step, not a plan. A student who is already behind does not need a five-item recovery schedule; they need the next single thing that is small enough to actually start. Letting them accept or adjust it is what makes it theirs rather than yours."
+        },
+        {
+          "id": "warm-referral",
+          "tag": "Handoff",
+          "label": "Make the introduction, do not just name the office",
+          "body": "\"[Office] handles exactly this. Want me to email [person] and copy you, so you're not starting cold?\" A referral a student has to initiate themselves fails far more often than one where somebody made the introduction. If you can walk them over or send the email while they are standing there, do that instead. Confirm the current office name and contact before you say it out loud."
+        },
+        {
+          "id": "flex-you-control",
+          "tag": "Within your course",
+          "label": "Name the flexibility that is actually yours to give",
+          "body": "Be specific and be honest about the limit: \"I can give you until [date] on this one, and I can't move the [exam / final deadline].\" Vague generosity — \"just let me know\" — puts the burden of asking back on the student every single time. A named date they can hold onto is worth more than an open-ended offer they will never use."
+        },
+        {
+          "id": "door-open",
+          "tag": "Sometimes this is it",
+          "label": "Nothing yet — just leave the door open",
+          "body": "\"Nothing you need to do right now. I just wanted you to know I noticed, and that you can come find me.\" Not every check-in needs an outcome. For a student who is not ready to say what is going on, the entire value of the conversation is that somebody noticed and did not demand anything in return. That is not a failed conversation."
+        }
+      ]
+    },
+    {
+      "id": "followup",
+      "title": "Closing & What You Write Down",
+      "blurb": "How it ends, and the part most people get wrong afterward.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "specific-date",
+          "tag": "Recommended",
+          "label": "Name the next point of contact",
+          "body": "\"Let's touch base again [specific day] — I'll find you after class.\" A named next contact does two things: it tells the student this was not a one-off box you ticked, and it puts the obligation to follow up on you rather than on them. Then actually do it. A check-in that promises a follow-up and does not deliver one teaches the student not to believe the next offer."
+        },
+        {
+          "id": "their-move",
+          "tag": "Student-led",
+          "label": "Leave the next move with them, with a date on it",
+          "body": "\"Think about it and let me know by [day] either way — even if the answer is that you'd rather not.\" Giving a student the decision respects that it is theirs. Putting a date on it keeps it from quietly becoming no decision at all, which is how a recoverable situation turns into a withdrawal deadline that has already passed."
+        },
+        {
+          "id": "note-to-self",
+          "tag": "The part people get wrong",
+          "label": "What you write down — and where it does not go",
+          "body": "Write the minimum you need to follow up: a date and what you agreed to do. Do not record what the student disclosed about their health, their family, their money, or their mental state. A private note in your sole possession sits outside FERPA only while it stays that way — share it, paste it into a system, or type it into an AI tool and that protection is gone. If you want help thinking through a situation, generalize it first so no combination of details points back to one student."
+        }
+      ]
+    }
+  ]
+}
