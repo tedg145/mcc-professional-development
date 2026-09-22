@@ -1,0 +1,325 @@
+{
+  "meta": {
+    "note": "Starting language only — verify office names, deadlines, and legal citations with the relevant MCC office (Registrar, Disability Services, Title IX, Counseling) before publishing. Bracketed text marks anything you must fill in or confirm locally."
+  },
+  "fields": [
+    {
+      "id": "course",
+      "label": "Course prefix, number & title",
+      "placeholder": "e.g., ENGL 1301 — Composition I"
+    },
+    {
+      "id": "section",
+      "label": "Section & term",
+      "placeholder": "e.g., Section 004 — Fall 2026"
+    },
+    {
+      "id": "modality",
+      "label": "Meeting pattern & modality",
+      "placeholder": "e.g., TTh 9:30–10:50 AM, Room 214 / Face-to-face"
+    },
+    {
+      "id": "instructor",
+      "label": "Instructor name & credentials",
+      "placeholder": "e.g., Jane Smith, Ph.D."
+    },
+    {
+      "id": "contact",
+      "label": "Email & office hours",
+      "placeholder": "e.g., jsmith@mclennan.edu · MW 1–3 PM, Room 118, or by appointment"
+    },
+    {
+      "id": "credit",
+      "label": "Credit hours",
+      "placeholder": "e.g., 3 credit hours"
+    }
+  ],
+  "categories": [
+    {
+      "id": "description",
+      "title": "Course Description & Outcomes",
+      "blurb": "Paste your catalog description and list what students will be able to do by the end of the course.",
+      "type": "text",
+      "fields": [
+        {
+          "id": "catalog",
+          "label": "Catalog course description",
+          "placeholder": "Paste the official catalog description here."
+        },
+        {
+          "id": "outcomes",
+          "label": "Student learning outcomes",
+          "placeholder": "By the end of this course, students will be able to:\n1. \n2. \n3. "
+        }
+      ]
+    },
+    {
+      "id": "materials",
+      "title": "Required Materials & Technology",
+      "blurb": "How students get what they need for the course.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "oer",
+          "tag": "No-cost / OER",
+          "label": "Open / no-cost materials",
+          "body": "All required course materials are available at no cost to students. This course uses Open Educational Resources (OER) and/or library reserve materials in place of a purchased textbook. Access links are provided in [LMS name] under Week 1."
+        },
+        {
+          "id": "purchase",
+          "tag": "Purchased text",
+          "label": "Required textbook & access code",
+          "body": "This course requires [Author, Title, Edition, ISBN], available at the MCC Bookstore or through the publisher directly. A digital access code for [platform name] is required for homework and assessments and must be purchased separately if not bundled with the text. Do not purchase a used access code — codes are single-use."
+        },
+        {
+          "id": "hybrid-materials",
+          "tag": "Mixed",
+          "label": "Core text plus supplemental OER",
+          "body": "This course requires [Author, Title, Edition] for core readings; all supplemental readings, data sets, and case materials are provided at no cost through [LMS name]. Students needing financial assistance with the required text should contact the MCC Bookstore or [Financial Aid / Student Support office] before the end of the add/drop period."
+        }
+      ]
+    },
+    {
+      "id": "grading",
+      "title": "Grading Policy",
+      "blurb": "How the final grade is calculated.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "points",
+          "tag": "Points / percentage",
+          "label": "Standard point-based grading",
+          "body": "Final grades are calculated from total points earned across all assignments, exams, and participation, converted to a percentage of points possible. Grading scale: A = 90–100%, B = 80–89%, C = 70–79%, D = 60–69%, F = below 60%. A detailed point breakdown for each assignment category appears in [LMS name]."
+        },
+        {
+          "id": "weighted",
+          "tag": "Weighted categories",
+          "label": "Weighted category grading",
+          "body": "Final grades are calculated from weighted categories rather than raw points, so no single assignment can disproportionately affect the final grade. Example weighting: Participation 10% · Homework 20% · Quizzes 15% · Major Projects 30% · Final Exam 25%. [Replace with your course's actual weights.] Grades within each category are averaged before weights are applied."
+        },
+        {
+          "id": "contract",
+          "tag": "Labor-based / contract",
+          "label": "Labor-based (contract) grading",
+          "body": "This course uses labor-based grading: your grade is determined primarily by the quantity, quality-of-effort, and timeliness of the work you complete, evaluated against a shared rubric — not by comparing your writing or thinking to an abstract standard of correctness. Meeting the labor expectations described in the course contract (on file in [LMS name]) earns a B; exceeding them in specified ways earns an A. This model is drawn from Asao Inoue's labor-based grading contracts and rewards revision and engagement over first-draft perfection."
+        }
+      ]
+    },
+    {
+      "id": "attendance",
+      "title": "Attendance Policy",
+      "blurb": "What's expected for regular class participation.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "strict",
+          "tag": "Traditional",
+          "label": "Traditional attendance policy",
+          "body": "Regular attendance is required and reflects professional expectations. After [3] absences, your final grade may be lowered by one letter grade for each additional absence. Excessive absence (missing more than [12.5%] of scheduled class meetings) may result in administrative withdrawal per MCC policy. Three tardies of more than 10 minutes count as one absence. It is your responsibility to obtain notes and announcements you miss."
+        },
+        {
+          "id": "flexible",
+          "tag": "Situational fairness",
+          "label": "Flexible / situational fairness model",
+          "body": "Life happens, and this policy is built around that reality rather than around catching you. You do not need to disclose why you missed class or submit documentation for a reasonable number of absences. What matters is the work: keep up with material, communicate if you're falling behind, and use the [2] built-in flexible passes for anything larger. This policy does not lower the bar for what you need to learn — it changes how rigidly deadlines and attendance are enforced while you learn it. If absences become a pattern that's affecting your ability to succeed, I will reach out, and I expect you to respond."
+        },
+        {
+          "id": "online-participation",
+          "tag": "Online / asynchronous",
+          "label": "Participation-based (online/async)",
+          "body": "This course does not meet at a scheduled time. \"Attendance\" is measured by substantive weekly participation: posting to discussions, submitting assignments, and engaging with course materials in [LMS name] by the posted deadlines. Federal financial aid rules require documented academic engagement — logging in without submitting work does not count. Two consecutive weeks with no substantive activity will trigger an early-alert check-in."
+        }
+      ]
+    },
+    {
+      "id": "latework",
+      "title": "Late Work & Make-Up Policy",
+      "blurb": "What happens when something is turned in after the deadline.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "strict-late",
+          "tag": "No late work",
+          "label": "Strict deadline policy",
+          "body": "Assignments are due at the posted time in [LMS name]. Late work is not accepted except in cases of documented emergency (medical, family, or otherwise), arranged with the instructor before the deadline whenever possible. Technical issues are not a valid excuse — submit well before the deadline to allow time to resolve upload problems."
+        },
+        {
+          "id": "grace-tokens",
+          "tag": "Grace period / tokens",
+          "label": "Grace period with late tokens",
+          "body": "Every assignment has a built-in 24-hour grace period with no penalty and no questions asked — the deadline in [LMS name] is intentionally set early to make this possible. Beyond the grace period, each student has [3] late tokens for the semester; one token applied to an assignment extends its deadline by 48 hours with no grade penalty. Once tokens are used, late work is accepted at a [10%] per-day deduction, up to 3 days, unless other arrangements are made in advance."
+        },
+        {
+          "id": "case-by-case",
+          "tag": "Case-by-case",
+          "label": "Flexible / case-by-case",
+          "body": "Deadlines matter, and so does what's happening in your life. If you're going to miss a deadline, reach out before it passes — a short message is enough, no documentation required for reasonable requests. Extensions are granted routinely for a first request and considered individually after that. What I ask in return: don't wait until the work is already overdue to tell me, and don't make this the plan for every assignment."
+        }
+      ]
+    },
+    {
+      "id": "integrity",
+      "title": "Academic Integrity",
+      "blurb": "MCC's standard for honest work, and how it's enforced in this course.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "standard-integrity",
+          "tag": "Standard",
+          "label": "Standard MCC integrity statement",
+          "body": "Scholastic dishonesty — including cheating, plagiarism, and collusion — is prohibited under MCC's Student Code of Conduct. Plagiarism includes presenting another person's words, ideas, data, or work (including AI-generated content used outside the terms of this syllabus's AI Use Statement) as your own without proper citation. Violations are reported per MCC policy and may result in a failing grade on the assignment, a failing grade in the course, and/or referral to the Dean of Students. If you are unsure whether something counts as a violation, ask before you submit — not after."
+        },
+        {
+          "id": "expanded-integrity",
+          "tag": "Expanded, AI-aware",
+          "label": "Expanded statement, cross-referenced to AI policy",
+          "body": "Academic integrity in this course covers three related expectations: (1) the standard MCC prohibition on cheating, plagiarism, and collusion under the Student Code of Conduct; (2) accurate citation of all sources, including generative AI tools, consistent with this syllabus's AI Use Statement below; and (3) honest representation of your own understanding — using a tool in a way this syllabus permits is not dishonest, but using it in a way this syllabus prohibits, or misrepresenting AI-assisted work as fully independent work where independence was required, is a violation with the same consequences as any other form of academic dishonesty. When in doubt about a specific assignment, ask before submitting."
+        }
+      ]
+    },
+    {
+      "id": "ai-use",
+      "title": "Artificial Intelligence Use Statement",
+      "blurb": "How generative AI tools may or may not be used in this course — the red/yellow/green model.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "ai-red",
+          "tag": "🔴 Prohibited",
+          "label": "AI use prohibited",
+          "body": "Generative AI tools (ChatGPT, Copilot, Gemini, and similar) may not be used on any graded work in this course unless an assignment explicitly states otherwise. This course is built to assess your own reasoning and writing directly, and unauthorized AI use is treated as a violation of the Academic Integrity policy above. If you're unsure whether a specific tool or use counts — spelling/grammar checkers, for instance — ask first."
+        },
+        {
+          "id": "ai-yellow",
+          "tag": "🟡 Permitted with disclosure",
+          "label": "AI permitted with disclosure & citation",
+          "body": "You may use generative AI tools for permitted uses on this syllabus — for example, brainstorming, checking grammar, or explaining a concept you're stuck on — but not to generate substantive content you submit as your own original work, unless an assignment says otherwise. Any AI use must be disclosed: name the tool, describe what you asked it to do, and attach the relevant portion of the transcript or output. Undisclosed AI use on work presented as fully your own is an Academic Integrity violation."
+        },
+        {
+          "id": "ai-green",
+          "tag": "🟢 Encouraged with guidance",
+          "label": "AI encouraged, with guardrails",
+          "body": "You are encouraged to use generative AI tools in this course as a thinking partner — to talk through ideas, get unstuck, check your own reasoning, or produce a first pass you then substantially revise. What matters is that you can explain and defend the final product as your own understanding. Two guardrails: (1) never paste another student's work, identifiable student records, or anything from the RED tier of MCC's data classification into a public AI tool; (2) verify anything AI tells you before relying on it in graded work — an AI citation, quote, or fact that turns out to be fabricated is treated as your error, not the tool's."
+        },
+        {
+          "id": "ai-tiered",
+          "tag": "Tiered by assignment",
+          "label": "Tiered — set per assignment",
+          "body": "AI use in this course is set individually per assignment rather than by a single blanket rule, using the tiers below. Each assignment prompt in [LMS name] will name its tier.\n\n🔴 RED assignments: no AI tool of any kind — these assess your unaided reasoning or writing directly.\n🟡 YELLOW assignments: AI permitted for specific listed uses only (e.g., outlining, grammar checking), with disclosure required.\n🟢 GREEN assignments: AI use is open, provided you can explain and defend the result and cite what you used it for.\n\nIf an assignment does not name a tier, treat it as RED."
+        }
+      ]
+    },
+    {
+      "id": "accessibility",
+      "title": "Accessibility & Disability Services",
+      "blurb": "ADA/504 accommodation language — confirm exact office name and process with MCC's Disability Services before publishing.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "standard-access",
+          "tag": "Standard",
+          "label": "Standard accommodation statement",
+          "body": "McLennan Community College is committed to providing equal access to all students. If you have a disability (documented or suspected) that may affect your ability to participate in course activities or meet course requirements, you are encouraged to contact [Office of Disability Services — confirm exact name/contact] as early in the semester as possible. Accommodations are not retroactive and take effect once I receive official notice from that office — please bring that notice to me so we can discuss implementation privately."
+        }
+      ]
+    },
+    {
+      "id": "nondiscrimination",
+      "title": "Nondiscrimination & Title IX",
+      "blurb": "Confirm the exact Title IX coordinator name/contact with MCC before publishing.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "standard-titleix",
+          "tag": "Standard",
+          "label": "Standard nondiscrimination statement",
+          "body": "McLennan Community College does not discriminate on the basis of race, color, national origin, sex, disability, or age in its programs and activities, and prohibits sex discrimination in any education program or activity under Title IX. Reports of discrimination, harassment, or sexual misconduct may be directed to MCC's Title IX Coordinator [name/contact — confirm current designee]. As an instructor, I am a Responsible Employee, meaning I am required to report disclosures of sexual misconduct to the Title IX Coordinator, though you may always seek confidential support through [Counseling Center — confirm name] first."
+        }
+      ]
+    },
+    {
+      "id": "ferpa",
+      "title": "FERPA & Communication Expectations",
+      "blurb": "How student records and email are handled.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "standard-ferpa",
+          "tag": "Standard",
+          "label": "Standard FERPA & communication note",
+          "body": "Your education records, including grades and coursework, are protected under FERPA and will only be discussed with you directly, through your MCC email or MCC-issued learning management account — not personal email or phone, unless you request otherwise in writing. I will not discuss your grades with parents, spouses, or other third parties without your written consent on file with the Registrar, regardless of who is asking. Please check your MCC email and [LMS name] at least [twice a week]; that is the official channel for this course."
+        }
+      ]
+    },
+    {
+      "id": "communication",
+      "title": "Communication Policy",
+      "blurb": "Response-time expectations and preferred channel.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "standard-comm",
+          "tag": "Standard",
+          "label": "Standard response-time policy",
+          "body": "Email is the best way to reach me outside of class and office hours; I aim to respond within [24–48 hours] on weekdays and may be slower over weekends and breaks. Please use your MCC email address and include the course and section number in the subject line. For a quick question, office hours (listed above) are faster than email — come by, no appointment needed."
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "title": "Campus Support Resources",
+      "blurb": "Tutoring, food/emergency assistance, mental health — confirm current names, hours, and locations before publishing.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "standard-resources",
+          "tag": "Standard",
+          "label": "Standard resource block",
+          "body": "MCC offers a range of support services at no or low cost, including free tutoring [Learning Commons / Tutoring Center — confirm name and hours], library research help, a food and emergency-assistance resource for students facing hardship [confirm current program name], and confidential counseling support [Counseling Center — confirm name and contact]. Using these resources is common and encouraged — please don't wait until you're in crisis to reach out."
+        }
+      ]
+    },
+    {
+      "id": "closure",
+      "title": "Inclement Weather / Emergency Closure",
+      "blurb": "What happens to class when MCC closes unexpectedly.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "standard-closure",
+          "tag": "Standard",
+          "label": "Standard closure statement",
+          "body": "If MCC officially closes or suspends operations (weather, emergency, or otherwise), this class does not meet, and any due dates falling during the closure shift automatically to the next scheduled class meeting unless I announce otherwise. Check MCC's official communication channels and your MCC email for closure announcements — I will also post confirmation in [LMS name] as soon as possible."
+        }
+      ]
+    },
+    {
+      "id": "changes",
+      "title": "Syllabus Change Clause",
+      "blurb": "Standard language reserving the right to adjust the syllabus.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "standard-changes",
+          "tag": "Standard",
+          "label": "Standard change clause",
+          "body": "This syllabus is a guide for the course and is subject to change. Any changes to assignments, due dates, or policies will be announced in class and posted in [LMS name] with reasonable notice; the version posted in [LMS name] is always the current, controlling version."
+        }
+      ]
+    },
+    {
+      "id": "recording",
+      "title": "Class Recording & Copyright",
+      "blurb": "Recording of live sessions and ownership of course materials.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "standard-recording",
+          "tag": "Standard",
+          "label": "Standard recording & copyright note",
+          "body": "Course lectures and materials (slides, recordings, handouts) are the intellectual property of the instructor and/or MCC and may not be posted, sold, or redistributed outside this course without written permission. If live sessions are recorded for students who must miss class, recordings are shared only within this course's [LMS name] site and are deleted at the end of the semester. Students may not record class sessions without prior instructor consent, except as required for an approved accommodation."
+        }
+      ]
+    }
+  ]
+}
