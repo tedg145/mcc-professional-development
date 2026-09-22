@@ -1,0 +1,204 @@
+{
+  "meta": {
+    "note": "Starting language only — adapt every line to your own voice, your course, and the room you actually teach in. Bracketed text marks anything you need to fill in or confirm locally before you use it."
+  },
+  "fields": [
+    {
+      "id": "name",
+      "label": "Course or meeting name",
+      "placeholder": "e.g., ENGL 1301 — Composition I"
+    },
+    {
+      "id": "session",
+      "label": "Session & format",
+      "placeholder": "e.g., First day, Fall 2026 · 28 students, face-to-face"
+    },
+    {
+      "id": "yourname",
+      "label": "Your name & what students should call you",
+      "placeholder": "e.g., Dr. Jane Smith — students call me Dr. Smith or Professor"
+    }
+  ],
+  "categories": [
+    {
+      "id": "greeting",
+      "title": "Opening Greeting",
+      "blurb": "The first sixty seconds. What you say before anything about the course itself.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "door",
+          "tag": "In person",
+          "label": "Greet at the door, start standing",
+          "body": "Good morning — come on in, sit anywhere. I'm [your name], and you can call me [what you'd like to be called]. I'm glad you're here. Before we touch the syllabus or anything official, I want to say one thing: every one of you belongs in this room. Some of you are here because you planned it, some of you are here because this section fit your work schedule, and some of you are not sure yet whether college is for you. All three of those are fine reasons to be sitting down right now. My job this term is to make sure you leave knowing more than you came in with, and knowing that somebody here knew your name."
+        },
+        {
+          "id": "large",
+          "tag": "Large section",
+          "label": "Large lecture — name the size, then shrink it",
+          "body": "Welcome to [course name]. I'm [your name] — [what you'd like to be called] is fine. There are [number] of you in this room, and I want to be honest about what that means: it will take me longer to learn your names than it would in a class of fifteen, and I am going to learn them anyway. Here is how. [Describe your method — name cards, photo roster, one row a week.] In a room this size it is easy to decide that nobody would notice if you stopped coming. I would notice. So would the people sitting next to you, which is why the first thing we are going to do today is make sure you know at least two of them."
+        },
+        {
+          "id": "online",
+          "tag": "Online / async",
+          "label": "Online — a written or recorded welcome",
+          "body": "Welcome to [course name]. I'm [your name], and you can call me [what you'd like to be called]. Online courses can feel like a website you log into rather than a class you are part of, so I want to be a person to you from the start. Here is what you can expect from me: I answer messages within [your response window, e.g., 24 hours on weekdays], I post a short weekly video every [day], and I read every discussion post even when I don't reply to it. Here is what I'd ask of you: check in at least [frequency], and tell me early when something is going sideways. Nothing about this course is designed to catch you out."
+        },
+        {
+          "id": "meeting",
+          "tag": "Staff / meeting",
+          "label": "Staff meeting or student-facing session",
+          "body": "Thanks for being here. I'm [your name] with [department/office]. Before we get into the agenda, one minute on why this matters: [the one sentence about why this group is in the room]. I'd rather this be a conversation than a briefing, so if something I say doesn't match what you're seeing in your own work, say so while we're in the room and not afterward in the hallway."
+        }
+      ]
+    },
+    {
+      "id": "names",
+      "title": "Learning & Using Names",
+      "blurb": "Students who are known by name are more likely to feel they belong — and more likely to stay. Pick a method you will actually keep up.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "cards",
+          "tag": "Low effort",
+          "label": "Name cards or tent cards",
+          "body": "I'm handing out a card. Write the name you want me to use — not the one on the roster if that isn't it — in letters I can read from the front of the room. Stand it up in front of you every class for the first [three weeks]. I'll use them until I don't need them anymore, and then we'll retire them. If I mispronounce your name, correct me. Correct me again if I get it wrong the second time. I would rather be corrected twenty times than call you the wrong thing all semester."
+        },
+        {
+          "id": "callme",
+          "tag": "Roster-safe",
+          "label": "The \"call me ___\" question",
+          "body": "The roster gives me a legal name, and for a lot of people that is not the name they go by. So the first question on [the intake form / the first discussion post / the index card] is simply: what should I call you, and how is it pronounced? Write it however helps — spell it out, rhyme it with something. I will use what you tell me, in class and in email, and you don't owe me an explanation for it."
+        },
+        {
+          "id": "rows",
+          "tag": "Large section",
+          "label": "One row or group at a time",
+          "body": "With [number] of you, I'm going to learn names in batches. Each class period I'll spend the first two minutes on one row — I'll ask your name, you'll correct my pronunciation, and I'll use it at least once before the period ends. By week [four] I'll have been through the whole room. Two things this needs from you: sit in roughly the same area so my map holds, and correct me when I'm wrong."
+        },
+        {
+          "id": "async",
+          "tag": "Online",
+          "label": "Audio or video name introduction",
+          "body": "Your first assignment is thirty seconds long: record yourself saying your name the way it should be said, plus one sentence about why you're taking this course. [Tool/LMS feature] does this in the browser — no download. I'll listen to all of them before our first [live session / discussion opens], and I'll use your name in feedback all term. If recording your voice isn't something you can do, type it phonetically instead and that's completely fine."
+        }
+      ]
+    },
+    {
+      "id": "icebreaker",
+      "title": "Icebreaker or First Connection",
+      "blurb": "Something short that gets students talking to each other, not just to you. Match it to your group's size and format.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "twoneighbors",
+          "tag": "2 minutes",
+          "label": "Two neighbors, two facts",
+          "body": "Turn to the two people closest to you. You have two minutes. Trade names, what you're hoping to get out of this course, and one thing that has nothing to do with school. When we come back I'm going to ask a few of you to introduce a neighbor — not yourself. Why: by the end of this you will know two people in this room, which means if you miss a class you have somebody to ask, and if you're stuck on an assignment you have somebody to text."
+        },
+        {
+          "id": "problem",
+          "tag": "Course-relevant",
+          "label": "A real problem from the field",
+          "body": "Here's a situation someone in [field] ran into last year: [short, concrete scenario from the discipline]. In pairs, take three minutes and tell each other what you'd do. There's no right answer yet — that's the point. By the end of this course you'll have a much better argument than you do right now, and I want you to remember what your instinct was on day one so you can see how far you moved."
+        },
+        {
+          "id": "poll",
+          "tag": "Large / online",
+          "label": "Anonymous poll, then discuss",
+          "body": "Open [polling tool] and answer these three questions — it's anonymous, I can't see who said what. [Question about experience level. Question about what worries them about the course. Question about what they want out of it.] We'll look at the results together in two minutes. The reason I do this on day one: most of you are about to discover that the thing you're worried about is the thing half the room is worried about."
+        },
+        {
+          "id": "asyncpost",
+          "tag": "Online / async",
+          "label": "Introduction post with a required reply",
+          "body": "Post a short introduction in [discussion board]: your name, your program, and one specific thing — not \"I like music,\" but which album you've had on repeat this month. Then reply to two people whose posts have nothing in common with yours. This is graded for completion, not quality. The point is that in [number] weeks, when you're asking the class a question at 11 PM, you're asking people rather than a screen."
+        }
+      ]
+    },
+    {
+      "id": "checklist",
+      "title": "First-Session Essentials",
+      "blurb": "The handful of practical things students need before they leave, without reading the syllabus aloud.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "three",
+          "tag": "Recommended",
+          "label": "Three things, then stop",
+          "body": "I'm not going to read the syllabus to you — it's posted in [LMS name] and you can read faster than I can talk. Three things instead. One: the single most important date this term is [date], because [reason]. Two: when you're confused, the order of operations is [LMS/announcements] first, then me, then [tutoring/support]. Three: my office hours are [days and times] in [location], plus by appointment — and \"I don't know where to start\" is a completely legitimate reason to come. Everything else is in the syllabus, and there will be a short low-stakes check on it [when]."
+        },
+        {
+          "id": "walkthrough",
+          "tag": "Thorough",
+          "label": "Guided walkthrough of the course site",
+          "body": "Open [LMS name] on whatever device you have with you — phone is fine. We're going to click through the four places you'll actually use this term: where the weekly work lives, where you submit, where grades appear, and where announcements show up. If something doesn't load for you right now, say so, because that's a problem we can fix in two minutes today and that costs you a week if we find it in October. [Note any tool that needs a separate account or access code.]"
+        },
+        {
+          "id": "workfirst",
+          "tag": "Do the work first",
+          "label": "Start with real course work, cover logistics at the end",
+          "body": "We're going to do actual [discipline] work for the next [twenty] minutes, and I'll do the housekeeping in the last ten. [Describe the short authentic task.] I run the first day this way on purpose: you came here to find out whether you can do this, not to hear me describe a grading scale. The logistics take ten minutes at the end, and the syllabus covers the rest in writing."
+        }
+      ]
+    },
+    {
+      "id": "fairness",
+      "title": "Support & Situational Fairness",
+      "blurb": "Say out loud, on day one, what a student should do when life interferes. Most won't ask if you don't.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "askearly",
+          "tag": "Recommended",
+          "label": "Ask before it's a crisis",
+          "body": "Something is going to happen to some of you this term — a job change, a sick family member, a car that stops working. That's not a hypothetical, it happens every semester. Here is what I'd ask: tell me while it's happening, not after you've missed three weeks. You do not have to tell me what it is, and I'm not going to ask for documentation of your private life. \"Something's going on and I need [specific thing]\" is enough to start a conversation. I can't undo a grade in December. I can do a lot in September."
+        },
+        {
+          "id": "referral",
+          "tag": "With referrals",
+          "label": "Name the offices before anyone needs them",
+          "body": "Two things I want you to know where to find before you need them. If money, food, housing, or childcare is the thing standing between you and finishing this course, [name the office — e.g., Student Support / Advising] has resources most students don't know exist, and asking costs you nothing. If you need accommodations for a disability — including one you haven't had documented before — [Office of Disability Services, confirm the current name and contact] is where that starts, and it is confidential. I'd rather hand you a phone number on week one than write you a withdrawal in week ten."
+        },
+        {
+          "id": "flexpolicy",
+          "tag": "Concrete policy",
+          "label": "State the built-in flexibility",
+          "body": "Rather than making you ask me for exceptions one at a time, some flexibility is built in: [e.g., your lowest quiz score is dropped; every student gets two no-questions-asked 48-hour extensions; the lowest of X is replaced by the final]. Use them for whatever you want — I don't need a reason. When you've used them up and something still goes wrong, come talk to me, and we'll work out what's possible. The standard for the work doesn't move. When you do it sometimes can."
+        }
+      ]
+    },
+    {
+      "id": "transition",
+      "title": "Closing & Transition",
+      "blurb": "How you end the welcome and move into the actual work — and what students carry out the door.",
+      "type": "choice",
+      "options": [
+        {
+          "id": "firsttask",
+          "tag": "Straight to work",
+          "label": "Move directly into the first real task",
+          "body": "That's the welcome. Here's what we're doing for the rest of today: [the first genuine piece of course work]. I want you to leave this room having done [discipline] rather than having heard about it. Before you go, one thing goes in your notes — [the single takeaway, question, or exit ticket]."
+        },
+        {
+          "id": "exitticket",
+          "tag": "Feedback loop",
+          "label": "Exit ticket and a promise to answer",
+          "body": "Before you leave, answer two questions on the card [or in the form]: what's one thing you're looking forward to in this course, and what's one thing you're worried about? No name needed. I read all of them tonight, and I'll open our next session with the three worries that came up the most. This isn't a formality — it's how I find out what I've explained badly."
+        },
+        {
+          "id": "nextsteps",
+          "tag": "Clear next steps",
+          "label": "Three concrete next steps before the next session",
+          "body": "Three things before we meet again on [day]. One: [the specific reading, setup, or task, with where to find it]. Two: [the small low-stakes thing that confirms access works — post in the intro thread, submit the syllabus check]. Three: if any part of one or two doesn't work — the link is broken, the access code fails, the reading won't open — message me instead of waiting. Everything is due [when], and starting the term on time matters more than starting it perfectly."
+        },
+        {
+          "id": "openinvite",
+          "tag": "Door left open",
+          "label": "Close with a standing invitation",
+          "body": "Last thing. Most students never come to office hours, and most of the ones who do come once wish they'd come sooner. So here's a standing invitation: [days and times] in [location], and you don't need a reason. Bring a question, bring a draft, bring \"I read this three times and it still doesn't make sense.\" I'm also reachable at [contact] and I answer within [window]. See you [day]."
+        }
+      ]
+    }
+  ]
+}
