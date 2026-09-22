@@ -7,11 +7,12 @@ var catalog=window.MCC_CONTENT||[];
 var activity=catalog.find(function(item){return item.id===id;});
 if(!activity)return;
 body.classList.add('mcc-shell-active');
+var assetBase=(function(){var sc=document.currentScript||document.querySelector('script[src$="mcc-activity-shell.js"]');var src=(sc&&sc.getAttribute('src'))||'../assets/mcc-activity-shell.js';return src.replace(/mcc-activity-shell\.js.*$/,'');})();
 function esc(value){return String(value).replace(/[&<>\"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c];});}
 
 if(!document.querySelector('.mcc-activity-bar')){
 var bar=document.createElement('header');bar.className='mcc-activity-bar';
-bar.innerHTML='<a class="mcc-activity-brand" href="../#hub" aria-label="MCC AI Professional Development home"><span class="mcc-activity-brand__mark">MCC</span><span><strong>AI Professional Development</strong><small>Learn · Practice · Build · Use</small></span></a><nav class="mcc-activity-nav" aria-label="Activity navigation"><a href="../#featured">Resources</a><a href="../#pathways">Pathways</a><a href="../#my-learning">My Learning</a><a class="mcc-activity-home" href="../#hub">Hub</a></nav>';
+bar.innerHTML='<a class="mcc-activity-brand" href="../#hub" aria-label="MCC AI Professional Development home"><span class="mcc-activity-brand__mark"><img src="'+assetBase+'mcc-m-mark.png" alt="MCC" width="40" height="40"></span><span><strong>AI Professional Development</strong><small>Learn · Practice · Build · Use</small></span></a><nav class="mcc-activity-nav" aria-label="Activity navigation"><a href="../#featured">Resources</a><a href="../#pathways">Pathways</a><a href="../#my-learning">My Learning</a><a class="mcc-activity-home" href="../#hub">Hub</a></nav>';
 body.insertBefore(bar,body.firstChild);
 }
 
