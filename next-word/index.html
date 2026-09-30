@@ -338,7 +338,7 @@ $("go").onclick=open;$("close").onclick=close;
 document.addEventListener("keydown",e=>{
   if(e.target.closest&&e.target.closest(".seg"))return;
   if(e.key==="Escape"&&slide.classList.contains("on"))close();
-  if((e.key===" "||e.key==="ArrowRight")&&e.target.tagName!=="BUTTON"){e.preventDefault();
+  if(e.key==="ArrowRight"||(e.key===" "&&e.target.tagName!=="BUTTON")){e.preventDefault();
     if(!slide.classList.contains("on"))open();
     else{const b=$("actions").querySelector(".primary")||$("actions").querySelector("button");b&&b.click()}}
 });
