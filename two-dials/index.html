@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" data-qr-start-hidden>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sounding Right vs. Being Right — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="Foundations slide 8, live: two dials, sounds right and is right, and why an AI answer always turns up the first one.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Lato:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: the dark Foundations slide as a 16:9 frame; four short steps take it over. Single dark look, like the deck's dark slides. */
+:root{
+  color-scheme:dark;
+  --ground:#06101E; --slide:#0B1B2F; --panel:#12263E; --panel2:#183152;
+  --ink:#FFFFFF; --body:#B4C2D2; --dim:#6F8298; --line:rgba(255,255,255,.12);
+  --orange:#FF6600; --teal:#1FB3CC; --good:#5BD49A; --bad:#FF7A66; --gold:#F9DD56;
+  --display:'Poppins','Century Gothic',system-ui,sans-serif;
+  --text:'Lato','Segoe UI',system-ui,sans-serif;
+  --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--text)}
+.wrap{max-width:1120px;margin:0 auto;padding-block:28px 40px;padding-inline:16px;display:grid;gap:14px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--dim);letter-spacing:.04em}
+.meta b{color:var(--body);font-weight:600}
+
+.slide{position:relative;display:grid;background:var(--slide);aspect-ratio:16/9;width:min(100%, calc((100vh - 150px) * 16 / 9));margin-inline:auto;max-width:100%;container-type:inline-size;overflow:visible;border-radius:4px;box-shadow:0 18px 50px -20px rgba(0,0,0,.8)}
+@media (max-width:760px){.slide{aspect-ratio:auto}}
+.slide:fullscreen{width:100vw;height:100vh;max-width:none;aspect-ratio:auto;border-radius:0;overflow:auto}
+.inner{position:relative;padding:4.6cqw 6.4cqw 4.2cqw;display:grid;grid-template-rows:auto 1fr auto;gap:2cqw}
+@media (max-width:760px){.inner{padding:22px 18px 26px}}
+
+.top{display:flex;flex-wrap:wrap;gap:1.4cqw 3cqw;align-items:flex-start;justify-content:space-between}
+.kicker{font:700 max(10px,1.05cqw)/1 var(--display);letter-spacing:.28em;color:var(--orange);text-transform:uppercase}
+h1{font:800 max(22px,3.5cqw)/1.1 var(--display);margin:1cqw 0 0;letter-spacing:-.01em;text-wrap:balance;max-width:22ch}
+h1 .s{color:var(--teal)} h1 .r{color:var(--good)}
+.gloss{display:flex;gap:.8cqw;flex-wrap:wrap;margin-top:1.2cqw}
+.gloss span{font:600 max(10px,1.1cqw)/1 var(--mono);color:var(--body);background:var(--panel);padding:.7cqw 1.1cqw;border-radius:999px}
+.gloss b{color:var(--ink)}
+.steps{display:flex;gap:.6cqw;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+.steps li button{font:600 max(10px,1.05cqw)/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);padding:.8cqw 1.2cqw;border-radius:999px;background:var(--panel);border:0;cursor:pointer}
+.steps li button[aria-current="step"]{background:var(--orange);color:#fff}
+.steps li button:focus-visible,.btn:focus-visible,input:focus-visible,.pick:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+.stage{min-height:0;display:grid}
+.slide.rest .steps{visibility:hidden}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:2cqw 4cqw;align-content:start}
+@media (max-width:760px){.cols{grid-template-columns:1fr}}
+.cols .line{grid-column:1/-1;font:700 max(15px,1.9cqw)/1.3 var(--display);color:var(--orange);margin:0 0 .6cqw;text-wrap:balance}
+.cols h4{margin:0 0 .8cqw;font:700 max(10px,1.05cqw)/1.2 var(--display);letter-spacing:.2em;text-transform:uppercase}
+.cols h4.p{color:var(--teal)} .cols h4.m{color:var(--orange)}
+.cols p{margin:0;font-size:max(14px,1.75cqw);line-height:1.6;color:var(--body)}
+.cap{font:600 max(10px,1.05cqw)/1.2 var(--mono);color:var(--dim);letter-spacing:.04em}
+.sitebar{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,30px);border-bottom:1px solid var(--line);background:rgba(6,16,30,.92);flex-wrap:wrap;font-family:var(--display)}
+.sitebar .home{font-size:14.5px;font-weight:700;text-decoration:none;color:#fff;white-space:nowrap}
+.sitebar .home span{color:var(--orange)}
+.sitebar .sep{width:1px;height:20px;background:var(--line)}
+.sitebar .where{font-size:13.5px;color:var(--dim)}
+.sitebar .right{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.sitebar .right a,.sitebar .right button{font:inherit;font-size:12.5px;text-decoration:none;border:1px solid var(--line);border-radius:9px;padding:7px 13px;color:var(--body);background:none;cursor:pointer}
+.sitebar .right a:hover,.sitebar .right button:hover{background:rgba(255,255,255,.08);color:#fff}
+.sitefoot{font-size:12px;color:var(--dim);text-align:center;padding:10px 16px 28px}
+.sitefoot a{color:inherit}
+.view{display:none;min-height:0}
+.view.on{display:grid;animation:rise .45s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.q{font:600 max(13px,1.6cqw)/1.35 var(--display);color:var(--body);margin:0}
+.q b{color:var(--ink)}
+.bottom{display:flex;flex-wrap:wrap;gap:1.2cqw 2cqw;align-items:center;justify-content:space-between}
+.say{font:700 max(14px,1.75cqw)/1.3 var(--display);margin:0;color:var(--ink);text-wrap:balance;max-width:48ch;min-height:1.3em}
+.say em{font-style:normal;color:var(--orange)}
+.btn{font:600 max(13px,1.35cqw)/1 var(--display);border:0;border-radius:999px;cursor:pointer;padding:1.1cqw 2cqw;background:var(--orange);color:#fff}
+.btn.ghost{background:var(--panel2);color:var(--ink)}
+.btn:hover{filter:brightness(1.08)}
+.row{display:flex;gap:1cqw;flex-wrap:wrap}
+
+/* step 1 */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:2cqw;align-content:start}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.pick{all:unset;box-sizing:border-box;cursor:pointer;background:var(--panel);border-radius:1.2cqw;padding:1.8cqw 2cqw;display:grid;gap:1cqw;border:2px solid transparent;transition:border-color .2s,transform .2s}
+.pick:hover{border-color:var(--line);transform:translateY(-2px)}
+.pick .who{font:600 max(10px,1cqw)/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.pick p{margin:0;font-size:max(14px,1.7cqw);line-height:1.5;color:var(--ink)}
+.pick.messy p{font-family:var(--mono);font-size:max(13px,1.5cqw);color:var(--body)}
+.verdict{font:700 max(11px,1.1cqw)/1 var(--mono);letter-spacing:.08em;justify-self:start;padding:.6cqw 1cqw;border-radius:999px;visibility:hidden}
+.done .verdict{visibility:visible}
+.verdict.ok{background:rgba(91,212,154,.16);color:var(--good)} .verdict.no{background:rgba(255,122,102,.16);color:var(--bad)}
+.chosen{border-color:var(--gold)!important}
+
+/* dials */
+.dials{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.35fr);gap:2.2cqw;align-items:start}
+@media (max-width:760px){.dials{grid-template-columns:1fr 1fr}.dials .out{grid-column:1/-1}}
+.dial{background:var(--panel);border-radius:1.2cqw;padding:1.4cqw 1.6cqw 1.6cqw;display:grid;gap:.6cqw;justify-items:center;position:relative;overflow:hidden}
+.dial h3{margin:0;font:700 max(12px,1.4cqw)/1.2 var(--display);text-align:center}
+.dial small{font:600 max(9px,.95cqw)/1.2 var(--mono);color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+.dial svg{width:100%;max-width:220px;height:auto;display:block}
+.dial input{width:100%;accent-color:var(--orange)}
+.dial .ends{display:flex;justify-content:space-between;width:100%;font:600 max(9px,.9cqw)/1 var(--mono);color:var(--dim)}
+.lock{font:700 max(10px,1cqw)/1 var(--mono);color:var(--gold);letter-spacing:.06em}
+.cover{position:absolute;inset:0;background:repeating-linear-gradient(135deg,#0E2036 0 10px,#10243C 10px 20px);display:grid;place-items:center;text-align:center;padding:1.5cqw;transition:opacity .5s}
+.cover p{margin:0;font:700 max(12px,1.35cqw)/1.35 var(--display);color:var(--body)}
+.cover p span{display:block;font:600 max(9px,.95cqw)/1.4 var(--mono);color:var(--dim);margin-top:.6cqw;letter-spacing:.04em}
+.cover.off{opacity:0;pointer-events:none}
+.out{background:var(--panel2);border-radius:1.2cqw;padding:1.6cqw 1.8cqw;display:grid;gap:1cqw;align-content:start;min-height:100%}
+.out .who{font:600 max(10px,1cqw)/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.out p{margin:0;font-size:max(14px,1.65cqw);line-height:1.5}
+.out p.messy{font-family:var(--mono);font-size:max(13px,1.45cqw);color:var(--body)}
+.out .tag{font:700 max(10px,1.05cqw)/1 var(--mono);letter-spacing:.06em;justify-self:start;padding:.6cqw 1cqw;border-radius:999px}
+.tally{font:600 max(10px,1.05cqw)/1.5 var(--mono);color:var(--body);font-variant-numeric:tabular-nums}
+.tally b{color:var(--ink)}
+
+/* mirror */
+.mirror{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:1cqw 2cqw;align-content:start}
+.mirror h4{margin:0 0 .4cqw;font:700 max(10px,1.05cqw)/1.2 var(--display);letter-spacing:.2em;text-transform:uppercase}
+.mirror h4.p{color:var(--teal)} .mirror h4.m{color:var(--orange)}
+.sig{background:var(--panel);border-radius:.9cqw;padding:.9cqw 1.3cqw;font-size:max(13px,1.45cqw);color:var(--dim);display:flex;gap:.8cqw;align-items:center;transition:all .35s}
+.sig i{font-style:normal;font-family:var(--mono);width:1.2em;text-align:center;color:var(--dim)}
+.sig.lit{color:var(--ink);background:var(--panel2)} .sig.lit i{color:var(--good)}
+.eq{align-self:center;font:700 max(14px,1.8cqw)/1 var(--mono);color:var(--dim);opacity:0;transition:opacity .3s;text-align:center}
+.eq.lit{opacity:1;color:var(--gold)}
+.missing{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:2cqw;margin-top:.8cqw;opacity:0;transition:opacity .5s}
+.missing.lit{opacity:1}
+.missing .sig{border:2px dashed var(--line);background:none;color:var(--body)}
+.missing .sig.gap{color:var(--bad)} .missing .sig.gap i{color:var(--bad)}
+@media (max-width:760px){.mirror,.missing{grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr)}}
+
+.foot{display:flex;justify-content:space-between;font-size:max(9px,.85cqw);color:var(--dim)}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;font-size:13px;line-height:1.5;color:var(--dim)}
+.notes b{display:block;color:var(--body);font-family:var(--display);font-weight:600;margin-bottom:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="sitebar">
+  <a class="home" href="../">MCC <span>AI</span></a>
+  <span class="sep"></span>
+  <span class="where">Foundations deck · slide 8, live</span>
+  <div class="right">
+    <button type="button" id="fs">Full screen</button>
+    <a href="../presentations/">Slides</a>
+    <a href="../foundations/">Foundations</a>
+    <a href="../">Home</a>
+  </div>
+</div>
+<div class="wrap">
+  <div class="meta"><span><b>Leveraging AI at MCC · Foundations</b> · slide 8 · See it in action</span><span>Space or → next · ← back · F full screen · Esc back to slide</span></div>
+
+  <section class="slide rest" id="slide">
+    <div class="inner">
+      <div class="top">
+        <div>
+          <div class="kicker">The key idea</div>
+          <h1><span class="s">Sounding right</span> and <span class="r">being right</span> are two different things.</h1>
+          <div class="gloss"><span><b>Fluency</b> = how it sounds</span><span><b>Accuracy</b> = whether it's true</span></div>
+        </div>
+        <ol class="steps" id="steps">
+          <li><button data-go="0">1 · Trust</button></li>
+          <li><button data-go="1">2 · Two dials</button></li>
+          <li><button data-go="2">3 · The AI</button></li>
+          <li><button data-go="3">4 · Your gut</button></li>
+        </ol>
+      </div>
+
+      <div class="stage">
+        <!-- resting slide -->
+        <div class="view" id="vS">
+          <div class="cols">
+            <p class="line">The AI always sounds right. Whether it is right, you have to check.</p>
+            <div><h4 class="p">How you decide to trust a person</h4><p>Sounds sure of itself. Smooth, complete sentences. Specific names, dates and numbers. The right work words. Names a source. Answers right away.</p></div>
+            <div><h4 class="m">What the AI is built to produce</h4><p>Sounds sure of itself. Smooth, complete sentences. Specific names, dates and numbers. The right work words. Names a source. Answers right away.</p></div>
+          </div>
+        </div>
+        <!-- 1: which would you trust -->
+        <div class="view" id="v0">
+          <div style="display:grid;gap:1.6cqw;align-content:start">
+            <p class="q">Two coworkers answer the same question: <b>When did Texas become a state?</b> Which one do you trust?</p>
+            <div class="two" id="pickrow">
+              <button class="pick messy" data-right="1"><span class="who">Coworker A</span><p>uh, 1845 i think? late in the year maybe. don't quote me</p><span class="verdict ok">RIGHT · December 29, 1845</span></button>
+              <button class="pick" data-right="0"><span class="who">Coworker B</span><p>Texas became the 28th state on December 29, 1846, when President James K. Polk signed the act admitting it to the Union.</p><span class="verdict no">WRONG · it was 1845</span></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2: two dials, both free -->
+        <div class="view" id="v1">
+          <div class="dials">
+            <div class="dial"><h3>Sounds right</h3><small>fluency</small><svg viewBox="0 0 200 118" id="g1"></svg><input type="range" id="d1" min="0" max="100" value="85" aria-label="How right it sounds"><div class="ends"><span>mumbling</span><span>polished</span></div></div>
+            <div class="dial"><h3>Is right</h3><small>accuracy</small><svg viewBox="0 0 200 118" id="g2"></svg><input type="range" id="d2" min="0" max="100" value="20" aria-label="Whether it is true"><div class="ends"><span>false</span><span>true</span></div></div>
+            <div class="out"><span class="who">What that sounds like</span><p id="o1"></p><span class="tag" id="t1"></span></div>
+          </div>
+        </div>
+
+        <!-- 3: the AI's dials -->
+        <div class="view" id="v2">
+          <div class="dials">
+            <div class="dial"><h3>Sounds right</h3><small>fluency</small><svg viewBox="0 0 200 118" id="g3"></svg><span class="lock">🔒 ALWAYS TURNED UP</span></div>
+            <div class="dial"><h3>Is right</h3><small>accuracy</small><svg viewBox="0 0 200 118" id="g4"></svg><span class="lock" style="color:var(--dim)" id="chk">not checked</span>
+              <div class="cover" id="cover"><p>The AI can't see this dial.<span>Neither can you, until you check.</span></p></div></div>
+            <div class="out"><span class="who">AI answer · ask #<span id="n">1</span></span><p id="o2"></p><span class="tag" id="t2" hidden></span><div class="tally" id="tally"></div></div>
+          </div>
+        </div>
+
+        <!-- 4: your gut -->
+        <div class="view" id="v3">
+          <div class="mirror" id="mirror">
+            <h4 class="p">How you decide to trust a person</h4><span></span><h4 class="m">What the AI is built to produce</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom">
+        <p class="say" id="say"></p>
+        <div class="row" id="act"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="notes">
+    <div><b>1 · Trust</b>The room picks between a mumbled right answer and a polished wrong one. Most will pick the polished one. That choice is the lesson.</div>
+    <div><b>2 · Two dials</b>Drag each dial on its own. The answer card changes to match. People see that sounding sure and being right move separately.</div>
+    <div><b>3 · The AI</b>The "sounds right" dial is locked on high. The "is right" dial is covered. Each "Ask again" gives an equally polished answer; only "Check it" shows whether it was true.</div>
+    <div><b>4 · Your gut</b>The six trust signals from the current slide, in plain words, light up on both sides at once. Then the one thing the AI side is missing appears.</div>
+  </div>
+  <div class="meta"><span>Facts used: Texas was admitted as the 28th state on December 29, 1845, when President Polk signed the act of admission.</span></div>
+</div>
+<footer class="sitefoot">© 2026 <a href="../">MCC AI Professional Development</a> · Ted Gonzalez, JD/MBA · Tier 1, Session 1</footer>
+<script src="../assets/mcc-qr.js"></script>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const SAY=[
+ "Tap the answer you'd trust.",
+ "Move each dial on its own.",
+ "Ask the AI a few times. Then check one.",
+ "Watch both sides."
+];
+
+/* gauge */
+function gauge(svg,val,color,hideNeedle){
+  const a=Math.PI*(1-val/100),cx=100,cy=104,r=82;
+  const x=cx+r*Math.cos(a),y=cy-r*Math.sin(a);
+  const arc=(v0,v1,c)=>{const a0=Math.PI*(1-v0/100),a1=Math.PI*(1-v1/100);return `<path d="M${cx+r*Math.cos(a0)} ${cy-r*Math.sin(a0)} A${r} ${r} 0 0 1 ${cx+r*Math.cos(a1)} ${cy-r*Math.sin(a1)}" stroke="${c}" stroke-width="12" fill="none" stroke-linecap="butt"/>`};
+  svg.innerHTML=arc(0,100,"rgba(255,255,255,.08)")+arc(0,Math.max(.5,val),color)+
+   (hideNeedle?"":`<line x1="${cx}" y1="${cy}" x2="${cx+(r-18)*Math.cos(a)}" y2="${cy-(r-18)*Math.sin(a)}" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="7" fill="#fff"/>`)+
+   `<text x="${cx}" y="${cy-28}" text-anchor="middle" fill="#fff" font-family="JetBrains Mono,monospace" font-size="20" font-weight="600">${hideNeedle?"?":Math.round(val)}</text>`;
+}
+const TEAL=getComputedStyle(document.documentElement).getPropertyValue('--teal').trim();
+const GOOD=getComputedStyle(document.documentElement).getPropertyValue('--good').trim();
+const BAD=getComputedStyle(document.documentElement).getPropertyValue('--bad').trim();
+
+/* step 2 */
+const Q={
+ hh:["Texas became the 28th state on December 29, 1845, when President James K. Polk signed the act admitting it to the Union.",0,"SOUNDS RIGHT · IS RIGHT"],
+ hl:["Texas became the 28th state on December 29, 1846, when President James K. Polk signed the act admitting it to the Union.",0,"SOUNDS RIGHT · IS WRONG"],
+ lh:["uh, 1845 i think? late in the year maybe. don't quote me",1,"SOUNDS UNSURE · IS RIGHT"],
+ ll:["1850s?? around the civil war i think",1,"SOUNDS UNSURE · IS WRONG"]
+};
+function upd2(){
+  const f=+$("d1").value,a=+$("d2").value;
+  gauge($("g1"),f,TEAL);gauge($("g2"),a,a>=50?GOOD:BAD);
+  const k=(f>=50?"h":"l")+(a>=50?"h":"l"),[txt,messy,tag]=Q[k];
+  $("o1").textContent=txt;$("o1").className=messy?"messy":"";
+  const t=$("t1");t.textContent=tag;const ok=a>=50;t.style.background=ok?"rgba(91,212,154,.16)":"rgba(255,122,102,.16)";t.style.color=ok?GOOD:BAD;
+  if(k==="hl")setSay("Polished and wrong. <em>This is the one that fools us.</em>");
+  else if(k==="lh")setSay("Unsure and right. We'd probably doubt this one.");
+  else setSay(SAY[1]);
+}
+$("d1").oninput=upd2;$("d2").oninput=upd2;
+
+/* step 3 */
+const AI=[
+ ["Texas became the 28th state on December 29, 1846, when President James K. Polk signed the act admitting it to the Union.",0,"Wrong year. It was 1845."],
+ ["Texas became the 28th state on December 29, 1845, when President James K. Polk signed the act admitting it to the Union.",1,"Right."],
+ ["Texas joined the United States as the 28th state on March 2, 1845, nine years to the day after declaring independence.",0,"Wrong date. March 2 is Texas Independence Day; statehood was December 29, 1845."],
+ ["Texas joined the United States as the 28th state on December 29, 1845, nine years after winning independence from Mexico.",1,"Right."],
+ ["Texas became the 27th state on December 29, 1845, shortly after Texans voted to accept annexation.",0,"Wrong number. Texas was the 28th state."]
+];
+let ai=0,asked=0,rightN=0,checked=false;
+function showAI(){
+  const [txt]=AI[ai%AI.length];asked++;checked=false;
+  $("n").textContent=asked;$("o2").textContent=txt;$("t2").hidden=true;
+  $("cover").classList.remove("off");$("chk").textContent="not checked";$("chk").style.color="";
+  gauge($("g3"),96,TEAL);gauge($("g4"),50,"rgba(255,255,255,.2)",true);
+  tally();
+}
+function check(){
+  if(checked)return;checked=true;const [,ok,why]=AI[ai%AI.length];if(ok)rightN++;
+  $("cover").classList.add("off");gauge($("g4"),ok?92:12,ok?GOOD:BAD);
+  $("chk").textContent=ok?"checked · true":"checked · false";$("chk").style.color=ok?GOOD:BAD;
+  const t=$("t2");t.hidden=false;t.textContent=why;t.style.background=ok?"rgba(91,212,154,.16)":"rgba(255,122,102,.16)";t.style.color=ok?GOOD:BAD;
+  tally();setSay(ok?"This one was true. It looked exactly like the false ones.":"<em>Same confidence. Same polish. Wrong.</em>");
+}
+function tally(){$("tally").innerHTML=`Asked <b>${asked}</b> · sounded sure <b>${asked}</b> times`+(checked||rightN?` · checked answers that were true: <b>${rightN}</b>`:"")}
+function again(){ai++;showAI();setSay("Every answer sounds this sure. Check one.")}
+
+/* step 4 */
+const SIG=[["Sounds sure of itself","Sounds sure of itself"],["Smooth, complete sentences","Smooth, complete sentences"],["Specific names, dates, numbers","Specific names, dates, numbers"],["Uses the right work words","Uses the right work words"],["Names a source","Names a source"],["Answers right away","Answers right away"]];
+function buildMirror(){
+  const m=$("mirror");m.querySelectorAll(".sig,.eq,.missing").forEach(e=>e.remove());
+  SIG.forEach(([a,b])=>{m.insertAdjacentHTML("beforeend",`<div class="sig"><i>·</i>${a}</div><div class="eq">=</div><div class="sig"><i>·</i>${b}</div>`)});
+  m.insertAdjacentHTML("beforeend",`<div class="missing"><div class="sig"><i>✓</i>Learned it from somewhere real</div><div class="eq lit" style="color:var(--bad)">≠</div><div class="sig gap"><i>✕</i>Only knows what sounds likely</div></div>`);
+  const rows=[...m.querySelectorAll(".sig:not(.missing .sig)")],eqs=[...m.querySelectorAll(".eq:not(.missing .eq)")];
+  let i=0;(function lit(){if(i>=SIG.length){later(()=>{m.querySelector(".missing").classList.add("lit");setSay("Every signal your gut uses, the AI produces for free. <em>None of them tells you it's true.</em>")},700);return}
+    rows[i*2].classList.add("lit");rows[i*2+1].classList.add("lit");eqs[i].classList.add("lit");i++;later(lit,650)})();
+}
+
+/* flow */
+let cur=0,timers=[];const later=(f,ms)=>timers.push(setTimeout(f,ms));
+function setSay(h){$("say").innerHTML=h}
+function act(list){const b=$("act");b.innerHTML="";list.forEach(([l,f,g])=>{const x=document.createElement("button");x.className="btn"+(g?" ghost":"");x.textContent=l;x.onclick=f;b.appendChild(x)})}
+function go(n){
+  timers.forEach(clearTimeout);timers=[];cur=Math.max(-1,Math.min(3,n));
+  $("slide").classList.toggle("rest",cur<0);
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===(cur<0?"vS":"v"+cur)));
+  document.querySelectorAll("#steps button").forEach((b,i)=>i===cur?b.setAttribute("aria-current","step"):b.removeAttribute("aria-current"));
+  setSay(cur<0?'<span class="cap">Four quick steps · about 5 minutes</span>':SAY[cur]);
+  if(cur<0)act([["See it in action  →",()=>go(0)]]);
+  if(cur===0){$("pickrow").classList.remove("done");document.querySelectorAll(".pick").forEach(p=>p.classList.remove("chosen"));act([["Next: two dials →",()=>go(1)]])}
+  if(cur===1){$("d1").value=85;$("d2").value=20;upd2();act([["Next: the AI →",()=>go(2)]])}
+  if(cur===2){ai=0;asked=0;rightN=0;showAI();act([["Ask again",again,1],["Check it",check],["Next →",()=>go(3),1]])}
+  if(cur===3){buildMirror();act([["↺ Start over",()=>go(0),1],["Back to slide",()=>go(-1)]])}
+}
+document.querySelectorAll(".pick").forEach(p=>p.onclick=()=>{
+  document.querySelectorAll(".pick").forEach(x=>x.classList.remove("chosen"));p.classList.add("chosen");$("pickrow").classList.add("done");
+  setSay(p.dataset.right==="1"?"Good instinct. Most rooms pick B, <em>because B sounds right.</em>":"Most rooms pick B. <em>It sounds right. It's wrong.</em>");
+});
+document.querySelectorAll("#steps button").forEach(b=>b.onclick=()=>go(+b.dataset.go));
+document.addEventListener("keydown",e=>{if(e.target.tagName==="INPUT")return;
+  if(e.key==="ArrowRight"||e.key===" "){if(e.target.tagName==="BUTTON"&&e.key===" ")return;e.preventDefault();go(cur+1)}
+  if(e.key==="ArrowLeft")go(cur-1);
+  if(e.key==="Escape")go(-1);
+  if(e.key==="f"||e.key==="F")fs()});
+function fs(){const d=document;if(d.fullscreenElement){d.exitFullscreen&&d.exitFullscreen()}else if($("slide").requestFullscreen){$("slide").requestFullscreen().catch(()=>{})}}
+$("fs").onclick=fs;
+if(window.MCCQR&&window.MCCQR.show)window.MCCQR.show();
+go(location.hash==="#demo"?0:-1);
+addEventListener("hashchange",()=>{if(location.hash==="#demo")go(0)});
+})();
+</script>
+</body>
+</html>
