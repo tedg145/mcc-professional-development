@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" data-qr-start-hidden>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Green, Yellow, Red — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="Foundations slide 23, live: sort twelve real MCC situations into green, yellow or red, with the reason for each.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Lato:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: two deck slides stacked as 16:9 frames — 22 is a static dark explainer, 23 is the light list slide that opens a sorting game. Single dark page, like the site. */
+:root{
+  color-scheme:dark;
+  --ground:#06101E; --gdim:#7F92A8; --gbody:#B4C2D2;
+  --dark:#0B1B2F; --dpanel:#12263E; --white:#FFFFFF;
+  --navy:#003366; --orange:#FF6600; --orange-d:#C24E00; --body:#5E6A78; --faint:#A3ABB5; --rule:#E3E8EE; --tint:#F4F7FA;
+  --g:#1E8A4C; --g-bg:#E4F4EA; --y:#9A6A00; --y-bg:#FFF4D6; --y-btn:#F2B705; --r:#C8321E; --r-bg:#FDECE9;
+  --display:'Poppins','Century Gothic',system-ui,sans-serif;
+  --text:'Lato','Segoe UI',system-ui,sans-serif;
+  --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--white);font-family:var(--text)}
+.wrap{max-width:1120px;margin:0 auto;padding-block:28px 48px;padding-inline:16px;display:grid;gap:14px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-between;font:12px/1.5 var(--mono);color:var(--gdim);letter-spacing:.04em}
+.meta b{color:var(--gbody);font-weight:600}
+.gap{height:26px}
+
+.slide{position:relative;display:grid;aspect-ratio:16/9;width:min(100%, calc((100vh - 150px) * 16 / 9));margin-inline:auto;max-width:100%;container-type:inline-size;border-radius:4px;box-shadow:0 18px 50px -20px rgba(0,0,0,.8)}
+@media (max-width:760px){.slide{aspect-ratio:auto}}
+.slide:fullscreen{width:100vw;height:100vh;max-width:none;aspect-ratio:auto;border-radius:0;overflow:auto}
+.sitebar{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,30px);border-bottom:1px solid rgba(255,255,255,.12);background:rgba(6,16,30,.92);flex-wrap:wrap;font-family:var(--display)}
+.sitebar .home{font-size:14.5px;font-weight:700;text-decoration:none;color:#fff;white-space:nowrap}
+.sitebar .home span{color:var(--orange)}
+.sitebar .sep{width:1px;height:20px;background:rgba(255,255,255,.12)}
+.sitebar .where{font-size:13.5px;color:var(--gdim)}
+.sitebar .right{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.sitebar .right a,.sitebar .right button{font:inherit;font-size:12.5px;text-decoration:none;border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:7px 13px;color:var(--gbody);background:none;cursor:pointer}
+.sitebar .right a:hover,.sitebar .right button:hover{background:rgba(255,255,255,.08);color:#fff}
+.sitefoot{font-size:12px;color:var(--gdim);text-align:center;padding:10px 16px 28px}
+.sitefoot a{color:inherit}
+.kicker{font:700 max(10px,1.05cqw)/1 var(--display);letter-spacing:.28em;text-transform:uppercase}
+.foot{display:flex;justify-content:space-between;font-size:max(9px,.85cqw)}
+
+/* ---------- slide 22 ---------- */
+.s22{background:var(--dark);color:var(--white)}
+.s22 .in{padding:4.6cqw 6.4cqw 2.6cqw;display:grid;grid-template-rows:auto auto 1fr auto auto;gap:1.8cqw}
+.s22 .kicker{color:var(--orange)}
+.s22 h2{margin:.8cqw 0 0;font:800 max(24px,3.6cqw)/1.08 var(--display);letter-spacing:-.01em;text-wrap:balance}
+.s22 h2 .ab{color:var(--orange)}
+.s22 .lede{margin:0;font-size:max(14px,1.75cqw);line-height:1.5;color:var(--gbody);max-width:60ch}
+.s22 .lede b{color:var(--white)}
+.cols3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.6cqw}
+@media (max-width:760px){.cols3{grid-template-columns:1fr}.s22 .in{padding:24px 18px 16px}}
+.col{background:var(--dpanel);border-radius:1.1cqw;padding:1.5cqw 1.7cqw;display:grid;gap:.8cqw;align-content:start}
+.col h3{margin:0;font:700 max(10px,1.05cqw)/1.2 var(--display);letter-spacing:.2em;text-transform:uppercase;color:#1FB3CC}
+.col p,.col li{margin:0;font-size:max(12.5px,1.4cqw);line-height:1.5;color:var(--gbody)}
+.col b{color:var(--white)}
+.col ul{margin:0;padding-left:1.1em;display:grid;gap:.2cqw}
+.col .cite{font:600 max(9px,.95cqw)/1.4 var(--mono);color:var(--gdim)}
+.punch{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(255,255,255,.12);padding-top:1.4cqw;gap:2cqw}
+@media (max-width:760px){.punch{grid-template-columns:1fr}}
+.punch div{font:700 max(14px,1.8cqw)/1.3 var(--display);text-wrap:balance}
+.punch small{display:block;font:600 max(9px,.95cqw)/1 var(--mono);letter-spacing:.14em;color:var(--gdim);margin-bottom:.6cqw;text-transform:uppercase}
+.punch .hot{color:var(--orange)}
+.s22 .foot{color:#4F6379}
+
+/* ---------- slide 23 ---------- */
+.s23{background:var(--white);color:var(--navy)}
+.layer{grid-area:1/1;position:relative;transition:opacity .4s,filter .4s}
+.rest-v{padding:4.6cqw 6.4cqw 2.6cqw;display:grid;grid-template-rows:auto auto 1fr auto auto;gap:2cqw}
+.s23 .kicker{color:var(--orange-d)}
+.s23 h2{margin:.8cqw 0 0;font:800 max(26px,4cqw)/1.08 var(--display)}
+.tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3cqw;align-content:start;margin-top:1cqw}
+@media (max-width:760px){.tiers{grid-template-columns:1fr}.rest-v{padding:24px 18px 16px}}
+.tier .k{font:700 max(9px,.95cqw)/1 var(--display);letter-spacing:.2em}
+.tier h3{margin:1cqw 0 1.4cqw;font:700 max(15px,1.9cqw)/1.2 var(--display)}
+.tier p{margin:0;font-size:max(12.5px,1.35cqw);line-height:1.55;color:var(--body)}
+.k.g{color:var(--g)} .k.y{color:var(--y)} .k.r{color:var(--r)}
+.restbar{display:flex;flex-wrap:wrap;gap:1.4cqw;align-items:center;justify-content:space-between}
+.doubt{font:700 max(15px,2cqw)/1.2 var(--display);margin:0}
+.launch{display:flex;gap:1.4cqw;align-items:center;flex-wrap:wrap}
+.cap{font:600 max(10px,1.05cqw)/1.2 var(--mono);color:var(--faint)}
+.s23 .foot{color:var(--faint)}
+.btn{font:600 max(13px,1.4cqw)/1 var(--display);border:0;border-radius:999px;cursor:pointer;padding:1.15cqw 2.1cqw;background:var(--orange);color:#fff;box-shadow:0 8px 22px -8px rgba(255,102,0,.7)}
+.btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:var(--tint);color:var(--navy);box-shadow:none}
+.btn:focus-visible,.pickbtn:focus-visible{outline:3px solid var(--navy);outline-offset:3px}
+
+.game{padding:3.4cqw 4.6cqw 2.6cqw;display:grid;grid-template-rows:auto 1fr auto;gap:1.8cqw;background:var(--white);border-radius:4px;opacity:0;visibility:hidden;transition:opacity .4s,visibility 0s .4s}
+.s23.on .game{opacity:1;visibility:visible;transition:opacity .4s}
+.s23.on .rest-v{opacity:0;filter:blur(3px);pointer-events:none}
+@media (max-width:760px){.game{padding:18px 16px}}
+.gtop{display:flex;flex-wrap:wrap;gap:1cqw 2cqw;align-items:center;justify-content:space-between}
+.gtop h4{margin:0;font:700 max(14px,1.7cqw)/1.2 var(--display)}
+.dots{display:flex;gap:.6cqw;flex-wrap:wrap}
+.dots i{width:max(10px,1.2cqw);height:max(10px,1.2cqw);border-radius:50%;background:var(--rule);display:block;transition:background .3s,transform .3s}
+.dots i.cur{background:var(--navy);transform:scale(1.25)}
+.dots i.ok{background:var(--g)} .dots i.no{background:var(--r)}
+.x{font:600 max(11px,1.1cqw)/1 var(--mono);background:none;border:0;color:var(--body);cursor:pointer}
+.play{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:2.6cqw;min-height:0}
+@media (max-width:760px){.play{grid-template-columns:1fr}}
+.card{border-radius:1.4cqw;border:2px solid var(--rule);padding:2.2cqw 2.4cqw;display:grid;gap:1.4cqw;align-content:start;transition:background .3s,border-color .3s;min-width:0}
+.card .who{font:700 max(13px,1.45cqw)/1.2 var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--orange-d)}
+.card .sc{margin:0;font:600 max(16px,2.15cqw)/1.35 var(--display);color:var(--navy);text-wrap:balance}
+.picks{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2cqw}
+.pickbtn{border:0;border-radius:1cqw;padding:1.4cqw 1cqw;cursor:pointer;font:700 max(13px,1.55cqw)/1.1 var(--display);display:grid;gap:.4cqw;justify-items:center;transition:transform .15s,opacity .2s}
+.pickbtn small{font:600 max(9px,.95cqw)/1.2 var(--mono);opacity:.85}
+.pickbtn:hover{transform:translateY(-2px)}
+.pickbtn.g{background:var(--g);color:#fff} .pickbtn.y{background:var(--y-btn);color:#3A2A00} .pickbtn.r{background:var(--r);color:#fff}
+.picks.done .pickbtn{opacity:.35;pointer-events:none} .picks.done .pickbtn.mine,.picks.done .pickbtn.ans{opacity:1}
+.pickbtn.mine{outline:3px solid var(--navy);outline-offset:3px}
+.fb{display:none;gap:.6cqw}
+.fb.on{display:grid;animation:rise .35s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.fb strong{font:700 max(14px,1.6cqw)/1.2 var(--display)}
+.fb p{margin:0;font-size:max(13px,1.45cqw);line-height:1.5;color:#27384D}
+.card.G{background:var(--g-bg);border-color:var(--g)} .card.Y{background:var(--y-bg);border-color:var(--y-btn)} .card.R{background:var(--r-bg);border-color:var(--r)}
+.help{background:var(--tint);border-radius:1.2cqw;padding:1.8cqw 2cqw;display:grid;gap:1.2cqw;align-content:start}
+.help h5{margin:0;font:700 max(10px,1.05cqw)/1.2 var(--display);letter-spacing:.2em;text-transform:uppercase;color:var(--body)}
+.q{display:grid;grid-template-columns:auto 1fr;gap:.4cqw 1cqw;align-items:start;font-size:max(12.5px,1.35cqw);line-height:1.4;color:#27384D}
+.q b{font:700 max(12px,1.3cqw)/1 var(--mono);color:var(--navy);padding-top:.15em}
+.q .to{grid-column:2;font:700 max(10px,1.05cqw)/1.2 var(--mono);letter-spacing:.04em}
+.to.g{color:var(--g)} .to.y{color:var(--y)} .to.r{color:var(--r)}
+.gbot{display:flex;flex-wrap:wrap;gap:1.2cqw 2cqw;align-items:center;justify-content:space-between}
+.say{margin:0;font:700 max(14px,1.6cqw)/1.3 var(--display);color:var(--navy);text-wrap:balance}
+.row{display:flex;gap:1cqw;flex-wrap:wrap}
+.results{display:grid;gap:1.2cqw;align-content:start}
+.big{font:800 max(34px,5.4cqw)/1 var(--display);color:var(--navy)}
+.big span{font-size:.45em;color:var(--body);font-weight:600}
+.miss{display:grid;gap:.8cqw}
+.miss div{font-size:max(12.5px,1.35cqw);line-height:1.45;color:#27384D;padding:1cqw 1.3cqw;background:var(--tint);border-radius:.9cqw}
+.miss b{font-family:var(--mono);font-size:.9em}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;font-size:13px;line-height:1.5;color:var(--gdim)}
+.notes b{display:block;color:var(--gbody);font-family:var(--display);font-weight:600;margin-bottom:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="sitebar">
+  <a class="home" href="../">MCC <span>AI</span></a>
+  <span class="sep"></span>
+  <span class="where">Foundations deck · slide 23, live</span>
+  <div class="right">
+    <button type="button" id="fs">Full screen</button>
+    <a href="../legal-boundaries/">Legal Boundaries</a>
+    <a href="../presentations/">Slides</a>
+    <a href="../">Home</a>
+  </div>
+</div>
+<div class="wrap">
+  <div class="meta"><span><b>Leveraging AI at MCC · Foundations</b> · slide 23 · Sort it yourself</span><span>G · Y · R to answer · → next · F full screen · Esc back to slide</span></div>
+
+  <section class="slide s23" id="s23">
+    <div class="layer rest-v">
+      <div>
+        <div class="kicker">The line</div>
+        <h2>Green, yellow, red.</h2>
+      </div>
+      <div class="tiers">
+        <div class="tier"><div class="k g">GREEN — ANY TOOL</div><h3>Already public</h3><p>Published catalog and marketing text. Public policy language. Generic drafting with no institutional data.</p></div>
+        <div class="tier"><div class="k y">YELLOW — LICENSED TOOLS</div><h3>Internal, not personal</h3><p>Draft procedures, agendas, internal communications, planning documents, aggregate enrollment. Signed in with your MCC account.</p></div>
+        <div class="tier"><div class="k r">RED — NO AI TOOL</div><h3>About a person</h3><p>Student records · financial aid · health and disability · Title IX, conduct and HR · personnel files · SSNs · credentials · legal hold.</p></div>
+      </div>
+      <span></span>
+      <div class="restbar">
+        <p class="doubt">When in doubt, it is red.</p>
+        <div class="launch"><span class="cap">12 real situations · about 6 minutes</span><button class="btn" id="go">Sort it yourself →</button></div>
+      </div>
+      <div class="foot"><span>© 2026 Ted Gonzalez, JD/MBA. All rights reserved.</span><span>23</span></div>
+    </div>
+
+    <div class="layer game" id="game" aria-hidden="true">
+      <div class="gtop">
+        <h4 id="gtitle">Green, yellow or red?</h4>
+        <div class="dots" id="dots"></div>
+        <button class="x" id="close">✕ Back to slide</button>
+      </div>
+      <div class="play" id="play"></div>
+      <div class="gbot"><p class="say" id="say"></p><div class="row" id="act"></div></div>
+    </div>
+  </section>
+
+  <div class="notes">
+    <div><b>Slide 23 · the game</b>Twelve situations from the Sort the Stack cards. The room calls it, you tap it. Each answer shows why. The two lookalike pairs (spreadsheet with and without IDs, notetaker in a staff meeting vs. a conduct intake) come back to back.</div>
+    <div><b>The two-question helper</b>For people who find the categories abstract: Is it about a specific person? Red. Is it already public? Green. Everything else is yellow.</div>
+  </div>
+</div>
+<footer class="sitefoot">© 2026 <a href="../">MCC AI Professional Development</a> · Ted Gonzalez, JD/MBA · Tier 1, Session 3</footer>
+<script src="../assets/mcc-qr.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const C=[
+ ["Paste MCC's published mission statement and ask for three social media posts.","G","It's already public. Any tool is fine."],
+ ["Upload a spreadsheet of course enrollments with no names, and ask for trends.","Y","Internal numbers, but nothing about a specific person. Use MCC's licensed tool, signed in with your MCC account."],
+ ["Upload the same spreadsheet, but student IDs are still in column A.","R","One column changes everything. Student IDs make it a student record."],
+ ["Ask AI to rewrite a policy paragraph from the public catalog so it's easier to read.","G","The catalog is published. Any tool is fine."],
+ ["Paste a student's ISIR to ask what one of the fields means.","R","An ISIR is financial aid data. That's GLBA, the one with teeth."],
+ ["Turn on an AI notetaker for a routine department meeting.","Y","Licensed tool only, and announce it. The transcript becomes a record."],
+ ["Turn on an AI notetaker for a student conduct intake meeting.","R","Conduct, Title IX and HR meetings are a hard stop. No AI notetakers, ever."],
+ ["Ask AI to explain a FERPA provision so you can answer a coworker's question.","G","No MCC data at all. Any tool is fine, then check the answer against the regulation."],
+ ["Ask for an Excel formula to total a budget column. No data pasted in.","G","Generic help with nothing from MCC in it. Any tool is fine."],
+ ["Ask AI to summarize a 60-page consultant report MCC paid for.","Y","Internal, not personal, so licensed tools only. The contract may restrict it further, so check before you paste."],
+ ["Paste a student's advising note and ask for a summary to send a colleague.","R","It's about a specific student. Once pasted, it's no longer in your sole possession."],
+ ["Paste six job applicants' résumés and ask which one is strongest.","R","Applicant materials are personnel records, and the AI shouldn't be making that call."]
+];
+const NAME={G:"Green",Y:"Yellow",R:"Red"};
+let i=0,score=0,answered=false,log=[];
+const s23=$("s23");
+function dots(){$("dots").innerHTML=C.map((_,k)=>`<i class="${k<log.length?(log[k].ok?"ok":"no"):(k===i?"cur":"")}"></i>`).join("")}
+function act(list){const b=$("act");b.innerHTML="";list.forEach(([l,f,g])=>{const x=document.createElement("button");x.className="btn"+(g?" ghost":"");x.textContent=l;x.onclick=f;b.appendChild(x)})}
+function card(){
+  answered=false;const [sc]=C[i];
+  $("gtitle").textContent=`Situation ${i+1} of ${C.length}`;
+  $("play").innerHTML=`
+   <div class="card" id="card"><span class="who">Someone at MCC wants to…</span><p class="sc">${sc}</p>
+     <div class="picks" id="picks">
+       <button class="pickbtn g" data-v="G">Green<small>any tool</small></button>
+       <button class="pickbtn y" data-v="Y">Yellow<small>MCC tools only</small></button>
+       <button class="pickbtn r" data-v="R">Red<small>no AI tool</small></button>
+     </div>
+     <div class="fb" id="fb"><strong id="fbh"></strong><p id="fbp"></p></div>
+   </div>
+   <div class="help"><h5>Stuck? Ask two questions</h5>
+     <div class="q"><b>1</b><span>Is it about a specific person?</span><span class="to r">YES → RED</span></div>
+     <div class="q"><b>2</b><span>Is it already public?</span><span class="to g">YES → GREEN</span></div>
+     <div class="q"><b>·</b><span>Neither?</span><span class="to y">→ YELLOW</span></div>
+   </div>`;
+  document.querySelectorAll(".pickbtn").forEach(b=>b.onclick=()=>answer(b.dataset.v));
+  $("say").textContent=i===0?"Call it out loud first. Then tap.":"";
+  act([]);dots();
+}
+function answer(v){
+  if(answered||i>=C.length)return;answered=true;const [,a,why]=C[i],ok=v===a;if(ok)score++;
+  log.push({ok,v,a});
+  $("picks").classList.add("done");
+  document.querySelector(`.pickbtn[data-v="${v}"]`).classList.add("mine");
+  document.querySelector(`.pickbtn[data-v="${a}"]`).classList.add("ans");
+  $("card").classList.add(a);
+  $("fbh").textContent=ok?`${NAME[a]}. Right.`:`It's ${NAME[a]}.`;
+  $("fbh").style.color=a==="G"?"var(--g)":a==="Y"?"var(--y)":"var(--r)";
+  $("fbp").textContent=why;$("fb").classList.add("on");
+  const pairNote=(i===2)?"Same spreadsheet, one column different.":(i===6)?"Same tool, different meeting.":"";
+  $("say").textContent=pairNote;
+  act([[i<C.length-1?"Next situation →":"See how we did →",next]]);dots();
+}
+function next(){if(!answered)return;if(i<C.length-1){i++;card()}else results()}
+function results(){
+  i=C.length;dots();$("gtitle").textContent="How we did";
+  const missed=log.map((l,k)=>({...l,k})).filter(l=>!l.ok);
+  const reds=C.filter(c=>c[1]==="R").length;
+  $("play").innerHTML=`<div class="results"><div class="big">${score}<span> of ${C.length} right</span></div>
+    <p class="say" style="font-weight:600">${score===C.length?"Clean sweep.":missed.length<=2?"Close. The misses are the useful part.":"The misses are the useful part. Walk through them."}</p>
+    <div class="miss">${missed.slice(0,4).map(m=>`<div><b>${NAME[m.v]} → ${NAME[m.a]}</b> · ${C[m.k][0]}</div>`).join("")}</div></div>
+    <div class="help"><h5>The pattern</h5><div class="q"><b>${reds}</b><span>of the ${C.length} were red. Most real requests that go wrong are about a person.</span></div>
+    <div class="q"><b>!</b><span style="font-weight:700;color:var(--navy)">When in doubt, it is red.</span></div></div>`;
+  $("say").textContent="";
+  act([["↺ Try again",restart,1],["Back to slide",close]]);
+}
+function restart(){i=0;score=0;log=[];card()}
+function open(){s23.classList.add("on");$("game").setAttribute("aria-hidden","false");restart()}
+function close(){s23.classList.remove("on");$("game").setAttribute("aria-hidden","true");$("go").focus()}
+$("go").onclick=open;$("close").onclick=close;
+document.addEventListener("keydown",e=>{
+  if(!s23.classList.contains("on"))return;
+  const k=e.key.toLowerCase();
+  if(k==="g"||k==="1")answer("G"); if(k==="y"||k==="2")answer("Y"); if(k==="r"||k==="3")answer("R");
+  if(k==="arrowright"||(k===" "&&e.target.tagName!=="BUTTON")){e.preventDefault();const b=$("act").querySelector("button:last-child");b&&b.click()}
+  if(k==="escape")close();
+});
+function fs(){const d=document;if(d.fullscreenElement){d.exitFullscreen&&d.exitFullscreen()}else if(s23.requestFullscreen){s23.requestFullscreen().catch(()=>{})}}
+$("fs").onclick=fs;
+document.addEventListener("keydown",e=>{if(e.key==="f"||e.key==="F")fs()});
+if(window.MCCQR&&window.MCCQR.show)window.MCCQR.show();
+if(location.hash==="#demo")open();
+addEventListener("hashchange",()=>{if(location.hash==="#demo"&&!s23.classList.contains("on"))open()});
+})();
+</script>
+</body>
+</html>
