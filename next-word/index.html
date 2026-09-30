@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>See It Predict — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="Foundations slide 5, live: watch a model predict an answer one word at a time, cite the wrong FERPA case with full confidence, and see how close it came to the right one.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Lato:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: the Foundations slide as a fixed 16:9 frame; the demo takes over the frame in four steps. */
+:root{
+  --ground:#0A1A2E; --ground-ink:#DCE4EE; --ground-dim:#8FA1B5; --line:rgba(255,255,255,.12);
+  /* the slide is always white, as in the deck */
+  --slide:#FFFFFF; --navy:#003366; --orange:#FF6600; --orange-d:#C24E00;
+  --body:#6B7480; --faint:#A3ABB5; --rule:#E3E8EE; --tint:#F4F7FA;
+  --wrong:#C8321E; --wrong-bg:#FDECE9; --right:#1E7B4A; --right-bg:#E6F4EC;
+  --display:'Poppins','Century Gothic',system-ui,sans-serif;
+  --text:'Lato','Segoe UI',system-ui,sans-serif;
+  --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body{margin:0;-webkit-font-smoothing:antialiased}
+.sitebar{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,30px);border-bottom:1px solid var(--line);background:rgba(6,16,30,.92);flex-wrap:wrap;font-family:var(--display)}
+.sitebar .home{font-size:14.5px;font-weight:700;text-decoration:none;color:#fff;white-space:nowrap}
+.sitebar .home span{color:var(--orange)}
+.sitebar .sep{width:1px;height:20px;background:var(--line)}
+.sitebar .where{font-size:13.5px;color:var(--ground-dim)}
+.sitebar .right{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.sitebar .right a,.sitebar .right button{font:inherit;font-size:12.5px;text-decoration:none;border:1px solid var(--line);border-radius:9px;padding:7px 13px;color:var(--ground-dim);background:none;cursor:pointer}
+.sitebar .right a:hover,.sitebar .right button:hover{background:rgba(255,255,255,.08);color:#fff}
+.sitefoot{font-size:12px;color:var(--ground-dim);text-align:center;padding:10px 16px 28px}
+.sitefoot a{color:inherit}
+/* projection: fit the slide to the screen height */
+.slide{width:min(100%, calc((100vh - 150px) * 16 / 9));margin-inline:auto}
+.slide:fullscreen{width:100vw;height:100vh;max-width:none;aspect-ratio:auto;border-radius:0}
+
+body{background:var(--ground);color:var(--ground-ink);font-family:var(--text)}
+.wrap{max-width:1120px;margin:0 auto;padding-block:28px 40px;padding-inline:16px;display:grid;gap:14px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:baseline;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--ground-dim);letter-spacing:.04em}
+.meta b{color:var(--ground-ink);font-weight:600}
+
+.slide{position:relative;background:var(--slide);color:var(--navy);aspect-ratio:16/9;width:100%;max-width:100%;container-type:inline-size;overflow:hidden;border-radius:4px;box-shadow:0 18px 50px -20px rgba(0,20,50,.45)}
+@media (max-width:720px){.slide{aspect-ratio:auto;min-height:560px}}
+
+/* ---- the original slide ---- */
+.orig{position:absolute;inset:0;padding:6.6cqw 7.4cqw 5cqw;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:3cqw;transition:opacity .45s,filter .45s}
+.kicker{font-family:var(--display);font-weight:700;font-size:max(10px,1.05cqw);letter-spacing:.28em;color:var(--orange-d);text-transform:uppercase}
+.orig h1{font-family:var(--display);font-weight:800;font-size:max(26px,4.2cqw);line-height:1.08;margin:1.2cqw 0 0;letter-spacing:-.01em;text-wrap:balance}
+.orig p{font-size:max(14px,1.95cqw);line-height:1.6;color:var(--body);margin:6cqw 0 0;max-width:62ch}
+.orig .bold{font-family:var(--display);font-weight:700;color:var(--navy);font-size:max(15px,2.3cqw);line-height:1.3;margin-top:5.6cqw;text-wrap:balance}
+.foot{position:absolute;left:7.4cqw;right:7.4cqw;bottom:2.6cqw;display:flex;justify-content:space-between;font-size:max(9px,.9cqw);color:var(--faint)}
+.launch{align-self:end;justify-self:end;display:grid;gap:1.1cqw;justify-items:end;text-align:right}
+.launch small{font-family:var(--mono);font-size:max(10px,1.05cqw);color:var(--faint);letter-spacing:.04em}
+.btn{font:600 max(13px,1.55cqw)/1 var(--display);border:0;border-radius:999px;cursor:pointer;padding:1.25cqw 2.2cqw;display:inline-flex;gap:.8cqw;align-items:center;transition:transform .15s,background .15s}
+.btn:focus-visible{outline:3px solid var(--navy);outline-offset:3px}
+.btn.primary{background:var(--orange);color:#fff;box-shadow:0 8px 22px -8px rgba(255,102,0,.7)}
+.btn.primary:hover{transform:translateY(-1px);background:var(--orange-d)}
+.btn.ghost{background:var(--tint);color:var(--navy)}
+.btn.ghost:hover{background:var(--rule)}
+.pulse{animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 8px 22px -8px rgba(255,102,0,.7),0 0 0 0 rgba(255,102,0,.35)}50%{box-shadow:0 8px 22px -8px rgba(255,102,0,.7),0 0 0 1.4cqw rgba(255,102,0,0)}}
+@media (max-width:720px){.orig{grid-template-columns:1fr;padding:28px 22px 48px}.launch{justify-self:start;justify-items:start;text-align:left}.orig p{margin-top:18px}.orig .bold{margin-top:18px}.foot{left:22px;right:22px;bottom:14px}}
+
+/* ---- the demo ---- */
+.demo{position:absolute;inset:0;background:var(--slide);padding:3.4cqw 4.4cqw 3cqw;display:grid;grid-template-rows:auto 1fr auto;gap:2cqw;opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .4s,transform .4s,visibility 0s .4s}
+.slide.on .demo{opacity:1;visibility:visible;transform:none;transition:opacity .4s,transform .4s}
+.slide.on .orig{opacity:0;filter:blur(3px)}
+.bar{display:flex;flex-wrap:wrap;gap:1.2cqw 2cqw;align-items:center;justify-content:space-between}
+.steps{display:flex;gap:.6cqw;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+.steps li{font:600 max(10px,1.1cqw)/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding:.8cqw 1.2cqw;border-radius:999px;background:var(--tint);transition:all .3s}
+.steps li.cur{background:var(--navy);color:#fff}
+.steps li.done{color:var(--navy)}
+.x{font:600 max(11px,1.15cqw)/1 var(--mono);background:none;border:0;color:var(--body);cursor:pointer;padding:.6cqw}
+.x:hover{color:var(--navy)}
+
+.stage{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:3cqw;min-height:0}
+@media (max-width:720px){.demo{padding:18px 16px}.stage{grid-template-columns:1fr}}
+.chat{display:grid;align-content:start;gap:1.6cqw;min-width:0}
+.q{justify-self:end;max-width:88%;background:var(--navy);color:#fff;border-radius:1.6cqw 1.6cqw .4cqw 1.6cqw;padding:1.3cqw 1.8cqw;font-size:max(13px,1.6cqw);line-height:1.45;min-height:1em}
+.who{font:600 max(10px,1cqw)/1 var(--mono);letter-spacing:.08em;color:var(--faint);text-transform:uppercase}
+.a{font-size:max(14px,1.9cqw);line-height:1.6;color:#1C2B3D;min-height:6em}
+.tok{opacity:0;display:inline;transition:opacity .25s,background .25s,color .25s;border-radius:4px}
+.tok.in{opacity:1}
+.tok.fresh{background:#FFF1E6}
+.caret{display:inline-block;width:.5em;height:1.05em;background:var(--orange);vertical-align:-.15em;margin-left:2px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.seg{cursor:pointer;border-bottom:2px dashed #9DB3CC;transition:background .2s}
+.seg:hover,.seg:focus-visible{background:#EAF1F8;outline:none}
+.seg.bad{background:var(--wrong-bg);border-bottom:2px solid var(--wrong);color:var(--wrong)}
+.seg.good{background:var(--right-bg);border-bottom:2px solid var(--right)}
+
+.side{display:grid;align-content:start;gap:1.6cqw;min-width:0}
+.panel{background:var(--tint);border-radius:1.2cqw;padding:1.6cqw 1.8cqw;display:grid;gap:1.1cqw}
+.panel h3{margin:0;font:600 max(10px,1.05cqw)/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--body)}
+.cands{display:grid;gap:.8cqw}
+.cand{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.4cqw 1cqw;font-size:max(12px,1.35cqw);align-items:center}
+.cand span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--mono);color:#1C2B3D}
+.cand em{font:600 max(11px,1.2cqw)/1 var(--mono);font-style:normal;color:var(--body);font-variant-numeric:tabular-nums}
+.track{grid-column:1/-1;height:max(6px,.8cqw);background:var(--rule);border-radius:9px;overflow:hidden}
+.fill{height:100%;width:0;background:#9DB3CC;border-radius:9px;transition:width .5s cubic-bezier(.3,.8,.3,1)}
+.cand.pick .fill{background:var(--orange)} .cand.pick span{color:var(--orange-d);font-weight:600}
+.cand.truth .fill{background:var(--right)}
+.fork .panel{outline:2px solid var(--orange);outline-offset:-2px}
+.dial{display:grid;gap:.8cqw}
+.dial div{display:grid;grid-template-columns:7em minmax(0,1fr);gap:1cqw;align-items:center;font:600 max(10px,1.05cqw)/1 var(--mono);color:var(--body);text-transform:uppercase;letter-spacing:.06em}
+.dial i{display:block;height:max(6px,.8cqw);border-radius:9px;background:var(--rule);position:relative;overflow:hidden}
+.dial i::after{content:"";position:absolute;inset:0;width:var(--v,0%);background:var(--c,var(--navy));border-radius:9px;transition:width .8s}
+.note{font-size:max(12px,1.35cqw);line-height:1.5;color:#34445A;margin:0}
+.note b{color:var(--navy)}
+.note.w b{color:var(--wrong)} .note.r b{color:var(--right)}
+
+.foot2{display:flex;flex-wrap:wrap;gap:1.2cqw 2cqw;align-items:center;justify-content:space-between}
+.prompt{font-family:var(--display);font-weight:600;font-size:max(13px,1.6cqw);color:var(--navy);margin:0;text-wrap:balance}
+.actions{display:flex;gap:1cqw;flex-wrap:wrap}
+
+/* compare view */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:2cqw}
+@media (max-width:720px){.compare{grid-template-columns:1fr}}
+.card{border:1px solid var(--rule);border-radius:1.2cqw;padding:1.6cqw 1.8cqw;display:grid;gap:1cqw;position:relative;min-width:0}
+.card p{margin:0;font-size:max(12px,1.45cqw);line-height:1.55;color:#1C2B3D}
+.card .stamp{justify-self:start;font:700 max(10px,1.05cqw)/1 var(--mono);letter-spacing:.1em;padding:.6cqw 1cqw;border-radius:999px;opacity:0;transform:scale(.8);transition:all .35s}
+.card.show .stamp{opacity:1;transform:none}
+.stamp.w{background:var(--wrong-bg);color:var(--wrong)} .stamp.r{background:var(--right-bg);color:var(--right)}
+.tagline{font-family:var(--display);font-weight:700;color:var(--navy);font-size:max(15px,2.1cqw);line-height:1.3;margin:0;text-wrap:balance}
+
+.explain{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;font-size:13px;line-height:1.5;color:var(--ground-dim)}
+.explain b{color:var(--ground-ink);font-family:var(--display);font-weight:600;display:block;margin-bottom:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="sitebar">
+  <a class="home" href="../">MCC <span>AI</span></a>
+  <span class="sep"></span>
+  <span class="where">Foundations deck · slide 5, live</span>
+  <div class="right">
+    <button type="button" id="fs">Full screen</button>
+    <a href="../presentations/">Slides</a>
+    <a href="../foundations/">Foundations</a>
+    <a href="../">Home</a>
+  </div>
+</div>
+<div class="wrap">
+  <div class="meta"><span><b>Leveraging AI at MCC · Foundations</b> · slide 5 · See it in action</span><span>Space or → advances · F full screen · Esc back to slide</span></div>
+
+  <section class="slide" id="slide" aria-live="polite">
+    <div class="orig" id="orig">
+      <div>
+        <div class="kicker">The mechanism</div>
+        <h1>It predicts the next word.</h1>
+        <p>That is the whole mechanism. Not retrieval from a database. Not reasoning from known facts. Prediction of the most plausible continuation of your text.</p>
+        <div class="bold">A wrong answer and a right answer are produced by exactly the same process — and they arrive looking exactly the same.</div>
+      </div>
+      <div class="launch">
+        <small>Watch it happen, one word at a time</small>
+        <button class="btn primary pulse" id="go">▶&nbsp; See it in action</button>
+      </div>
+    </div>
+
+    <div class="demo" id="demo" aria-hidden="true">
+      <div class="bar">
+        <ol class="steps" id="steps"><li>1 · Ask</li><li>2 · Predict</li><li>3 · Spot it</li><li>4 · Rewind</li></ol>
+        <button class="x" id="close">✕ Back to slide</button>
+      </div>
+
+      <div class="stage" id="stage">
+        <div class="chat">
+          <div class="who" style="justify-self:end">Participant asks</div>
+          <div class="q" id="q"></div>
+          <div class="who">AI answers</div>
+          <div class="a" id="a"></div>
+        </div>
+        <div class="side" id="side">
+          <div class="panel">
+            <h3 id="candHead">Next-word candidates</h3>
+            <div class="cands" id="cands"><p class="note">Waiting for the question.</p></div>
+          </div>
+          <div class="panel dial" id="dial">
+            <div>Fluency <i id="fl" style="--c:var(--navy)"></i></div>
+            <div>Accuracy <i id="ac" style="--c:var(--faint)"></i></div>
+          </div>
+          <p class="note" id="side-note">The model has no case database to look in. It only scores which word is most plausible next.</p>
+        </div>
+      </div>
+
+      <div class="foot2">
+        <p class="prompt" id="prompt">Reading the question…</p>
+        <div class="actions" id="actions"></div>
+      </div>
+    </div>
+
+    <div class="foot" id="foot"><span>© 2026 Ted Gonzalez, JD/MBA. All rights reserved.</span><span>5</span></div>
+  </section>
+
+  <div class="explain">
+    <div><b>1 · Ask</b>A real question from Session 3 content types itself into the chat.</div>
+    <div><b>2 · Predict</b>The answer arrives word by word. The side panel shows the candidates for each next word, and stops at the fork where the right and wrong case names nearly tie.</div>
+    <div><b>3 · Spot it</b>The room taps the part they think is wrong. Only one part is. Everything else is true of a different case.</div>
+    <div><b>4 · Rewind</b>Replay the fork with the other pick. Both answers appear side by side, equally fluent, before either is labeled.</div>
+  </div>
+  <div class="meta"><span>Percentages are illustrative. The mechanism is real; the exact numbers are not. Both cases are real: Owasso I.S.D. v. Falvo, 534 U.S. 426 (2002); Gonzaga Univ. v. Doe, 536 U.S. 273 (2002).</span></div>
+</div>
+<footer class="sitefoot">© 2026 <a href="../">MCC AI Professional Development</a> · Ted Gonzalez, JD/MBA · Tier 1, Session 1</footer>
+<script src="../assets/mcc-qr.js"></script>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const Q="Which Supreme Court case held that FERPA doesn't let students sue for damages?";
+// token, candidates [word, %] (first is the model's pick), seg for spot-the-error
+const T=[
+ ["The",[["The",62],["In",14],["That",11]]],
+ [" case",[["case",71],["Supreme",13],["answer",8]]],
+ [" is",[["is",58],["you're",17],["was",12]]],
+ [" Owasso Independent School District v. Falvo",[["Owasso v. Falvo",38],["Gonzaga v. Doe",34],["Doe v. Pike",9],["…thousands more",19]],"name",true],
+ [" (2002).",[["(2002)",81],["(2001)",9],["(2003)",4]],"year"],
+ [" The",[["The",66],["In",15],["There",7]]],
+ [" Court",[["Court",74],["justices",11],["ruling",8]]],
+ [" held",[["held",69],["ruled",18],["found",9]]],
+ [" that",[["that",88],["FERPA",6],["the",3]]],
+ [" FERPA's nondisclosure provisions create no individual rights enforceable under § 1983,",[["FERPA's",57],["the",21],["students",12]],"hold"],
+ [" so",[["so",44],["meaning",26],["and",15]]],
+ [" students cannot sue for damages.",[["students",63],["a",16],["private",11]],"concl"]
+];
+const FACT={
+ name:["bad","Caught it. <b>Owasso v. Falvo (2002) is a real FERPA case</b>, but it's about peer grading: papers students grade for each other aren't education records. The case the question describes is <b>Gonzaga University v. Doe</b>, also 2002."],
+ year:["good","That part is true. It's also true of the wrong case. Both were decided in 2002, which is what makes the error hard to see."],
+ hold:["good","That holding is accurate. It belongs to Gonzaga v. Doe. The model attached a correct holding to the wrong case name."],
+ concl:["good","Accurate. FERPA has no private right of action. Right conclusion, wrong citation."]
+};
+const slide=$("slide"),demo=$("demo"),steps=[...$("steps").children];
+let step=0,timers=[],found=false;
+const later=(fn,ms)=>timers.push(setTimeout(fn,ms));
+const clear=()=>{timers.forEach(clearTimeout);timers=[]};
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const sp=reduce?.25:1;
+
+function setStep(n){step=n;steps.forEach((li,i)=>{li.className=i<n-1?"done":i===n-1?"cur":""})}
+function actions(list){const box=$("actions");box.innerHTML="";list.forEach(([label,fn,cls])=>{const b=document.createElement("button");b.className="btn "+(cls||"ghost");b.innerHTML=label;b.onclick=fn;box.appendChild(b)})}
+function dial(f,a,c){$("fl").style.setProperty("--v",f+"%");$("ac").style.setProperty("--v",a+"%");if(c)$("ac").style.setProperty("--c",c)}
+function cands(list,pickIdx,truthName){
+  const box=$("cands");box.innerHTML="";
+  list.forEach(([w,p],i)=>{const d=document.createElement("div");d.className="cand"+(i===pickIdx?" pick":"")+(w===truthName?" truth":"");
+    d.innerHTML=`<span>${w}</span><em>${p}%</em><div class="track"><div class="fill"></div></div>`;box.appendChild(d);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>d.querySelector(".fill").style.width=p+"%"))});
+}
+
+function open(){slide.classList.add("on");demo.setAttribute("aria-hidden","false");$("close").focus();ask()}
+function close(){clear();slide.classList.remove("on");demo.setAttribute("aria-hidden","true");$("go").focus()}
+
+function reset(){clear();found=false;$("stage").innerHTML=stageHTML;dial(0,0,"var(--faint)")}
+const stageHTML=$("stage").innerHTML;
+
+function ask(){
+  reset();setStep(1);$("prompt").textContent="A participant asks a real question.";actions([["Skip ahead →",predict]]);
+  const q=$("q");let i=0;
+  (function type(){q.textContent=Q.slice(0,++i);if(i<Q.length)later(type,reduce?0:28);else later(predict,700*sp)})();
+}
+
+function predict(){
+  clear();setStep(2);$("q").textContent=Q;
+  $("prompt").textContent="Watch the side panel. Each word is a pick from ranked candidates.";
+  actions([["Pause",pause]]);
+  const a=$("a");a.innerHTML="";
+  T.forEach(([t,,seg],i)=>{const s=document.createElement("span");s.className="tok";s.textContent=t;s.dataset.i=i;if(seg)s.dataset.seg=seg;a.appendChild(s)});
+  const caret=document.createElement("span");caret.className="caret";a.appendChild(caret);
+  let i=0;
+  function next(){
+    if(i>=T.length){caret.remove();done();return}
+    const [t,c,,fork]=T[i];const el=a.children[i];
+    cands(c,0);
+    if(fork){
+      $("stage").classList.add("fork");$("candHead").textContent="The fork: which case name comes next?";
+      $("side-note").innerHTML="<b>Two real FERPA cases, both from 2002, four points apart.</b> The model takes the top score. It has no way to check which one is right.";
+      later(()=>{show(el);$("stage").classList.remove("fork");$("candHead").textContent="Next-word candidates";i++;later(next,650*sp)},3200*sp);
+    }else{later(()=>{show(el);i++;later(next,260*sp)},420*sp)}
+    dial(Math.min(96,20+i*8),Math.min(96,20+i*8));
+  }
+  function show(el){el.classList.add("in","fresh");later(()=>el.classList.remove("fresh"),500)}
+  let paused=false;function pause(){paused=!paused;if(paused){clear();actions([["Resume",()=>{paused=false;actions([["Pause",pause]]);next()},"primary"]])}}
+  next();
+}
+
+function done(){
+  dial(96,96);$("side-note").innerHTML="Fluent, specific, correctly formatted, confident. <b>Every signal we use to judge a human expert says this is right.</b>";
+  $("prompt").textContent="Sounds right. Is it?";
+  actions([["Spot the error →",spot,"primary"]]);
+}
+
+function spot(){
+  clear();setStep(3);
+  const a=$("a");
+  // wrap tokens into clickable segments
+  const groups={};[...a.querySelectorAll(".tok")].forEach(t=>{t.classList.add("in");if(t.dataset.seg)(groups[t.dataset.seg]=groups[t.dataset.seg]||[]).push(t)});
+  Object.entries(groups).forEach(([k,els])=>els.forEach(el=>{el.classList.add("seg");el.tabIndex=0;el.setAttribute("role","button");
+    const pick=()=>check(k);el.onclick=pick;el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick()}}}));
+  $("candHead").textContent="Check it";
+  $("cands").innerHTML='<p class="note">Tap the part you think is wrong. <b>Exactly one part is.</b></p>';
+  $("side-note").innerHTML="Three-question check: <b>What would make this wrong? Where did this come from?</b>";
+  $("prompt").textContent="Tap the underlined part you would check first.";
+  actions([["Reveal",()=>check("name"),"ghost"]]);
+}
+function check(k){
+  const [cls,msg]=FACT[k];
+  document.querySelectorAll(`.tok[data-seg="${k}"]`).forEach(e=>e.classList.add(cls));
+  $("cands").innerHTML=`<p class="note ${cls==="bad"?"w":"r"}">${msg}</p>`;
+  if(cls==="bad"&&!found){found=true;dial(96,22,"var(--wrong)");
+    $("side-note").innerHTML="Fluency stayed at the top. <b>Accuracy was never being measured.</b>";
+    $("prompt").textContent="One wrong case name. Everything around it was true.";
+    actions([["Rewind to the fork →",rewind,"primary"]]);}
+}
+
+function rewind(){
+  clear();setStep(4);
+  $("stage").innerHTML=`<div class="chat" style="grid-column:1/-1;gap:1.8cqw">
+    <div class="panel" id="forkp"><h3>The fork, replayed</h3><div class="cands" id="cands2"></div></div>
+    <div class="compare">
+      <div class="card" id="c1"><div class="who">Pick #1 · 38%</div><p>The case is Owasso Independent School District v. Falvo (2002). The Court held that FERPA's nondisclosure provisions create no individual rights enforceable under § 1983, so students cannot sue for damages.</p><span class="stamp w">WRONG CASE</span></div>
+      <div class="card" id="c2"><div class="who">Pick #2 · 34%</div><p>The case is Gonzaga University v. Doe (2002). The Court held that FERPA's nondisclosure provisions create no individual rights enforceable under § 1983, so students cannot sue for damages.</p><span class="stamp r">CORRECT</span></div>
+    </div>
+    <p class="tagline" id="tag" style="opacity:0;transition:opacity .6s">A wrong answer and a right answer are produced by exactly the same process — and they arrive looking exactly the same.</p>
+  </div>`;
+  const box=$("cands2");const saved=$("cands");box.id="cands";
+  cands([["Owasso v. Falvo",38],["Gonzaga v. Doe",34],["…everything else",28]],0,"Gonzaga v. Doe");
+  $("prompt").textContent="Same process, same polish. Can you tell them apart without a source?";
+  later(()=>{$("c1").classList.add("show");$("c2").classList.add("show")},2600*sp);
+  later(()=>{$("tag").style.opacity=1;$("prompt").textContent="Four points decided whether this answer was right."},3600*sp);
+  actions([["↺ Run again",ask],["Back to slide",close,"primary"]]);
+}
+
+$("go").onclick=open;$("close").onclick=close;
+document.addEventListener("keydown",e=>{
+  if(e.target.closest&&e.target.closest(".seg"))return;
+  if(e.key==="Escape"&&slide.classList.contains("on"))close();
+  if((e.key===" "||e.key==="ArrowRight")&&e.target.tagName!=="BUTTON"){e.preventDefault();
+    if(!slide.classList.contains("on"))open();
+    else{const b=$("actions").querySelector(".primary")||$("actions").querySelector("button");b&&b.click()}}
+});
+function fs(){const d=document;if(d.fullscreenElement){d.exitFullscreen&&d.exitFullscreen()}else if(slide.requestFullscreen){slide.requestFullscreen().catch(()=>{})}}
+$("fs").onclick=fs;
+document.addEventListener("keydown",e=>{if((e.key==="f"||e.key==="F")&&!e.target.closest(".seg"))fs()});
+if(location.hash==="#demo")open();
+addEventListener("hashchange",()=>{if(location.hash==="#demo"&&!slide.classList.contains("on"))open()});
+})();
+</script>
+</body>
+</html>
