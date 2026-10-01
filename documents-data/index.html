@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documents &amp; Spreadsheets Lab — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="Check an AI summary of a report against its pages, then spot-check AI-written spreadsheet formulas against numbers you already know.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A1A2E; --navy:#003366; --orange:#FF6600; --gold:#F9DD56; --teal:#008DA7;
+  --ondk:#A7B7C9; --dimdk:#5C6E82; --line:rgba(255,255,255,.12);
+  --green:#6FD79B; --red:#FF8A78; --amber:#EFB94D;
+  --sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--ink);color:#fff;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100vh}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+.bar{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,30px);border-bottom:1px solid var(--line);background:rgba(6,16,30,.92);position:sticky;top:0;z-index:40;flex-wrap:wrap}
+.bar .home{font-size:14.5px;font-weight:700;text-decoration:none;white-space:nowrap}
+.bar .home span{color:var(--orange)}
+.bar .sep{width:1px;height:20px;background:var(--line)}
+.bar .where{font-size:13.5px;color:var(--ondk)}
+
+main{flex:1;width:100%;max-width:1320px;margin:0 auto;padding:clamp(22px,5vw,44px) clamp(16px,4vw,30px) 60px}
+.kicker{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--orange)}
+h1{font-size:clamp(27px,5vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:12px}
+h1 span{color:var(--dimdk)}
+.lede{color:var(--ondk);font-size:clamp(15px,1.8vw,18px);line-height:1.65;margin-top:18px;max-width:74ch}
+.lede strong{color:#fff}
+.banner{display:flex;gap:12px;align-items:flex-start;margin-top:14px;padding:14px 16px;border-radius:12px;max-width:80ch}
+.banner p{font-size:13px;line-height:1.6}
+.banner .ic{flex-shrink:0;font-weight:700;width:20px;text-align:center}
+.banner.safe{border:1px solid rgba(111,215,155,.38);background:rgba(111,215,155,.08)} .banner.safe p{color:#CFE9DA} .banner.safe strong,.banner.safe .ic{color:#8FE3B4}
+.banner.warn{border:1px solid rgba(255,138,120,.38);background:rgba(255,138,120,.08)} .banner.warn p{color:#FFD9D0} .banner.warn strong,.banner.warn .ic{color:#FFB8A8}
+
+h2.sec{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:38px 0 14px;display:flex;align-items:center;gap:10px}
+h2.sec::after{content:'';flex:1;height:1px;background:var(--line)}
+
+details.notes{margin-top:44px;border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.03);overflow:hidden}
+details.notes summary{padding:17px 21px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:11px;list-style:none}
+details.notes summary::-webkit-details-marker{display:none}
+details.notes summary .chev{color:var(--orange);transition:transform .2s;display:inline-block}
+details.notes[open] summary .chev{transform:rotate(90deg)}
+details.notes .nbody{padding:0 21px 24px;font-size:14px;line-height:1.72;color:var(--ondk);max-width:76ch}
+details.notes h4{color:#fff;font-size:13.5px;margin:19px 0 7px;font-weight:600}
+details.notes strong{color:#fff}
+footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--dimdk)}
+input[type=file]{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.tab{border:1px solid var(--line);border-radius:30px;padding:9px 18px;font-size:13px;font-weight:600;color:var(--ondk)}
+.tab[aria-selected="true"]{background:var(--orange);border-color:var(--orange);color:#fff}
+.tab .sc{font-weight:500;opacity:.85;margin-left:6px}
+.intro{font-size:14px;color:var(--ondk);line-height:1.65;max-width:78ch;margin-top:16px}
+.intro b{color:#fff}
+.btn{border-radius:10px;padding:9px 15px;font-size:13px;font-weight:600;border:1px solid var(--line);color:var(--ondk)}
+.btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.btn.primary{background:var(--orange);border-color:var(--orange);color:#fff}
+.btn.primary:hover{background:#e25c00}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.panel{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04);padding:20px;min-width:0}
+.panel h3{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+
+/* report */
+.two{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:22px;margin-top:18px;align-items:start}
+@media(max-width:980px){.two{grid-template-columns:1fr}}
+.ask{font-size:13px;color:var(--ondk);background:rgba(255,255,255,.05);border-radius:12px;padding:10px 14px;margin-bottom:14px}
+.ask b{color:#fff}
+.claims{display:grid;gap:10px}
+.claim{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:rgba(255,255,255,.025)}
+.claim.right{border-color:rgba(111,215,155,.5)} .claim.wrong{border-color:rgba(255,138,120,.55)}
+.claim p{font-size:14px;line-height:1.55;color:#fff}
+.cite{font-family:var(--mono);font-size:12px;color:var(--teal);border:1px solid rgba(0,141,167,.45);border-radius:6px;padding:1px 7px;margin-left:4px;white-space:nowrap}
+.cite:hover{background:rgba(0,141,167,.18);color:#fff}
+.verdicts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.vbtn{border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:12px;color:var(--ondk)}
+.vbtn:hover{background:rgba(255,255,255,.08);color:#fff}
+.vbtn.mine{outline:2px solid #fff;outline-offset:1px}
+.vbtn.ans{border-color:var(--green);color:var(--green)}
+.claim.done .vbtn{pointer-events:none}
+.claim .fb{display:none;font-size:12.5px;line-height:1.55;margin-top:9px;color:var(--ondk)}
+.claim.done .fb{display:block}
+.fb b.ok{color:var(--green)} .fb b.no{color:var(--red)}
+.docview{position:sticky;top:90px}
+.pages{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.pg{border:1px solid var(--line);border-radius:8px;padding:6px 11px;font-size:12px;color:var(--ondk);font-family:var(--mono)}
+.pg[aria-current="true"]{background:#fff;color:#0A1A2E;border-color:#fff}
+.paper{background:#F7F5F0;color:#1E2733;border-radius:6px;padding:26px 28px 22px;min-height:330px;font-size:13.5px;line-height:1.7;font-family:Georgia,'Times New Roman',serif;box-shadow:0 10px 30px -14px rgba(0,0,0,.7)}
+.paper .hd{font-family:var(--sans);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#7A8592;display:flex;justify-content:space-between;border-bottom:1px solid #DDD8CC;padding-bottom:8px;margin-bottom:14px}
+.paper h4{font-family:var(--sans);font-size:15px;color:#003366;margin-bottom:8px}
+.paper p{margin-bottom:10px}
+.paper mark{background:#FFE8A3;padding:0 2px}
+.followup{margin-top:22px}
+.ai{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px;font-size:14px;line-height:1.55}
+.ai small,.you small{display:block;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dimdk);margin-bottom:4px}
+.you{border-radius:12px;padding:10px 14px;background:rgba(0,51,102,.6);font-size:14px;margin-left:auto;max-width:85%}
+.lesson{margin-top:14px;border-left:3px solid var(--teal);padding:10px 14px;background:rgba(0,141,167,.08);border-radius:0 10px 10px 0;font-size:13.5px;line-height:1.6;color:var(--ondk)}
+.lesson b{color:#fff}
+.score{font-size:13px;color:var(--ondk);margin-top:14px}
+.score b{color:#fff;font-size:16px}
+
+/* sheet */
+.sheet-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
+table.sheet{border-collapse:collapse;width:100%;min-width:560px;font-size:13px;color:#1E2733;font-variant-numeric:tabular-nums}
+.sheet th{background:#EEF1F4;color:#5A6878;font-weight:600;font-size:11.5px;padding:6px 8px;border:1px solid #D9DEE4;text-align:center}
+.sheet td{border:1px solid #E3E8EE;padding:7px 9px;cursor:pointer;white-space:nowrap}
+.sheet td.rn{background:#EEF1F4;color:#5A6878;text-align:center;font-size:11.5px;width:34px;cursor:default}
+.sheet td.num{text-align:right}
+.sheet tr.hdr td{font-weight:700;background:#F7F9FB;cursor:default}
+.sheet tr.sel td:not(.rn){background:#FFF1E6}
+.sheet td.used{box-shadow:inset 0 0 0 2px #E25C00}
+.sheet td.used.miss{box-shadow:inset 0 0 0 2px #C8321E;background:#FDECE9}
+.sheet tr.blank td{color:#B4BCC5;cursor:default}
+.round{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;margin-top:18px;align-items:start}
+.round>*{min-width:0}
+@media(max-width:980px){.round{grid-template-columns:1fr}}
+.task{font-size:15px;color:#fff;font-weight:600;line-height:1.45}
+.formula{display:flex;gap:0;align-items:stretch;margin-top:12px;border:1px solid var(--line);border-radius:10px;overflow:hidden;font-family:var(--mono);font-size:14px}
+.formula span{padding:9px 12px}
+.formula .fx{background:rgba(255,255,255,.08);color:var(--dimdk);font-style:italic}
+.formula .code{color:#E7EDF3;flex:1;word-break:break-all}
+.result{margin-top:10px;font-size:13px;color:var(--ondk)}
+.result b{font-family:var(--mono);font-size:20px;color:#fff;margin-left:6px}
+.tally{display:grid;gap:8px}
+.tally .big{font-family:var(--mono);font-size:22px;color:#fff}
+.tally dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px}
+.tally dt{color:var(--dimdk)} .tally dd{font-family:var(--mono);color:#fff;text-align:right}
+.tally .hint{font-size:12px;color:var(--dimdk);line-height:1.5}
+.rv{display:none;margin-top:14px}
+.rv.on{display:block}
+.rv .verdict-line{font-size:15px;font-weight:600}
+.rv .ok{color:var(--green)} .rv .no{color:var(--red)}
+.rv p{font-size:13.5px;line-height:1.6;color:var(--ondk);margin-top:6px}
+.rv code{font-family:var(--mono);color:#fff;background:rgba(255,255,255,.08);border-radius:5px;padding:1px 6px}
+.dots{display:flex;gap:6px;margin-top:4px}
+.dots i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.12);display:block}
+.dots i.cur{background:var(--gold)} .dots i.ok{background:var(--green)} .dots i.no{background:var(--red)}
+.row-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.done-box{border:1px solid rgba(111,215,155,.45);background:rgba(111,215,155,.08);border-radius:14px;padding:18px;margin-top:18px}
+.done-box b{color:var(--green);font-size:16px}
+.done-box p{font-size:13.5px;line-height:1.6;color:#CFE9DA;margin-top:6px}
+.done-box a{color:#fff}
+</style>
+<link rel="stylesheet" href="../assets/mcc-activity-shell.css">
+</head>
+<body data-mcc-activity="documents-data" data-activity-target="#lab">
+
+<div class="bar" data-mcc-legacy-nav>
+  <a class="home" href="../">AI Professional <span>Development</span></a>
+  <div class="sep" aria-hidden="true"></div>
+  <div class="where">Documents &amp; Spreadsheets Lab</div>
+</div>
+
+<main>
+  <div data-activity-shell-mount></div>
+  <div class="kicker">Practice lab</div>
+  <h1>Documents &amp; Spreadsheets Lab<br><span>Where the time savings are, and where the quiet errors are</span></h1>
+  <p class="lede">Summarizing a report and writing a formula are two of the biggest time savers AI offers. They are also where
+    mistakes slip through, because the result looks finished. <strong>Check a summary against its pages, then check four
+    formulas against numbers you already know.</strong></p>
+
+  <div class="banner safe"><span class="ic" aria-hidden="true">✓</span>
+    <p><strong>Everything here is made up.</strong> The report and spreadsheet come from Sabine Crossing, the fictional college
+      in the sandbox. Nothing you do on this page is saved or sent anywhere.</p></div>
+
+  <h2 class="sec" id="lab">The lab</h2>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tabA" aria-selected="true">1 · The report<span class="sc" id="scA"></span></button>
+    <button class="tab" role="tab" id="tabB" aria-selected="false">2 · The spreadsheet<span class="sc" id="scB"></span></button>
+  </div>
+
+  <!-- PART A -->
+  <section id="partA">
+    <p class="intro">A colleague asked an AI tool to summarize a six-page report and cite a page for each point. <b>For each claim,
+      open the cited page and decide.</b> Some claims are right. Some are not. The report is on the right.</p>
+    <div class="two">
+      <div>
+        <div class="ask"><b>The request:</b> "Summarize the attached hours review in six bullets. Cite the page number for every claim."</div>
+        <div class="claims" id="claims"></div>
+        <div class="score" id="scoreA"></div>
+        <div class="followup" id="followup" hidden>
+          <h2 class="sec" style="margin-top:22px">Then they asked one more question</h2>
+          <div class="you"><small>Colleague</small>How much would extending the hours cost?</div>
+          <div class="ai"><small>AI tool</small>Extending hours to 7 p.m. would cost about $46,000 per year in additional staff time, according to the report <button class="cite" data-page="6">p. 6</button>.</div>
+          <div class="verdicts" id="fuV" style="margin-top:12px">
+            <button class="vbtn" data-fu="yes">The report supports this</button>
+            <button class="vbtn" data-fu="no">The report says something else</button>
+          </div>
+          <div class="lesson" id="fuLesson" hidden></div>
+        </div>
+      </div>
+      <div class="docview">
+        <div class="panel">
+          <h3>Sabine Crossing College · Student Services Hours Review</h3>
+          <div class="pages" id="pages"></div>
+          <div class="paper" id="paper" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART B -->
+  <section id="partB" hidden>
+    <p class="intro">An AI tool wrote four formulas for a travel-request sheet. Each one returns a number that looks reasonable.
+      <b>Before you decide, check it yourself:</b> click rows to select them, and the tally on the right adds them up for you.
+      A formula you can't spot-check is a formula you shouldn't trust.</p>
+    <div class="round">
+      <div>
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+            <h3 style="margin:0" id="rTitle"></h3><div class="dots" id="dots"></div>
+          </div>
+          <p class="task" id="rTask" style="margin-top:10px"></p>
+          <div class="formula"><span class="fx">fx</span><span class="code" id="rFx"></span></div>
+          <div class="result">The formula returns <b id="rRes"></b></div>
+          <div class="row-acts" id="rActs">
+            <button class="btn" data-v="match">Matches my check</button>
+            <button class="btn" data-v="off">Doesn't match my check</button>
+          </div>
+          <div class="rv" id="rv"></div>
+        </div>
+        <div class="sheet-wrap" style="margin-top:14px"><table class="sheet" id="sheet"></table></div>
+      </div>
+      <aside class="panel tally" aria-live="polite">
+        <h3 style="margin:0">Your check</h3>
+        <div class="big" id="tSum">$0.00</div>
+        <dl><dt>Rows selected</dt><dd id="tN">0</dd><dt>Sum of amounts</dt><dd id="tS">$0.00</dd><dt>Average</dt><dd id="tA">–</dd></dl>
+        <p class="hint" id="tHint">Click rows in the sheet to select them.</p>
+        <div class="row-acts"><button class="btn" id="tClear">Clear selection</button></div>
+      </aside>
+    </div>
+    <div class="done-box" id="doneB" hidden></div>
+  </section>
+
+  <details class="notes">
+    <summary><span class="chev">&#9654;</span> Teaching notes — running this in a session</summary>
+    <div class="nbody">
+      <h4>The report: grounding narrows the failure, it doesn't close it</h4>
+      <p>Giving a tool your own document is a real improvement over asking it from memory. It still makes three kinds of mistake,
+        and all three are here: a wrong number with a correct page, a correct fact with the wrong page, and a claim that isn't in the
+        document at all. The follow-up question is the one to slow down on. The report says no cost estimate was prepared, and the
+        tool produced one anyway, with a page number.</p>
+      <h4>Teach the habit, not the catch</h4>
+      <p>Summaries are for deciding where to read. Any number or claim someone will act on gets checked on the page. The prompt
+        "Where in the document does it say that?" is in the Prompt Template Builder.</p>
+      <h4>The spreadsheet: check on rows you already know</h4>
+      <p>Three of the four formulas are wrong, and none of them errors out. The range that stops one row short and the SUMIF whose
+        sum range is shifted by one row are the most common AI formula bugs. The average is the hardest: it is off by about two
+        dollars. Ask the room whether "close" is good enough when the number goes in a budget request.</p>
+      <h4>Run it in twenty-five minutes</h4>
+      <p>Pairs. Ten minutes on the report, ten on the spreadsheet, five to debrief. Ask which mistake was hardest to see. It is
+        almost always the number.</p>
+    </div>
+  </details>
+</main>
+
+<footer>
+  <div>Ted Gonzalez, JD/MBA</div>
+  <div>&copy; 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
+</footer>
+
+<script src="../assets/mcc-qr.js" defer></script>
+<script src="../assets/mcc-content.js" defer></script>
+<script src="../assets/mcc-activity-shell.js" defer></script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+
+/* ================= PART A ================= */
+var PAGES=[
+ {t:'Purpose and scope',p:['This review asks whether the Student Services Center should extend its hours beyond the current 5 p.m. closing time.','It covers walk-in visits from August 18 to October 31, 2025. <mark data-k="visits">The Center recorded 9,412 visits during that period.</mark>','Visits were counted at the front desk sign-in kiosk. Phone calls and email are not included.']},
+ {t:'When students come',p:['Visits rise through the day. <mark data-k="after4">38% of all visits happened after 4 p.m.</mark>, in the last hour the Center is open.','Tuesday is the busiest day, with 22% of weekly visits. Friday is the quietest, with 11%.','Wait times after 4 p.m. averaged 26 minutes, compared with 9 minutes before noon.']},
+ {t:'Who comes in the evening',p:['<mark data-k="parttime">Part-time students made 61% of visits after 4 p.m.</mark>, compared with 39% of visits overall.','The most common reasons for evening visits were financial aid questions (44%) and registration holds (27%).','Students who arrived after 4:30 p.m. were the most likely to leave before being seen.']},
+ {t:'Current staffing',p:['The Center has 11 full-time staff members.','Current schedules put two staff members on the front desk after 4 p.m. All shifts end at 5 p.m.','Staff were surveyed about schedule changes. 7 of the 11 said they would consider a later shift on some days.']},
+ {t:'Options considered',p:['<b>Option A.</b> Stay open until 7 p.m. Monday to Thursday. <mark data-k="stagger">This can be done by staggering existing shifts and would require no new positions.</mark>','<b>Option B.</b> Add a virtual evening help line two nights a week.','<b>Option C.</b> Make no change and promote morning visits instead.']},
+ {t:'Recommendation',p:['<mark data-k="pilot">The committee recommends Option A as a one-semester pilot in spring 2027</mark>, with visit counts reviewed in May 2027.','<mark data-k="nocost">Cost estimates were not prepared for this review.</mark> They will be requested from the Business Office before the pilot is approved.','Option B should be revisited if the pilot does not reduce evening wait times.']}
+];
+var V={match:'Matches the page',diff:'The page says something different',none:'Not on that page'};
+var CLAIMS=[
+ {text:'The Center logged 9,412 visits in the fall term.',page:1,ans:'match',hl:'visits',why:'Page 1 says exactly this.'},
+ {text:'Nearly half of all visits, 48%, came after 4 p.m.',page:2,ans:'diff',hl:'after4',why:'Page 2 says 38%, not 48%. The page number is right, which is what makes a wrong number easy to miss.'},
+ {text:'Part-time students made most of the evening visits (61%).',page:3,ans:'match',hl:'parttime',why:'Page 3 says 61% of visits after 4 p.m. were part-time students.'},
+ {text:'Longer hours would need no new hiring, because existing shifts can be staggered.',page:4,ans:'none',hl:'stagger',real:5,why:'True, but it’s on page 5, not page 4. A wrong page number sends the next reader to the wrong place.'},
+ {text:'Student satisfaction rose 12% during an earlier evening-hours trial.',page:6,ans:'none',hl:null,why:'That isn’t on page 6 or anywhere in the report. There was no earlier trial and no satisfaction data. The tool made it up and gave it a page number.'},
+ {text:'The committee recommends a one-semester 7 p.m. pilot in spring 2027.',page:6,ans:'match',hl:'pilot',why:'Page 6 recommends Option A (open until 7 p.m.) as a one-semester pilot in spring 2027.'}
+];
+var aState=CLAIMS.map(function(){return null;}),curPage=1,highlight=null;
+
+function renderPages(){
+  $('pages').innerHTML=PAGES.map(function(_,i){return '<button class="pg" data-page="'+(i+1)+'"'+(curPage===i+1?' aria-current="true"':'')+'>p. '+(i+1)+'</button>';}).join('');
+  $('pages').querySelectorAll('.pg').forEach(function(b){b.onclick=function(){show(+b.dataset.page,null);};});
+  var pg=PAGES[curPage-1];
+  $('paper').innerHTML='<div class="hd"><span>Student Services Hours Review · Fall 2026</span><span>Page '+curPage+' of 6</span></div><h4>'+esc(pg.t)+'</h4>'+pg.p.map(function(x){return '<p>'+x+'</p>';}).join('');
+  $('paper').querySelectorAll('mark').forEach(function(m){if(m.dataset.k!==highlight)m.outerHTML=m.innerHTML;});
+}
+function show(page,hl){curPage=page;highlight=hl;renderPages();}
+function renderClaims(){
+  $('claims').innerHTML=CLAIMS.map(function(c,i){
+    var s=aState[i],done=s!==null,ok=done&&s===c.ans;
+    var h='<div class="claim'+(done?' done '+(ok?'right':'wrong'):'')+'"><p>'+esc(c.text)+' <button class="cite" data-page="'+c.page+'">p. '+c.page+'</button></p><div class="verdicts">';
+    Object.keys(V).forEach(function(k){h+='<button class="vbtn'+(done&&s===k?' mine':'')+(done&&c.ans===k?' ans':'')+'" data-i="'+i+'" data-v="'+k+'">'+V[k]+'</button>';});
+    h+='</div><div class="fb">'+(done?'<b class="'+(ok?'ok':'no')+'">'+(ok?'Right. ':'Not quite. ')+'</b>'+esc(c.why):'')+'</div></div>';
+    return h;}).join('');
+  $('claims').querySelectorAll('.cite').forEach(function(b){b.onclick=function(){show(+b.dataset.page,null);};});
+  $('claims').querySelectorAll('.vbtn').forEach(function(b){b.onclick=function(){var i=+b.dataset.i,c=CLAIMS[i];aState[i]=b.dataset.v;
+    if(c.hl)show(c.real||c.page,c.hl);else show(c.page,null);renderClaims();scoreA();};});
+}
+function scoreA(){
+  var n=aState.filter(function(s){return s!==null;}).length,r=aState.filter(function(s,i){return s===CLAIMS[i].ans;}).length;
+  $('scoreA').innerHTML=n<CLAIMS.length?n+' of '+CLAIMS.length+' checked':'<b>'+r+' of '+CLAIMS.length+'</b> right. Three of the six claims were wrong, and all six looked the same.';
+  $('scA').textContent=n?'· '+r+'/'+CLAIMS.length:'';
+  if(n===CLAIMS.length)$('followup').hidden=false;
+}
+$('followup').querySelectorAll('.cite').forEach(function(b){b.onclick=function(){show(6,'nocost');};});
+$('fuV').querySelectorAll('[data-fu]').forEach(function(b){b.onclick=function(){
+  var ok=b.dataset.fu==='no';show(6,'nocost');
+  $('fuV').querySelectorAll('.vbtn').forEach(function(x){x.classList.toggle('mine',x===b);x.classList.toggle('ans',x.dataset.fu==='no');x.style.pointerEvents='none';});
+  var L=$('fuLesson');L.hidden=false;
+  L.innerHTML='<b>'+(ok?'Right.':'Look again at page 6.')+'</b> The report says cost estimates were <b>not prepared</b>. The tool answered a question the document never answers, gave a precise number, and cited a page. '+
+   'Grounding a tool in your document narrows the mistakes. It doesn’t stop them. Before you rely on any number, ask: <b>"Where in the document does it say that?"</b> Then find it yourself. <a href="../prompts/" style="color:#fff">That prompt is in the Prompt Template Builder.</a>';
+  partDone('A');
+};});
+
+/* ================= PART B ================= */
+var ROWS=[
+ ['TR-101','Business','Conference',1250,'Approved'],['TR-102','Nursing','Training',680,'Approved'],['TR-103','Business','Workshop',420,'Pending'],
+ ['TR-104','Library','Conference',975,'Approved'],['TR-105','Nursing','Conference',1410,'Pending'],['TR-106','Business','Training',310,'Approved'],
+ ['TR-107','IT','Workshop',540,'Denied'],['TR-108','Library','Training',260,'Approved'],['TR-109','Nursing','Workshop',830,'Approved'],
+ ['TR-110','Business','Conference',1180,'Approved']
+];
+function amt(r){var i=r-2;return (i>=0&&i<ROWS.length)?ROWS[i][3]:0;}
+function money(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function sumRows(rs){return rs.reduce(function(a,r){return a+amt(r);},0);}
+var rowsWhere=function(col,v){var out=[];ROWS.forEach(function(r,i){if(r[col]===v)out.push(i+2);});return out;};
+var ROUNDS=[
+ {task:'What is the total of all travel requests?',fx:'=SUM(D2:D10)',res:function(){return money(sumRows([2,3,4,5,6,7,8,9,10]));},
+  used:function(){return [2,3,4,5,6,7,8,9,10].map(function(r){return 'D'+r;});},miss:['D11'],ok:false,
+  right:'=SUM(D2:D11)',rightVal:function(){return money(sumRows([2,3,4,5,6,7,8,9,10,11]));},
+  explain:'The range stops at row 10, so request TR-110 is left out. This is the most common formula mistake, AI or human: the range was right when the sheet was shorter.',
+  test:'Select every row. If your sum is bigger than the formula’s, the range is short.'},
+ {task:'How many requests are still pending?',fx:'=COUNTIF(E2:E11,"Pending")',res:function(){return String(rowsWhere(4,'Pending').length);},
+  used:function(){return ['E2','E3','E4','E5','E6','E7','E8','E9','E10','E11'];},miss:[],ok:true,
+  explain:'This one is right. It counts the Status column, all ten rows, for the word Pending. There are two: TR-103 and TR-105.',
+  test:'Select the pending rows. Two rows, two pending.'},
+ {task:'What is the total requested by the Business department?',fx:'=SUMIF(B2:B11,"Business",D3:D12)',res:function(){var r=rowsWhere(1,'Business');return money(sumRows(r.map(function(x){return x+1;})));},
+  used:function(){return rowsWhere(1,'Business').map(function(x){return 'D'+(x+1);});},miss:[],ok:false,
+  right:'=SUMIF(B2:B11,"Business",D2:D11)',rightVal:function(){return money(sumRows(rowsWhere(1,'Business')));},
+  explain:'It finds the Business rows correctly, then adds up the amount one row below each of them, because the sum range starts at D3 instead of D2. The orange boxes show the cells it actually added. The last one is an empty row, D12.',
+  test:'Select the four Business rows. Your sum and the formula’s will not agree.'},
+ {task:'What is the average amount of an approved request?',fx:'=AVERAGE(D2:D11)',res:function(){return money(sumRows([2,3,4,5,6,7,8,9,10,11])/10);},
+  used:function(){return ['D2','D3','D4','D5','D6','D7','D8','D9','D10','D11'];},miss:[],ok:false,
+  right:'=AVERAGEIF(E2:E11,"Approved",D2:D11)',rightVal:function(){var r=rowsWhere(4,'Approved');return money(sumRows(r)/r.length);},
+  explain:'It averages all ten requests, including the pending and denied ones. The question asked for approved requests only. The answer is off by about two dollars, which is exactly why nobody notices.',
+  test:'Select only the approved rows and read the average in your check.'}
+];
+var ri=0,bState=ROUNDS.map(function(){return null;}),sel=[],revealed=false;
+
+function renderSheet(){
+  var r=ROUNDS[ri],used=revealed?r.used():[],miss=revealed?r.miss:[];
+  var cls=function(ref){return used.indexOf(ref)>-1?' used':(miss.indexOf(ref)>-1?' used miss':'');};
+  var h='<tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr>';
+  h+='<tr class="hdr"><td class="rn">1</td><td>Request</td><td>Department</td><td>Trip</td><td>Amount</td><td>Status</td></tr>';
+  ROWS.forEach(function(row,i){var n=i+2;h+='<tr data-r="'+n+'" class="'+(sel.indexOf(n)>-1?'sel':'')+'" tabindex="0" aria-selected="'+(sel.indexOf(n)>-1)+'"><td class="rn">'+n+'</td>'+
+    '<td class="'+cls('A'+n)+'">'+row[0]+'</td><td class="'+cls('B'+n)+'">'+row[1]+'</td><td class="'+cls('C'+n)+'">'+row[2]+'</td><td class="num'+cls('D'+n)+'">'+money(row[3])+'</td><td class="'+cls('E'+n)+'">'+row[4]+'</td></tr>';});
+  h+='<tr class="blank"><td class="rn">12</td><td></td><td></td><td></td><td class="num'+cls('D12')+'"></td><td></td></tr>';
+  $('sheet').innerHTML=h;
+  $('sheet').querySelectorAll('tr[data-r]').forEach(function(tr){
+    var tog=function(){var n=+tr.dataset.r,k=sel.indexOf(n);if(k>-1)sel.splice(k,1);else sel.push(n);renderSheet();tally();};
+    tr.onclick=tog;tr.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();tog();}};
+  });
+}
+function tally(){
+  var s=sumRows(sel);$('tN').textContent=sel.length;$('tS').textContent=money(s);$('tA').textContent=sel.length?money(s/sel.length):'–';$('tSum').textContent=money(s);
+  $('tHint').textContent=sel.length?'Compare this with what the formula returns.':ROUNDS[ri].test.split('.')[0]+'.';
+}
+function renderRound(){
+  var r=ROUNDS[ri];revealed=bState[ri]!==null;
+  $('rTitle').textContent='Formula '+(ri+1)+' of '+ROUNDS.length;$('rTask').textContent=r.task;$('rFx').textContent=r.fx;$('rRes').textContent=r.res();
+  $('dots').innerHTML=ROUNDS.map(function(x,i){var s=bState[i];return '<i class="'+(s===null?(i===ri?'cur':''):((s==='match')===ROUNDS[i].ok?'ok':'no'))+'"></i>';}).join('');
+  $('rActs').querySelectorAll('[data-v]').forEach(function(b){b.disabled=revealed;b.classList.toggle('primary',revealed&&b.dataset.v===bState[ri]);});
+  var rv=$('rv');
+  if(revealed){
+    var mine=bState[ri],right=(mine==='match')===r.ok;
+    rv.className='rv on';
+    rv.innerHTML='<div class="verdict-line '+(right?'ok':'no')+'">'+(right?'Good check. ':'Look again. ')+(r.ok?'This formula is right.':'This formula is wrong.')+'</div><p>'+esc(r.explain)+'</p>'+
+     (r.ok?'':'<p>The right formula: <code>'+esc(r.right)+'</code> returns <b style="color:#fff">'+r.rightVal()+'</b>.</p>')+
+     '<p><b style="color:#fff">The check that catches it:</b> '+esc(r.test)+'</p>'+
+     '<div class="row-acts">'+(ri<ROUNDS.length-1?'<button class="btn primary" id="nextR">Next formula →</button>':'<button class="btn primary" id="finishB">See how you did →</button>')+'</div>';
+    if($('nextR'))$('nextR').onclick=function(){ri++;sel=[];renderRound();};
+    if($('finishB'))$('finishB').onclick=finishB;
+  }else{rv.className='rv';rv.innerHTML='';}
+  renderSheet();tally();
+  var n=bState.filter(function(s){return s!==null;}).length,c=bState.filter(function(s,i){return s!==null&&(s==='match')===ROUNDS[i].ok;}).length;
+  $('scB').textContent=n?'· '+c+'/'+ROUNDS.length:'';
+}
+$('rActs').querySelectorAll('[data-v]').forEach(function(b){b.onclick=function(){if(bState[ri]!==null)return;bState[ri]=b.dataset.v;renderRound();};});
+$('tClear').onclick=function(){sel=[];renderSheet();tally();};
+function finishB(){
+  var c=bState.filter(function(s,i){return (s==='match')===ROUNDS[i].ok;}).length;
+  var box=$('doneB');box.hidden=false;
+  box.innerHTML='<b>'+c+' of '+ROUNDS.length+' right.</b><p>Three of the four formulas were wrong, and none of them showed an error. Every one would have gone into a report looking finished. '+
+   'The habit that catches all three takes a minute: before you trust a formula, check it on a few rows where you already know the answer. '+
+   'The <a href="../prompts/">Prompt Template Builder</a> has a "Write a formula for me" template that asks the tool to list how its own formula could be wrong.</p>'+
+   '<div class="row-acts"><button class="btn" id="againB">Start the spreadsheet again</button></div>';
+  $('againB').onclick=function(){ri=0;sel=[];bState=ROUNDS.map(function(){return null;});box.hidden=true;renderRound();};
+  partDone('B');box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* ================= shared ================= */
+var doneParts={};
+function partDone(p){doneParts[p]=true;if(doneParts.A&&doneParts.B)document.dispatchEvent(new CustomEvent('mcc:activity-complete'));}
+function tab(which){
+  $('tabA').setAttribute('aria-selected',String(which==='A'));$('tabB').setAttribute('aria-selected',String(which==='B'));
+  $('partA').hidden=which!=='A';$('partB').hidden=which!=='B';
+}
+$('tabA').onclick=function(){tab('A');};$('tabB').onclick=function(){tab('B');};
+if(location.hash==='#spreadsheet')tab('B');
+
+renderPages();renderClaims();scoreA();renderRound();
+})();
+</script>
+</body>
+</html>
