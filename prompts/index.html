@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt Template Builder — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="Fill in proven prompt templates for everyday staff work, or build your own from the four prompt moves, and keep them in a personal library.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A1A2E; --navy:#003366; --orange:#FF6600; --gold:#F9DD56; --teal:#008DA7;
+  --ondk:#A7B7C9; --dimdk:#5C6E82; --line:rgba(255,255,255,.12);
+  --green:#6FD79B; --red:#FF8A78; --amber:#EFB94D;
+  --sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--ink);color:#fff;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100vh}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+.bar{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,30px);border-bottom:1px solid var(--line);background:rgba(6,16,30,.92);position:sticky;top:0;z-index:40;flex-wrap:wrap}
+.bar .home{font-size:14.5px;font-weight:700;text-decoration:none;white-space:nowrap}
+.bar .home span{color:var(--orange)}
+.bar .sep{width:1px;height:20px;background:var(--line)}
+.bar .where{font-size:13.5px;color:var(--ondk)}
+
+main{flex:1;width:100%;max-width:1320px;margin:0 auto;padding:clamp(22px,5vw,44px) clamp(16px,4vw,30px) 60px}
+.kicker{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--orange)}
+h1{font-size:clamp(27px,5vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:12px}
+h1 span{color:var(--dimdk)}
+.lede{color:var(--ondk);font-size:clamp(15px,1.8vw,18px);line-height:1.65;margin-top:18px;max-width:74ch}
+.lede strong{color:#fff}
+.banner{display:flex;gap:12px;align-items:flex-start;margin-top:14px;padding:14px 16px;border-radius:12px;max-width:80ch}
+.banner p{font-size:13px;line-height:1.6}
+.banner .ic{flex-shrink:0;font-weight:700;width:20px;text-align:center}
+.banner.safe{border:1px solid rgba(111,215,155,.38);background:rgba(111,215,155,.08)} .banner.safe p{color:#CFE9DA} .banner.safe strong,.banner.safe .ic{color:#8FE3B4}
+.banner.warn{border:1px solid rgba(255,138,120,.38);background:rgba(255,138,120,.08)} .banner.warn p{color:#FFD9D0} .banner.warn strong,.banner.warn .ic{color:#FFB8A8}
+
+h2.sec{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:38px 0 14px;display:flex;align-items:center;gap:10px}
+h2.sec::after{content:'';flex:1;height:1px;background:var(--line)}
+
+/* moves strip */
+.moves{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media(max-width:860px){.moves{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.moves{grid-template-columns:1fr}}
+.move{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:rgba(255,255,255,.035)}
+.move b{display:block;font-size:13.5px}
+.move b i{font-style:normal;color:var(--orange);margin-right:6px}
+.move span{display:block;font-size:12.5px;color:var(--ondk);line-height:1.55;margin-top:5px}
+
+/* mode tabs */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.tab{border:1px solid var(--line);border-radius:30px;padding:9px 18px;font-size:13px;font-weight:600;color:var(--ondk)}
+.tab[aria-selected="true"]{background:var(--orange);border-color:var(--orange);color:#fff}
+
+.layout{display:grid;grid-template-columns:270px minmax(0,1fr) minmax(0,1fr);gap:22px;margin-top:18px;align-items:start}
+@media(max-width:1180px){.layout{grid-template-columns:240px minmax(0,1fr)}.layout .preview-col{grid-column:1/-1}}
+@media(max-width:760px){.layout{grid-template-columns:1fr}}
+.panel{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04);padding:18px;min-width:0}
+
+/* library */
+.lib h3{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dimdk);margin:16px 0 8px}
+.lib h3:first-child{margin-top:0}
+.lib button.item{display:block;width:100%;text-align:left;border:1px solid transparent;border-radius:10px;padding:9px 11px;font-size:13px;color:var(--ondk);line-height:1.35}
+.lib button.item:hover{background:rgba(255,255,255,.06);color:#fff}
+.lib button.item[aria-current="true"]{border-color:var(--orange);background:rgba(255,102,0,.1);color:#fff}
+.lib .none{font-size:12px;color:var(--dimdk);line-height:1.5;padding:4px 2px}
+.lib .mine-acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.small-btn{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:11.5px;color:var(--ondk)}
+.small-btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.small-btn.danger:hover{border-color:var(--red);color:var(--red)}
+
+/* fields */
+.t-head h3{font-size:18px;font-weight:600}
+.t-head p{font-size:13px;color:var(--ondk);margin-top:6px;line-height:1.55}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chip{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,.07);color:var(--dimdk)}
+.chip.on{background:rgba(111,215,155,.14);color:var(--green)}
+.fields{display:grid;gap:14px;margin-top:18px}
+.f label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ondk);margin-bottom:6px}
+.f label small{font-weight:500;letter-spacing:0;text-transform:none;color:var(--dimdk);margin-left:6px}
+.f input,.f textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:10px;padding:11px 12px;color:#fff;font-size:14px}
+.f textarea{resize:vertical;min-height:84px;line-height:1.55;font-family:var(--sans)}
+.f input:focus,.f textarea:focus{outline:none;border-color:var(--orange);background:rgba(255,255,255,.09)}
+.f .hint{font-size:11.5px;color:var(--dimdk);margin-top:5px;line-height:1.5}
+.row-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.btn{border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;border:1px solid var(--line);color:var(--ondk)}
+.btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.btn.primary{background:var(--orange);border-color:var(--orange);color:#fff}
+.btn.primary:hover{background:#e25c00}
+
+/* preview */
+.preview-col{position:sticky;top:90px}
+.preview-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.preview-head h3{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.count{font-size:11.5px;color:var(--dimdk)}
+.count.left{color:var(--amber)}
+.out{font-family:var(--mono);font-size:13px;line-height:1.7;white-space:pre-wrap;word-wrap:break-word;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:16px;min-height:180px;color:#E7EDF3}
+.out .filled{color:var(--green)}
+.out .blank{color:var(--orange);background:rgba(255,102,0,.1);border-radius:4px}
+.out .empty{color:var(--dimdk);font-family:var(--sans);font-style:italic}
+.flag{font-size:12px;color:var(--green);margin-top:8px;min-height:1.2em}
+.alerts{display:grid;gap:8px;margin-top:12px}
+.alert{border:1px solid rgba(255,138,120,.45);background:rgba(255,138,120,.1);border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.5;color:#FFD9D0}
+.alert b{color:#FFB8A8}
+.check{margin-top:14px;border-left:3px solid var(--teal);padding:8px 12px;font-size:12.5px;line-height:1.55;color:var(--ondk);background:rgba(0,141,167,.08);border-radius:0 8px 8px 0}
+.check b{color:#fff}
+
+details.notes{margin-top:44px;border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.03);overflow:hidden}
+details.notes summary{padding:17px 21px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:11px;list-style:none}
+details.notes summary::-webkit-details-marker{display:none}
+details.notes summary .chev{color:var(--orange);transition:transform .2s;display:inline-block}
+details.notes[open] summary .chev{transform:rotate(90deg)}
+details.notes .nbody{padding:0 21px 24px;font-size:14px;line-height:1.72;color:var(--ondk);max-width:76ch}
+details.notes h4{color:#fff;font-size:13.5px;margin:19px 0 7px;font-weight:600}
+details.notes strong{color:#fff}
+footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--dimdk)}
+input[type=file]{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<link rel="stylesheet" href="../assets/mcc-activity-shell.css">
+</head>
+<body data-mcc-activity="prompts" data-activity-target="#builder">
+
+<div class="bar" data-mcc-legacy-nav>
+  <a class="home" href="../">AI Professional <span>Development</span></a>
+  <div class="sep" aria-hidden="true"></div>
+  <div class="where">Prompt Template Builder</div>
+</div>
+
+<main>
+  <div data-activity-shell-mount></div>
+  <div class="kicker">Personal lab</div>
+  <h1>Prompt Template Builder<br><span>Write it well once. Reuse it every week.</span></h1>
+  <p class="lede">Most of the time AI saves comes from the same few requests, made again and again. A good prompt with
+    blanks for the parts that change is the simplest tool you can build. <strong>Pick a template, fill in the blanks,
+    copy it out. Or build your own and keep it.</strong></p>
+
+  <div class="banner safe"><span class="ic" aria-hidden="true">✓</span>
+    <p><strong>Stays in this browser.</strong> Your saved templates live on this computer only. Nothing is uploaded.
+      Use "Download my templates" to keep a copy or move them to another computer.</p></div>
+  <div class="banner warn"><span class="ic" aria-hidden="true">!</span>
+    <p><strong>Never fill a blank with information about a specific person.</strong> No names with grades, no student
+      IDs, no aid records, no personnel details. That is red data, and it stays out of every AI tool. Use a stand-in
+      like "Student A" instead. The builder will flag the obvious ones, but not all of them.</p></div>
+
+  <h2 class="sec">The four moves every good template has</h2>
+  <div class="moves">
+    <div class="move"><b><i>1</i>Context it can't have</b><span>Who you are, what happened before, how people will feel about it.</span></div>
+    <div class="move"><b><i>2</i>One example of good</b><span>Paste something you were happy with and say "match this."</span></div>
+    <div class="move"><b><i>3</i>Who it's for</b><span>A first-year student and a vice president need different documents.</span></div>
+    <div class="move"><b><i>4</i>Limits</b><span>Length, format, and what to leave out. "Three bullets, no preamble."</span></div>
+  </div>
+
+  <h2 class="sec" id="builder">Build</h2>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-use" aria-selected="true">Use a template</button>
+    <button class="tab" role="tab" id="tab-own" aria-selected="false">Write your own</button>
+  </div>
+
+  <div class="layout">
+    <nav class="panel lib" id="lib" aria-label="Template library"></nav>
+
+    <section class="panel" id="usePane"></section>
+
+    <section class="panel" id="ownPane" hidden>
+      <div class="t-head"><h3>Write your own template</h3>
+        <p>Fill in the parts you need. Put square brackets around anything that changes each time, like
+          <b>[deadline]</b> or <b>[paste the email]</b>. Those become blanks you fill in later.</p></div>
+      <div class="chips" id="ownMoves"></div>
+      <div class="fields">
+        <div class="f"><label for="o-name">Template name</label><input id="o-name" placeholder="Room change notice"></div>
+        <div class="f"><label for="o-task">What you want done</label><textarea id="o-task" placeholder="Write a short email telling [who] that [event] has moved to [new room]."></textarea></div>
+        <div class="f"><label for="o-ctx">Context it can't have <small>move 1</small></label><textarea id="o-ctx" placeholder="This is the second room change this month. People are annoyed. Parking is closer to the new building."></textarea></div>
+        <div class="f"><label for="o-ex">An example of good <small>move 2 · optional</small></label><textarea id="o-ex" placeholder="Paste a past email you were happy with. Use a bracket like [paste a past email] if it changes."></textarea></div>
+        <div class="f"><label for="o-aud">Who it's for, and who it should sound like <small>move 3</small></label><input id="o-aud" placeholder="Adjunct faculty. Sound like a helpful department coordinator."></div>
+        <div class="f"><label for="o-lim">Limits <small>move 4</small></label><input id="o-lim" placeholder="Under 120 words. Lead with the new room. No exclamation points."></div>
+        <div class="f"><label for="o-check">How you'll check the result <small>optional, shown as a reminder</small></label><input id="o-check" placeholder="Confirm the room number and time against the calendar."></div>
+      </div>
+      <div class="row-acts">
+        <button class="btn primary" id="o-save">Save to my templates</button>
+        <button class="btn" id="o-clear">Clear</button>
+      </div>
+      <div class="flag" id="o-flag" role="status"></div>
+    </section>
+
+    <aside class="preview-col">
+      <div class="panel">
+        <div class="preview-head"><h3>Your prompt</h3><span class="count" id="count"></span></div>
+        <div class="out" id="out" aria-live="polite"></div>
+        <div class="alerts" id="alerts"></div>
+        <div class="row-acts">
+          <button class="btn primary" id="copy">Copy prompt</button>
+          <button class="btn" id="edit" title="Open this template in Write your own">Edit as my own</button>
+        </div>
+        <div class="flag" id="flag" role="status"></div>
+        <div class="check" id="check" hidden></div>
+      </div>
+    </aside>
+  </div>
+
+  <details class="notes">
+    <summary><span class="chev">&#9654;</span> Teaching notes — running this in a session</summary>
+    <div class="nbody">
+      <h4>Why this is the first thing to build</h4>
+      <p>A saved prompt is a tool. It has inputs (the blanks), a fixed method (the wording), and a known output. Staff who
+        never think of themselves as builders build these all the time. Naming it as a tool makes the next steps on the
+        ladder, a scoped assistant and then a small app, feel like the same skill with more pieces.</p>
+      <h4>Run it in twenty minutes</h4>
+      <p>Five minutes using a library template on a real task. Ten minutes writing one of their own for something they
+        do every week, using the four boxes. Five minutes trading: each person reads a partner's template and says which
+        of the four moves is missing.</p>
+      <h4>The red-data flag is a backstop, not a guarantee</h4>
+      <p>It catches ID-shaped numbers, Social Security numbers, emails, phone numbers and a few record words. It cannot
+        catch "the student in my 9 a.m. who just lost her dad." Say that out loud. The rule is the person's judgment, and
+        the flag is there for the tired afternoon.</p>
+      <h4>Keep a shared library</h4>
+      <p>"Download my templates" saves a small file. A department can collect the good ones in a shared folder, and a new
+        hire can load them on day one. That is where the time savings start to add up across a team.</p>
+    </div>
+  </details>
+</main>
+
+<footer>
+  <div>Ted Gonzalez, JD/MBA</div>
+  <div>&copy; 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
+</footer>
+
+<input type="file" id="loadFile" accept="application/json,.json">
+
+<script src="../assets/mcc-qr.js" defer></script>
+<script src="../assets/mcc-content.js" defer></script>
+<script src="../assets/mcc-activity-shell.js" defer></script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+
+var LIB=[
+ {cat:'Emails and messages',items:[
+  {id:'announce',title:'Announce a change',when:'Telling a group about a new process, a moved deadline, a room change.',moves:['context','audience','limits'],
+   text:'I need to tell [who] about [the change].\n\nContext: [why it is happening, what happened before, how people will feel about it]\n\nTone: direct and friendly, no corporate cheerfulness. Keep it under [number] words. Lead with what they have to do, then the deadline: [deadline].',
+   check:'Check every date, room and deadline against the source before you send.'},
+  {id:'unclear',title:'Find the unclear parts of my draft',when:'You wrote it yourself and want a second pair of eyes, not a rewrite.',moves:['audience','limits'],
+   text:'Here is a draft I wrote for [audience]. Do not rewrite it. Tell me the three places that are most likely to confuse them, and why.\n\n[paste your draft]',
+   check:'Decide for yourself whether each point is right. You know the readers.'},
+  {id:'frustrated',title:'Reply to someone who is frustrated',when:'An upset email where tone matters and you already know what you can offer.',moves:['context','audience','limits'],
+   text:'Help me reply to a [their role] who is frustrated about [the issue].\n\nWhat I can offer: [what you can actually do]\nWhat I cannot change: [the limits]\n\nAcknowledge the frustration once, without over-apologizing. Keep it under 150 words and end with one clear next step.',
+   check:'Make sure it promises nothing you cannot deliver.'},
+  {id:'subjects',title:'Three subject lines',when:'An important email that people keep ignoring.',moves:['limits'],
+   text:'Give me three subject lines for this email: one plain, one urgent, one warm. Do not tell me which is best.\n\n[paste the email]',
+   check:'Pick the one that is accurate, not the one that is catchy.'}
+ ]},
+ {cat:'Documents',items:[
+  {id:'brief',title:'One-page brief with page numbers',when:'A long report you need to understand or pass along.',moves:['audience','limits'],
+   text:'Summarize the attached document in one page for [audience]. Cite the page number for every factual claim. If something in the document is unclear, flag it instead of resolving it.',
+   check:'Open three of the cited pages and confirm they say what the summary claims.'},
+  {id:'extract',title:'Pull out the deadlines and dollars',when:'Grant guidelines, contracts, long policies.',moves:['limits'],
+   text:'Pull every deadline, dollar amount and named responsibility out of the attached document into a table with these columns: item, detail, page number. Do not add anything that is not in the document.',
+   check:'Spot-check the numbers against the pages. A table looks finished even when it is not.'},
+  {id:'questions',title:'Questions they will ask',when:'Before a presentation, a board item or a budget request.',moves:['audience','limits'],
+   text:'What questions would [a skeptical reader, like a dean, the board or an auditor] ask after reading the attached document? List five, most likely first, with one sentence on why each one would come up.',
+   check:'Use the list to prepare. Do not treat it as complete.'},
+  {id:'plain',title:'Rewrite in plain language',when:'Policy language that students or new staff need to understand.',moves:['audience','limits'],
+   text:'Rewrite this for [audience] at an 8th-grade reading level. Keep every requirement, date and number exactly the same. After the rewrite, list anything you had to leave out.\n\n[paste the paragraph]',
+   check:'Compare every requirement and date with the original, line by line.'}
+ ]},
+ {cat:'Meetings',items:[
+  {id:'minutes',title:'Notes into minutes',when:'Your own rough notes after a meeting.',moves:['limits'],
+   text:'Here are my raw notes from [meeting name] on [date]. Turn them into three sections: decisions made, action items with owners and due dates, and open questions. Do not invent owners or dates. Write TBD when my notes do not say.\n\n[paste your notes]',
+   check:'Check every owner and due date against your notes. Invented owners are the usual mistake.'},
+  {id:'agenda',title:'An agenda that ends in decisions',when:'Planning a meeting that keeps running long.',moves:['context','audience','limits'],
+   text:'Draft a [length]-minute agenda for [the meeting purpose] with [who is attending]. We need to decide: [the decisions needed]. Put the decisions first and give every item a time.',
+   check:'Make sure the times add up to the length of the meeting.'}
+ ]},
+ {cat:'Spreadsheets',items:[
+  {id:'explain',title:'Explain a formula I inherited',when:'A spreadsheet nobody understands anymore.',moves:['limits'],
+   text:'Explain what this spreadsheet formula does, step by step, in plain English. Then tell me what kinds of data would make it give a wrong answer.\n\n[paste the formula]',
+   check:'Test the explanation on one row where you already know the answer.'},
+  {id:'write',title:'Write a formula for me',when:'You know what you want, not how to write it.',moves:['context','limits'],
+   text:'I need a spreadsheet formula that [what it should do, in plain English]. My data is in columns [which columns], rows [first row] to [last row]. The column headers are [list the headers]. After the formula, tell me three ways it could give a wrong answer.',
+   check:'Try it on three rows where you already know the right answer before you trust it.'}
+ ]},
+ {cat:'Checking the answer',items:[
+  {id:'confidence',title:'What are you least sure about?',when:'Right after any answer you plan to use.',moves:[],
+   text:'In your last answer, what are you least confident about? What did you assume that I did not tell you?',
+   check:'This narrows where to look. It does not replace looking.'},
+  {id:'where',title:'Where does it say that?',when:'When a summary makes a claim you need to rely on.',moves:[],
+   text:'Where in the attached document does it say [the claim]? Quote the exact sentence and give the page number. If the document does not say it, tell me that plainly.',
+   check:'Find the quote yourself. If you cannot find it, the claim is not supported.'}
+ ]}
+];
+var MOVE_LABELS={context:'Context',example:'Example',audience:'Audience',limits:'Limits'};
+
+/* ---------- storage ---------- */
+var KEY='mcc-prompt-templates-v1';
+function loadMine(){try{var v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v:[];}catch(e){return [];}}
+function saveMine(){try{localStorage.setItem(KEY,JSON.stringify(mine));}catch(e){}}
+var mine=loadMine();
+
+var mode='use', current=LIB[0].items[0], values={};
+function all(){var a=[];LIB.forEach(function(c){a=a.concat(c.items);});return a.concat(mine);}
+function find(id){return all().find(function(t){return t.id===id;});}
+
+/* ---------- blanks ---------- */
+function blanks(text){var seen=[],m,re=/\[([^\]\n]{1,80})\]/g;while((m=re.exec(text))){if(seen.indexOf(m[1])<0)seen.push(m[1]);}return seen;}
+function isLong(name){return /^paste|notes|draft|context|why it is|what you can|the limits/i.test(name);}
+
+/* ---------- red-data scan ---------- */
+function scan(text){
+  var out=[],t=String(text);
+  if(/\b\d{3}-\d{2}-\d{4}\b/.test(t))out.push('a Social Security number');
+  if(/\b[A-Z]?\d{7,9}\b/.test(t))out.push('an ID number');
+  if(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/.test(t))out.push('an email address');
+  if(/\(?\b\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b/.test(t))out.push('a phone number');
+  var words=[['\\bGPA\\b','a GPA'],['transcript','a transcript'],['\\bISIR\\b','financial aid records'],['\\bFAFSA\\b','financial aid records'],['diagnos','health information'],['accommodation','disability information'],['title ix','a Title IX matter'],['disciplin','a conduct or discipline record'],['grievance','a grievance'],['performance review','a personnel record'],['salary','pay information']];
+  words.forEach(function(w){if(new RegExp(w[0],'i').test(t)&&out.indexOf(w[1])<0)out.push(w[1]);});
+  return out;
+}
+
+/* ---------- library ---------- */
+function renderLib(){
+  var h='';
+  LIB.forEach(function(c){
+    h+='<h3>'+esc(c.cat)+'</h3>';
+    c.items.forEach(function(t){h+='<button class="item" data-id="'+t.id+'"'+(mode==='use'&&current&&current.id===t.id?' aria-current="true"':'')+'>'+esc(t.title)+'</button>';});
+  });
+  h+='<h3>My templates</h3>';
+  if(!mine.length)h+='<p class="none">None yet. Use "Write your own" or "Edit as my own" to save one.</p>';
+  mine.forEach(function(t){h+='<button class="item" data-id="'+t.id+'"'+(mode==='use'&&current&&current.id===t.id?' aria-current="true"':'')+'>'+esc(t.title)+'</button>';});
+  h+='<div class="mine-acts"><button class="small-btn" id="dl">Download my templates</button><button class="small-btn" id="ul">Load templates</button></div>';
+  $('lib').innerHTML=h;
+  $('lib').querySelectorAll('.item').forEach(function(b){b.onclick=function(){select(b.dataset.id);};});
+  $('dl').onclick=download; $('ul').onclick=function(){$('loadFile').click();};
+}
+function select(id){current=find(id);setMode('use');renderLib();renderUse();}
+
+/* ---------- use pane ---------- */
+function renderUse(){
+  var t=current,isMine=mine.indexOf(t)>-1;
+  if(!values[t.id])values[t.id]={};
+  var v=values[t.id],bl=blanks(t.text);
+  var h='<div class="t-head"><h3>'+esc(t.title)+'</h3><p>'+esc(t.when||'One of your own templates.')+'</p></div><div class="chips">';
+  ['context','example','audience','limits'].forEach(function(m){h+='<span class="chip'+((t.moves||[]).indexOf(m)>-1?' on':'')+'">'+MOVE_LABELS[m]+'</span>';});
+  h+='</div><div class="fields">';
+  if(!bl.length)h+='<p class="f hint">No blanks in this one. Copy it as it is.</p>';
+  bl.forEach(function(name,i){
+    var fid='b-'+i,val=v[name]||'';
+    h+='<div class="f"><label for="'+fid+'">'+esc(name)+'</label>'+(isLong(name)?'<textarea id="'+fid+'" data-name="'+esc(name)+'">'+esc(val)+'</textarea>':'<input id="'+fid+'" data-name="'+esc(name)+'" value="'+esc(val)+'">')+'</div>';
+  });
+  h+='</div>';
+  if(isMine)h+='<div class="row-acts"><button class="small-btn danger" id="del">Delete this template</button></div>';
+  $('usePane').innerHTML=h;
+  $('usePane').querySelectorAll('[data-name]').forEach(function(el){el.oninput=function(){v[el.dataset.name]=el.value;renderOut();};});
+  if(isMine)$('del').onclick=function(){
+    var b=$('del');
+    if(b.dataset.armed){mine.splice(mine.indexOf(t),1);saveMine();current=LIB[0].items[0];renderLib();renderUse();}
+    else{b.dataset.armed='1';b.textContent='Click again to delete';}
+  };
+  renderOut();
+}
+
+/* ---------- own pane ---------- */
+var OWN=['o-name','o-task','o-ctx','o-ex','o-aud','o-lim','o-check'];
+function ownTemplate(){
+  var g=function(id){return $(id).value.trim();};
+  var parts=[];
+  if(g('o-task'))parts.push(g('o-task'));
+  if(g('o-ctx'))parts.push('Context: '+g('o-ctx'));
+  if(g('o-aud'))parts.push('Audience: '+g('o-aud'));
+  if(g('o-ex'))parts.push('Here is an example of what good looks like. Match its tone and format:\n'+g('o-ex'));
+  if(g('o-lim'))parts.push('Limits: '+g('o-lim'));
+  var moves=[];if(g('o-ctx'))moves.push('context');if(g('o-ex'))moves.push('example');if(g('o-aud'))moves.push('audience');if(g('o-lim'))moves.push('limits');
+  return {id:'mine-draft',title:g('o-name')||'Untitled template',when:'',text:parts.join('\n\n'),moves:moves,check:g('o-check')};
+}
+function renderOwnMoves(){
+  var t=ownTemplate(),h='';
+  ['context','example','audience','limits'].forEach(function(m){h+='<span class="chip'+(t.moves.indexOf(m)>-1?' on':'')+'">'+MOVE_LABELS[m]+'</span>';});
+  $('ownMoves').innerHTML=h;
+}
+OWN.forEach(function(id){$(id).addEventListener('input',function(){renderOwnMoves();renderOut();});});
+$('o-save').onclick=function(){
+  var t=ownTemplate();
+  if(!$('o-task').value.trim()){$('o-flag').textContent='Add what you want done first.';return;}
+  t.id='mine-'+Date.now();mine.push(t);saveMine();
+  $('o-flag').textContent='Saved. It is under My templates on the left.';
+  current=t;renderLib();
+};
+$('o-clear').onclick=function(){OWN.forEach(function(id){$(id).value='';});renderOwnMoves();renderOut();$('o-flag').textContent='';};
+
+/* ---------- preview ---------- */
+function fill(t,v,html){
+  var text=t.text,unfilled=0,out='',last=0,re=/\[([^\]\n]{1,80})\]/g,m;
+  while((m=re.exec(text))){
+    var seg=text.slice(last,m.index);out+=html?esc(seg):seg;
+    var val=(v&&v[m[1]]||'').trim();
+    if(val){out+=html?'<span class="filled">'+esc(val)+'</span>':val;}
+    else{unfilled++;out+=html?'<span class="blank">'+esc(m[0])+'</span>':m[0];}
+    last=re.lastIndex;
+  }
+  var tail=text.slice(last);out+=html?esc(tail):tail;
+  return {text:out,unfilled:unfilled};
+}
+function active(){return mode==='use'?{t:current,v:values[current.id]||{}}:{t:ownTemplate(),v:{}};}
+function renderOut(){
+  var a=active(),r=fill(a.t,a.v,true),total=blanks(a.t.text).length;
+  $('out').innerHTML=a.t.text?r.text:'<span class="empty">Your prompt appears here as you write it.</span>';
+  if(mode==='own'){$('count').textContent=total?total+' blank'+(total===1?'':'s')+' to fill each time':'';$('count').className='count';}
+  else{$('count').textContent=total?(r.unfilled?r.unfilled+' of '+total+' blanks still empty':'All blanks filled'):'';$('count').className='count'+(r.unfilled?' left':'');}
+  var plain=fill(a.t,a.v,false).text,hits=scan(plain);
+  $('alerts').innerHTML=hits.map(function(h){return '<div class="alert"><b>This looks like '+esc(h)+'.</b> Information about a specific person stays out of every AI tool. Replace it with a stand-in like "Student A" or "[amount]".</div>';}).join('');
+  var c=$('check');if(a.t.check){c.hidden=false;c.innerHTML='<b>Before you use the result:</b> '+esc(a.t.check);}else c.hidden=true;
+  $('edit').hidden=mode!=='use';
+}
+
+/* ---------- actions ---------- */
+var copiedOnce=false;
+$('copy').onclick=function(){
+  var a=active(),txt=fill(a.t,a.v,false).text;
+  if(!txt.trim()){$('flag').textContent='Nothing to copy yet.';return;}
+  var done=function(){var r=fill(a.t,a.v,false);$('flag').textContent=r.unfilled?'Copied. '+r.unfilled+' blank'+(r.unfilled===1?' is':'s are')+' still in brackets.':'Copied. Paste it into your AI tool.';
+    if(!copiedOnce){copiedOnce=true;document.dispatchEvent(new CustomEvent('mcc:activity-complete'));}};
+  var fallback=function(){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){$('flag').textContent='Select the text above and copy it.';}ta.remove();};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,fallback);else fallback();
+};
+$('edit').onclick=function(){
+  var t=current;
+  $('o-name').value=t.title+' (my version)';$('o-task').value=t.text;['o-ctx','o-ex','o-aud','o-lim'].forEach(function(id){$(id).value='';});$('o-check').value=t.check||'';
+  setMode('own');renderOwnMoves();renderOut();$('o-task').focus();
+};
+function download(){
+  var blob=new Blob([JSON.stringify({kind:'mcc-prompt-templates',version:1,templates:mine},null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='my-prompt-templates.json';document.body.appendChild(a);a.click();a.remove();
+}
+$('loadFile').onchange=function(e){
+  var f=e.target.files[0];if(!f)return;var rd=new FileReader();
+  rd.onload=function(){try{var d=JSON.parse(rd.result),list=(d&&d.templates)||[];var n=0;
+    list.forEach(function(t){if(t&&t.text&&t.title){t.id='mine-'+Date.now()+'-'+(n++);mine.push({id:t.id,title:String(t.title),when:String(t.when||''),text:String(t.text),moves:Array.isArray(t.moves)?t.moves:[],check:String(t.check||'')});}});
+    saveMine();renderLib();$('flag').textContent=n?'Loaded '+n+' template'+(n===1?'':'s')+'.':'No templates found in that file.';}
+    catch(err){$('flag').textContent='That file is not a template file. Use one made with "Download my templates".';}};
+  rd.readAsText(f);e.target.value='';
+};
+
+/* ---------- mode ---------- */
+function setMode(m){
+  mode=m;$('tab-use').setAttribute('aria-selected',String(m==='use'));$('tab-own').setAttribute('aria-selected',String(m==='own'));
+  $('usePane').hidden=m!=='use';$('ownPane').hidden=m!=='own';renderLib();renderOut();
+}
+$('tab-use').onclick=function(){setMode('use');renderUse();};
+$('tab-own').onclick=function(){setMode('own');renderOwnMoves();};
+
+renderLib();renderUse();renderOwnMoves();
+})();
+</script>
+</body>
+</html>
