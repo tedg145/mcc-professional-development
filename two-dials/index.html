@@ -61,6 +61,8 @@ h1 .s{color:var(--teal)} h1 .r{color:var(--good)}
 .sitebar .right{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
 .sitebar .right a,.sitebar .right button{font:inherit;font-size:12.5px;text-decoration:none;border:1px solid var(--line);border-radius:9px;padding:7px 13px;color:var(--body);background:none;cursor:pointer}
 .sitebar .right a:hover,.sitebar .right button:hover{background:rgba(255,255,255,.08);color:#fff}
+.sitebar .right a.deck{background:var(--orange);border-color:var(--orange);color:#fff;font-weight:600}
+.sitebar .right a.deck:hover{filter:brightness(1.08);background:var(--orange);color:#fff}
 .sitefoot{font-size:12px;color:var(--dim);text-align:center;padding:10px 16px 28px}
 .sitefoot a{color:inherit}
 .view{display:none;min-height:0}
@@ -139,6 +141,7 @@ h1 .s{color:var(--teal)} h1 .r{color:var(--good)}
   <span class="sep"></span>
   <span class="where">Foundations deck · slide 8, live</span>
   <div class="right">
+    <a class="deck" href="../presentations/#foundations/9">Back to the deck: slide 9 →</a>
     <button type="button" id="fs">Full screen</button>
     <a href="../presentations/">Slides</a>
     <a href="../foundations/">Foundations</a>
@@ -231,6 +234,8 @@ h1 .s{color:var(--teal)} h1 .r{color:var(--good)}
 
 <script>
 (function(){
+const DECK="../presentations/#foundations/9";
+const cont=()=>{location.href=DECK};
 const $=id=>document.getElementById(id);
 const SAY=[
  "Tap the answer you'd trust.",
@@ -322,7 +327,7 @@ function go(n){
   if(cur===0){$("pickrow").classList.remove("done");document.querySelectorAll(".pick").forEach(p=>p.classList.remove("chosen"));act([["Next: two dials →",()=>go(1)]])}
   if(cur===1){$("d1").value=85;$("d2").value=20;upd2();act([["Next: the AI →",()=>go(2)]])}
   if(cur===2){ai=0;asked=0;rightN=0;showAI();act([["Ask again",again,1],["Check it",check],["Next →",()=>go(3),1]])}
-  if(cur===3){buildMirror();act([["↺ Start over",()=>go(0),1],["Back to slide",()=>go(-1)]])}
+  if(cur===3){buildMirror();act([["↺ Start over",()=>go(0),1],["Back to slide",()=>go(-1),1],["Continue the presentation →",cont]])}
 }
 document.querySelectorAll(".pick").forEach(p=>p.onclick=()=>{
   document.querySelectorAll(".pick").forEach(x=>x.classList.remove("chosen"));p.classList.add("chosen");$("pickrow").classList.add("done");
