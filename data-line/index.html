@@ -146,7 +146,7 @@ body{margin:0;background:var(--ground);color:var(--white);font-family:var(--text
   <span class="sep"></span>
   <span class="where">Foundations deck · slide 23, live</span>
   <div class="right">
-    <a class="deck" href="../presentations/#foundations/24">Back to the deck: slide 24 →</a>
+    <a class="deck" href="../presentations/#foundations/23">← Back to the presentation</a>
     <button type="button" id="fs">Full screen</button>
     <a href="../legal-boundaries/">Legal Boundaries</a>
     <a href="../presentations/">Slides</a>
@@ -154,7 +154,7 @@ body{margin:0;background:var(--ground);color:var(--white);font-family:var(--text
   </div>
 </div>
 <div class="wrap">
-  <div class="meta"><span><b>Leveraging AI at MCC · Foundations</b> · slide 23 · Sort it yourself</span><span>G · Y · R to answer · → next · F full screen · Esc back to slide</span></div>
+  <div class="meta"><span><b>Leveraging AI at MCC · Foundations</b> · slide 23 · Sort it yourself</span><span>G · Y · R to answer · → next · F full screen · Esc back to the presentation</span></div>
 
   <section class="slide s23" id="s23">
     <div class="layer rest-v">
@@ -179,7 +179,7 @@ body{margin:0;background:var(--ground);color:var(--white);font-family:var(--text
       <div class="gtop">
         <h4 id="gtitle">Green, yellow or red?</h4>
         <div class="dots" id="dots"></div>
-        <button class="x" id="close">✕ Back to slide</button>
+        <button class="x" id="close">← Back to the presentation</button>
       </div>
       <div class="play" id="play"></div>
       <div class="gbot"><p class="say" id="say"></p><div class="row" id="act"></div></div>
@@ -197,6 +197,8 @@ body{margin:0;background:var(--ground);color:var(--white);font-family:var(--text
 (function(){
 const DECK="../presentations/#foundations/24";
 const cont=()=>{location.href=DECK};
+const BACK="../presentations/#foundations/23";
+const back=()=>{location.href=BACK};
 const $=id=>document.getElementById(id);
 const C=[
  ["Paste MCC's published mission statement and ask for three social media posts.","G","It's already public. Any tool is fine."],
@@ -263,18 +265,18 @@ function results(){
     <div class="help"><h5>The pattern</h5><div class="q"><b>${reds}</b><span>of the ${C.length} were red. Most real requests that go wrong are about a person.</span></div>
     <div class="q"><b>!</b><span style="font-weight:700;color:var(--navy)">When in doubt, it is red.</span></div></div>`;
   $("say").textContent="";
-  act([["↺ Try again",restart,1],["Back to slide",close,1],["Continue the presentation →",cont]]);
+  act([["↺ Try again",restart,1],["← Back to slide 23",back,1],["Continue the presentation →",cont]]);
 }
 function restart(){i=0;score=0;log=[];card()}
 function open(){s23.classList.add("on");$("game").setAttribute("aria-hidden","false");restart()}
 function close(){s23.classList.remove("on");$("game").setAttribute("aria-hidden","true");$("go").focus()}
-$("go").onclick=open;$("close").onclick=close;
+$("go").onclick=open;$("close").onclick=back;
 document.addEventListener("keydown",e=>{
   if(!s23.classList.contains("on"))return;
   const k=e.key.toLowerCase();
   if(k==="g"||k==="1")answer("G"); if(k==="y"||k==="2")answer("Y"); if(k==="r"||k==="3")answer("R");
   if(k==="arrowright"||(k===" "&&e.target.tagName!=="BUTTON")){e.preventDefault();const b=$("act").querySelector("button:last-child");b&&b.click()}
-  if(k==="escape")close();
+  if(k==="escape")back();
 });
 function fs(){const d=document;if(d.fullscreenElement){d.exitFullscreen&&d.exitFullscreen()}else if(s23.requestFullscreen){s23.requestFullscreen().catch(()=>{})}}
 $("fs").onclick=fs;
