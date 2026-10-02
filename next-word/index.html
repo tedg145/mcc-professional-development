@@ -32,6 +32,8 @@ body{margin:0;-webkit-font-smoothing:antialiased}
 .sitebar .right{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
 .sitebar .right a,.sitebar .right button{font:inherit;font-size:12.5px;text-decoration:none;border:1px solid var(--line);border-radius:9px;padding:7px 13px;color:var(--ground-dim);background:none;cursor:pointer}
 .sitebar .right a:hover,.sitebar .right button:hover{background:rgba(255,255,255,.08);color:#fff}
+.sitebar .right a.deck{background:var(--orange);border-color:var(--orange);color:#fff;font-weight:600}
+.sitebar .right a.deck:hover{filter:brightness(1.08);background:var(--orange);color:#fff}
 .sitefoot{font-size:12px;color:var(--ground-dim);text-align:center;padding:10px 16px 28px}
 .sitefoot a{color:inherit}
 /* projection: fit the slide to the screen height */
@@ -140,6 +142,7 @@ body{background:var(--ground);color:var(--ground-ink);font-family:var(--text)}
   <span class="sep"></span>
   <span class="where">Foundations deck · slide 5, live</span>
   <div class="right">
+    <a class="deck" href="../presentations/#foundations/6">Back to the deck: slide 6 →</a>
     <button type="button" id="fs">Full screen</button>
     <a href="../presentations/">Slides</a>
     <a href="../foundations/">Foundations</a>
@@ -211,6 +214,8 @@ body{background:var(--ground);color:var(--ground-ink);font-family:var(--text)}
 
 <script>
 (function(){
+const DECK="../presentations/#foundations/6";
+const cont=()=>{location.href=DECK};
 const $=id=>document.getElementById(id);
 const Q="Which Supreme Court case held that FERPA doesn't let students sue for damages?";
 // token, candidates [word, %] (first is the model's pick), seg for spot-the-error
@@ -331,7 +336,7 @@ function rewind(){
   $("prompt").textContent="Same process, same polish. Can you tell them apart without a source?";
   later(()=>{$("c1").classList.add("show");$("c2").classList.add("show")},2600*sp);
   later(()=>{$("tag").style.opacity=1;$("prompt").textContent="Four points decided whether this answer was right."},3600*sp);
-  actions([["↺ Run again",ask],["Back to slide",close,"primary"]]);
+  actions([["↺ Run again",ask],["Back to slide",close],["Continue the presentation →",cont,"primary"]]);
 }
 
 $("go").onclick=open;$("close").onclick=close;
