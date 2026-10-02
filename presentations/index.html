@@ -256,7 +256,7 @@ catsEl.querySelectorAll('.cathead').forEach(function(h, ci){
   h.addEventListener('click', function(){ toggleCat(ci); });
 });
 
-function load(ci, di, push){
+function load(ci, di, push, page){
   const d = LIBRARY[ci].decks[di];
   catsEl.querySelectorAll('.deck').forEach(function(el){
     el.classList.toggle('on', +el.dataset.c === ci && +el.dataset.d === di);
@@ -269,11 +269,12 @@ function load(ci, di, push){
     : 'files/';
   const pdf = assetRoot + d.id + '.pdf';
   const pptx = assetRoot + d.id + '.pptx';
-  acts.innerHTML = '<a class="btn primary" href="' + pdf + '" target="_blank" rel="noopener">Present full screen &#8599;</a>'
+  const at = page ? '#page=' + page : '';
+  acts.innerHTML = '<a class="btn primary" href="' + pdf + at + '" target="_blank" rel="noopener">Present full screen &#8599;</a>'
     + '<a class="btn" href="' + pptx + '" download>Download .pptx</a>';
   // view=Fit shows the WHOLE slide with no scrolling. Keep it as the ONLY fragment
   // parameter — adding &toolbar=1 makes Chrome ignore the fit entirely.
-  frame.innerHTML = '<iframe src="' + pdf + '#view=Fit" title="' + esc(d.name) + '"></iframe>';
+  frame.innerHTML = '<iframe src="' + pdf + (page ? '#page=' + page + '&view=Fit' : '#view=Fit') + '" title="' + esc(d.name) + '"></iframe>';
   document.title = d.name + ' — MCC Presentations';
   if(push !== false){
     try{ history.replaceState(null, '', '#' + d.id); }catch(err){ /* cross-origin review renderer */ }
@@ -285,13 +286,23 @@ catsEl.querySelectorAll('.deck').forEach(function(el){
   el.addEventListener('click', function(){ load(+el.dataset.c, +el.dataset.d); });
 });
 
-/* open the first category that has decks; deep-link …/#deck-id still works */
-const hash = location.hash.replace('#','');
+/* open the first category that has decks; deep-link …/#deck-id still works,
+   and …/#deck-id/24 opens that deck at slide 24 (used by the live demos) */
+const hashParts = location.hash.replace('#','').split('/');
+const hash = hashParts[0];
+const startPage = parseInt(hashParts[1], 10) || 0;
 let opened = false;
 LIBRARY.forEach(function(c, ci){
   c.decks.forEach(function(d, di){
-    if(d.id === hash){ toggleCat(ci, true); load(ci, di, false); opened = true; }
+    if(d.id === hash){ toggleCat(ci, true); load(ci, di, false, startPage); opened = true; }
   });
+});
+/* follow later hash changes too (e.g. returning from a live demo in the same tab) */
+window.addEventListener('hashchange', function(){
+  const parts = location.hash.replace('#','').split('/');
+  LIBRARY.forEach(function(c, ci){ c.decks.forEach(function(d, di){
+    if(d.id === parts[0]){ toggleCat(ci, true); load(ci, di, false, parseInt(parts[1], 10) || 0); }
+  }); });
 });
 if(!opened){
   const first = LIBRARY.findIndex(function(c){ return c.decks.length > 0; });
