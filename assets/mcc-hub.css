@@ -166,3 +166,7 @@ letter-spacing:.02em;white-space:nowrap;text-decoration:none;transition:.2s}
 .activity-card{min-height:215px}.hub-journey{padding:24px 0}.hub-journey ol{grid-template-columns:1fr 1fr;row-gap:22px}.hub-journey ol:before{display:none}.hub-continue{grid-template-columns:40px 1fr}.hub-continue b{display:none}.hub-featured__heading{align-items:flex-end}.featured-card{min-height:190px}
 }
 @media(prefers-reduced-motion:reduce){.activity-card:hover,.hub-path:hover,.hub-action:hover,a.hub-resume-card:hover{transform:none}}
+/* Laptop widths: six menu items + search don't fit on one row, so search drops to its own row (same as tablet). */
+@media(min-width:901px) and (max-width:1500px){
+.hub-topbar{flex-wrap:wrap;row-gap:10px;padding-bottom:13px}.hub-exmultis{margin-left:28px}.hub-nav{margin-left:auto}.hub-search{order:3;flex-basis:100%;max-width:none;margin-left:0}
+}
