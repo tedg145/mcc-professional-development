@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Legal Boundaries — MCC AI Professional Development</title>
 <meta name="author" content="Ted Gonzalez, JD/MBA">
-<meta name="description" content="FERPA, GLBA, Title IX, personnel records and Texas public records — what must stay out of an AI tool at MCC, and what becomes discoverable once you use one.">
+<meta name="description" content="MCC's AI policy (Handbook §1.11), FERPA, GLBA, Title IX, personnel records and Texas public records — what must stay out of an AI tool at MCC, and what becomes discoverable once you use one.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -89,6 +89,24 @@ font-size:12px;line-height:1.6;color:var(--dimdk);max-width:82ch}
 .tmpl p{font-size:13px;color:var(--ondk);line-height:1.6;margin-top:8px;max-width:76ch}
 .tmpl a{display:inline-block;margin-top:12px;font-size:13px;color:var(--orange);font-weight:600}
 
+.policy{border:1px solid rgba(249,221,86,.35);border-radius:14px;background:rgba(249,221,86,.04);overflow:hidden}
+.policy__head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding:14px 20px;border-bottom:1px solid rgba(249,221,86,.22);background:rgba(249,221,86,.06)}
+.policy__head b{font-size:15px;font-weight:600}
+.policy__head span{font-family:var(--mono);font-size:11px;color:var(--gold)}
+.policy blockquote{padding:6px 22px 20px;font-size:13.5px;line-height:1.7;color:#DCE7F0;max-width:86ch}
+.policy blockquote h3{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin:18px 0 6px}
+.policy blockquote p{margin-top:8px}
+.policy blockquote ul{margin:8px 0 0 22px}
+.policy blockquote ul ul{margin-top:2px}
+.policy blockquote li{margin-top:4px}
+.policy__cite{padding:12px 20px;border-top:1px solid rgba(249,221,86,.22);font-family:var(--mono);font-size:11px;line-height:1.6;color:#9FB0C2}
+.policy__cite b{color:#fff;font-weight:500}
+.plain{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:14px}
+.plain div{border:1px solid var(--line);border-radius:13px;padding:16px 18px;background:rgba(255,255,255,.025)}
+.plain h3{font-size:15px;font-weight:600}
+.plain p{font-size:13px;color:var(--ondk);line-height:1.6;margin-top:7px}
+@media(max-width:900px){.plain{grid-template-columns:1fr}}
+
 footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--dimdk);font-size:12px}
 @media(max-width:900px){.rag,.behav,.labs{grid-template-columns:1fr}}
 @media(max-width:560px){.bar nav{display:none}}
@@ -121,6 +139,74 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px);displa
     <p><strong>Working guidance, not legal advice.</strong> This page translates the rules into practical terms
       for everyday work. It does not replace the College's official policies, and it is not a legal opinion for
       your specific situation. When a real matter turns on any of this, ask [General Counsel] before you act.</p>
+  </div>
+
+  <h2 class="sec" id="mcc-policy">MCC&rsquo;s AI policy &mdash; Handbook &sect;1.11</h2>
+  <div class="secsub">The College&rsquo;s own written rule on AI, quoted in full below. Everything else on this page
+    builds on it: the policy sets the floor, and the law explains why the floor is where it is.</div>
+
+  <div class="policy">
+    <div class="policy__head"><b>1.11 &nbsp;Use of Artificial Intelligence</b><span>Faculty/Part-time Instructors Handbook &middot; Version 11 &middot; effective 09/01/2025</span></div>
+    <blockquote cite="Faculty/Part-time Instructors Handbook, Version 11, section 1.11">
+      <h3>Artificial Intelligence (AI) Use in Student Coursework</h3>
+      <p>McLennan Community College recognizes the growing role of artificial intelligence (AI) in education and
+        supports instructors in defining appropriate uses of AI within their courses.</p>
+      <p>Instructors retain full authority to determine if, when, and how AI tools may be used by students. To
+        support clarity and consistency across the institution, MCC provides the AI Stoplight Framework to help
+        instructors communicate expectations for student use of AI:</p>
+      <ul>
+        <li>Red Light &ndash; No AI Allowed: AI-generated content is strictly prohibited.</li>
+        <li>Yellow Light &ndash; Restricted AI Use: AI may be used only within specific instructor-defined
+          parameters (e.g., brainstorming, formatting, or data visualization).</li>
+        <li>Green Light &ndash; Full AI Use Allowed: AI use is permitted but requires responsible, ethical
+          application and disclosure.</li>
+      </ul>
+      <p>Regardless of the level selected, students are expected to:</p>
+      <ul>
+        <li>Uphold MCC&rsquo;s Academic Integrity Policy.</li>
+        <li>Disclose any AI use when required by the instructor.</li>
+        <li>Cite AI tools appropriately when their outputs contribute to submitted work.</li>
+        <li>Exercise critical thinking and verify AI-generated information for accuracy.</li>
+      </ul>
+      <p>Faculty are encouraged to reference the AI Stoplight Framework in their syllabi and course shells to
+        provide students with clear expectations.</p>
+      <p>Click here for the full AI Stoplight Framework.</p>
+      <h3>Faculty Use of Artificial Intelligence (AI)</h3>
+      <p>McLennan Community College supports the thoughtful and ethical use of artificial intelligence (AI) in
+        teaching and course design. To protect student privacy and maintain transparency, faculty are expected to
+        follow these guidelines:</p>
+      <ul>
+        <li>Protect Student Privacy
+          <ul><li>Do not input any personally identifiable student information (PII) into AI tools, including
+            names, ID numbers, grades, or other sensitive data.</li></ul></li>
+        <li>Avoid Uploading Student Work
+          <ul><li>Faculty are strongly discouraged from submitting student assignments, assessments, or other
+            academic work to AI tools. Because we cannot fully control how third-party AI platforms store or use
+            data, this practice poses privacy and intellectual property risks.</li></ul></li>
+        <li>Be Transparent with Students
+          <ul><li>When AI-generated content (e.g., images, text, videos) is incorporated into coursework, media,
+            or materials presented to students, faculty should disclose its use clearly. Transparency supports
+            ethical teaching and helps students develop AI literacy.</li></ul></li>
+      </ul>
+      <p>These guidelines complement MCC&rsquo;s Academic Integrity Policy and aim to protect both faculty and
+        students while fostering responsible use of emerging technologies.</p>
+    </blockquote>
+    <div class="policy__cite"><b>Source:</b> McLennan Community College, <i>Faculty/Part-time Instructors Handbook</i>,
+      Version 11 (effective September 1, 2025), &sect;1.11 &ldquo;Use of Artificial Intelligence,&rdquo; pp. 12&ndash;13.
+      Quoted verbatim. The &ldquo;Click here&rdquo; line refers to the full AI Stoplight Framework, which is not
+      linked from the handbook PDF; ask your division chair or the Center for Teaching and Learning for it.</div>
+  </div>
+
+  <div class="plain">
+    <div><h3>What it means for students</h3>
+      <p>Each instructor chooses red, yellow or green for their course and says so in the syllabus and course
+        shell. Whatever the level, students still uphold academic integrity, disclose and cite AI use, and check
+        what it produces. The <a href="../syllabus/#cat-ai-use" style="color:var(--orange);font-weight:600">Syllabus Builder</a>
+        has a statement for each level.</p></div>
+    <div><h3>What it means for faculty and staff</h3>
+      <p>No student names, ID numbers, grades or other personal information in any AI tool. Keep student work out
+        of AI tools. Tell students when AI-generated material appears in your course. The sections below explain the
+        law behind those rules and how to apply them to a task in front of you.</p></div>
   </div>
 
   <h2 class="sec">Five regimes, in plain language</h2>
@@ -204,7 +290,9 @@ footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px);displa
     before relying on any of this in a real matter.</div>
 
   <h2 class="sec">The line: green, yellow, red</h2>
-  <div class="secsub">One decision, made before you paste anything.</div>
+  <div class="secsub">One decision, made before you paste anything. Not the same as the Stoplight in &sect;1.11
+    above: the Stoplight sets what students may do in a course; this line sets what an employee may put into an AI
+    tool. Same colours, different question.</div>
   <div class="rag">
     <div class="ragc" style="--c:#6FD79B;--bg:rgba(111,215,155,.07)">
       <div class="lab">Green &mdash; any tool</div>
