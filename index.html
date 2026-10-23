@@ -161,6 +161,9 @@ padding:20px 18px;background:rgba(255,255,255,.025);text-decoration:none;transit
 .hub-door__meta{margin-top:14px;font-size:11px;color:var(--dimdk);font-family:var(--mono)}
 @media(max-width:1000px){.hub-door-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.hub-door-grid{grid-template-columns:1fr}}
+/* In-page jumps (Your Work, Policy, Featured...) land below the sticky toolbar, not under it.
+   --hub-offset is set from the toolbar's real height in the script below. */
+#hub [id]{scroll-margin-top:var(--hub-offset,136px)}
 </style>
 </head>
 <body>
@@ -742,6 +745,31 @@ window.addEventListener('keydown', function(e){
 if(!entered && (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape')){ e.preventDefault(); enter(); }
 });
 
+/* Keep in-page jumps clear of the sticky toolbar. Its height changes when it wraps
+   (narrow screens, search on its own row), so measure it rather than guess. */
+function setHubOffset(){
+var tb = document.querySelector('.hub-topbar');
+if(!tb) return;
+var top = parseFloat(getComputedStyle(tb).top) || 0;
+document.documentElement.style.setProperty('--hub-offset', Math.ceil(tb.getBoundingClientRect().height + top + 16) + 'px');
+}
+setHubOffset();
+window.addEventListener('resize', setHubOffset);
+/* A click on a link to the hash you are already on does not always re-scroll; make it. */
+document.addEventListener('click', function(e){
+var a = e.target.closest && e.target.closest('a[href^="#"]');
+if(!a || !entered) return;
+var id = a.getAttribute('href');
+if(id.length < 2 || id === '#hub') return;
+var t = null;
+try { t = document.querySelector(id); } catch(err) { t = null; }
+if(!t) return;
+e.preventDefault();
+setHubOffset();
+if(location.hash !== id) history.pushState(null, '', id);
+t.scrollIntoView({behavior:'smooth', block:'start'});
+});
+
 /* Bookmark …/#hub to land straight on the menu — handy mid-class.
    Any other section anchor (#policy, #your-work, #featured …) does the same
    and then scrolls there, so deep links from other pages actually arrive. */
@@ -753,7 +781,7 @@ enter(true);
 if(incoming === '#hub') return;
 var target = null;
 try { target = document.querySelector(incoming); } catch(e) { target = null; }
-if(target) setTimeout(function(){ target.scrollIntoView({block:'start'}); }, 60);
+if(target) setTimeout(function(){ setHubOffset(); target.scrollIntoView({block:'start'}); }, 60);
 })();
 
 document.getElementById('replay').addEventListener('click', function(){
