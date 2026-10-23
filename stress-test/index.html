@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assignment Stress Test — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="Run your assignment directions through several AI models, see where they read them differently, and learn how easily AI can complete the work as written.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A1A2E; --navy:#003366; --orange:#FF6600; --gold:#F9DD56; --teal:#008DA7;
+  --ondk:#A7B7C9; --dimdk:#5C6E82; --line:rgba(255,255,255,.12);
+  --green:#6FD79B; --red:#FF8A78; --amber:#EFB94D;
+  --sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--ink);color:#fff;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100vh}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+.bar{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,30px);border-bottom:1px solid var(--line);background:rgba(6,16,30,.92);position:sticky;top:0;z-index:40;flex-wrap:wrap}
+.bar .home{font-size:14.5px;font-weight:700;text-decoration:none;white-space:nowrap}
+.bar .home span{color:var(--orange)}
+.bar .sep{width:1px;height:20px;background:var(--line)}
+.bar .where{font-size:13.5px;color:var(--ondk)}
+
+main{flex:1;width:100%;max-width:1320px;margin:0 auto;padding:clamp(22px,5vw,44px) clamp(16px,4vw,30px) 60px}
+.kicker{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--orange)}
+h1{font-size:clamp(27px,5vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:12px}
+h1 span{color:var(--dimdk)}
+.lede{color:var(--ondk);font-size:clamp(15px,1.8vw,18px);line-height:1.65;margin-top:18px;max-width:74ch}
+.lede strong{color:#fff}
+.banner{display:flex;gap:12px;align-items:flex-start;margin-top:14px;padding:14px 16px;border-radius:12px;max-width:80ch}
+.banner p{font-size:13px;line-height:1.6}
+.banner .ic{flex-shrink:0;font-weight:700;width:20px;text-align:center}
+.banner.safe{border:1px solid rgba(111,215,155,.38);background:rgba(111,215,155,.08)} .banner.safe p{color:#CFE9DA} .banner.safe strong,.banner.safe .ic{color:#8FE3B4}
+.banner.warn{border:1px solid rgba(255,138,120,.38);background:rgba(255,138,120,.08)} .banner.warn p{color:#FFD9D0} .banner.warn strong,.banner.warn .ic{color:#FFB8A8}
+
+h2.sec{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:38px 0 14px;display:flex;align-items:center;gap:10px}
+h2.sec::after{content:'';flex:1;height:1px;background:var(--line)}
+h2.sec i{font-style:normal;font-family:var(--mono);color:var(--orange)}
+
+.learn{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:760px){.learn{grid-template-columns:1fr}}
+.learn div{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:rgba(255,255,255,.035)}
+.learn b{display:block;font-size:13.5px}
+.learn span{display:block;font-size:12.5px;color:var(--ondk);line-height:1.55;margin-top:5px}
+
+.panel{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04);padding:18px;min-width:0}
+.grid2{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:22px;align-items:start}
+@media(max-width:960px){.grid2{grid-template-columns:1fr}}
+.fields{display:grid;gap:14px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.two{grid-template-columns:1fr}}
+.f label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ondk);margin-bottom:6px}
+.f label small{font-weight:500;letter-spacing:0;text-transform:none;color:var(--dimdk);margin-left:6px}
+.f input,.f textarea,.f select{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:10px;padding:11px 12px;color:#fff;font-size:14px}
+.f select option{background:var(--ink)}
+.f textarea{resize:vertical;min-height:84px;line-height:1.55;font-family:var(--sans)}
+#dir{min-height:200px}
+.f input:focus,.f textarea:focus,.f select:focus{outline:none;border-color:var(--orange);background:rgba(255,255,255,.09)}
+.f .hint{font-size:11.5px;color:var(--dimdk);margin-top:5px;line-height:1.5}
+.row-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.btn{border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;border:1px solid var(--line);color:var(--ondk);text-decoration:none;display:inline-block}
+.btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.btn.primary{background:var(--orange);border-color:var(--orange);color:#fff}
+.btn.primary:hover{background:#e25c00}
+.btn.sm{padding:7px 12px;font-size:12px}
+.flag{font-size:12px;color:var(--green);margin-top:8px;min-height:1.2em}
+.alerts{display:grid;gap:8px;margin-top:12px}
+.alert{border:1px solid rgba(255,138,120,.45);background:rgba(255,138,120,.1);border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.5;color:#FFD9D0}
+.alert b{color:#FFB8A8}
+.out{font-family:var(--mono);font-size:12.5px;line-height:1.7;white-space:pre-wrap;word-wrap:break-word;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:16px;max-height:380px;overflow:auto;color:#E7EDF3}
+.out .src{color:var(--green)}
+.out .blank{color:var(--orange);background:rgba(255,102,0,.1);border-radius:4px}
+.how{font-size:13px;color:var(--ondk);line-height:1.6;margin-bottom:12px}
+.how b{color:#fff}
+.handoff{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.handoff small{font-size:11px;color:var(--dimdk);margin-right:4px}
+.handoff a{font-size:11.5px;border:1px solid var(--line);border-radius:20px;padding:5px 11px;text-decoration:none;color:var(--ondk)}
+.handoff a:hover{border-color:var(--orange);color:#fff}
+.handoff a.lex{border-color:rgba(249,221,86,.5);color:var(--gold)}
+
+/* responses */
+.resps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.resp{border:1px solid var(--line);border-radius:14px;padding:14px;background:rgba(255,255,255,.03);display:flex;flex-direction:column;gap:10px;min-width:0}
+.resp-top{display:flex;gap:8px;align-items:center}
+.resp-top select{flex:1}
+.resp textarea{min-height:170px;font-size:12.5px}
+.resp .status{font-size:11.5px;color:var(--dimdk);line-height:1.45}
+.resp .status.ok{color:var(--green)}
+.resp .status.bad{color:var(--amber)}
+.x{width:30px;height:30px;border:1px solid var(--line);border-radius:8px;color:var(--dimdk);flex-shrink:0}
+.x:hover{color:var(--red);border-color:var(--red)}
+
+/* results */
+#results[hidden]{display:none}
+.verdict{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:18px;align-items:start}
+@media(max-width:860px){.verdict{grid-template-columns:1fr}}
+.meter h3,.gaps h3,.moves h3{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.rate{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.rate:last-of-type{border-bottom:none}
+.pill{font-family:var(--mono);font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;letter-spacing:.06em}
+.pill.HIGH{background:rgba(255,138,120,.16);color:var(--red)}
+.pill.MEDIUM{background:rgba(239,185,77,.16);color:var(--amber)}
+.pill.LOW{background:rgba(111,215,155,.16);color:var(--green)}
+.pill.NONE{background:rgba(255,255,255,.07);color:var(--dimdk)}
+.sum{margin-top:14px;font-size:13.5px;line-height:1.6;color:#DCE7F0}
+.sum b{color:#fff}
+.stat{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:14px}
+.stat div{font-size:12px;color:var(--ondk)}
+.stat b{display:block;font-size:26px;font-weight:700;color:#fff;line-height:1.1}
+.group{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px;background:rgba(255,255,255,.03)}
+.group.multi{border-color:rgba(255,102,0,.55);background:rgba(255,102,0,.07)}
+.group .q{font-size:13.5px;font-weight:600;line-height:1.45}
+.group .who{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--orange);margin-bottom:6px}
+.group.single .who{color:var(--dimdk)}
+.group ul{list-style:none;margin-top:8px;display:grid;gap:6px}
+.group li{font-size:12.5px;color:var(--ondk);line-height:1.5;padding-left:12px;border-left:2px solid var(--line)}
+.group li b{color:#DCE7F0;font-weight:600}
+.note{font-size:11.5px;color:var(--dimdk);margin-top:10px;line-height:1.5}
+.movegrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:900px){.movegrid{grid-template-columns:1fr}}
+.move{border:1px solid var(--line);border-radius:14px;padding:16px;background:rgba(255,255,255,.035);display:flex;flex-direction:column;gap:8px}
+.move.rec{border-color:var(--orange)}
+.move .tag{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dimdk)}
+.move.rec .tag{color:var(--orange)}
+.move b{font-size:15px}
+.move p{font-size:12.5px;color:var(--ondk);line-height:1.55;flex:1}
+.lowmsg{border-left:3px solid var(--green);background:rgba(111,215,155,.08);border-radius:0 10px 10px 0;padding:12px 14px;font-size:13px;line-height:1.6;color:#CFE9DA;margin-bottom:14px}
+
+details.notes{margin-top:44px;border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.03);overflow:hidden}
+details.notes summary{padding:17px 21px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:11px;list-style:none}
+details.notes summary::-webkit-details-marker{display:none}
+details.notes summary .chev{color:var(--orange);transition:transform .2s;display:inline-block}
+details.notes[open] summary .chev{transform:rotate(90deg)}
+details.notes .nbody{padding:0 21px 24px;font-size:14px;line-height:1.72;color:var(--ondk);max-width:76ch}
+details.notes h4{color:#fff;font-size:13.5px;margin:19px 0 7px;font-weight:600}
+details.notes strong{color:#fff}
+footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--dimdk)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<link rel="stylesheet" href="../assets/mcc-activity-shell.css">
+</head>
+<body data-mcc-activity="stress-test" data-activity-target="#step1">
+
+<div class="bar" data-mcc-legacy-nav>
+  <a class="home" href="../">AI Professional <span>Development</span></a>
+  <div class="sep" aria-hidden="true"></div>
+  <div class="where">Assignment Stress Test</div>
+</div>
+
+<main>
+  <div data-activity-shell-mount></div>
+  <div class="kicker">Faculty lab</div>
+  <h1>Assignment Stress Test<br><span>Let the models read your directions first.</span></h1>
+  <p class="lede">Paste an assignment exactly as students will see it. Several AI models each try to complete it and say
+    where they had to guess. <strong>When three models read the same directions three different ways, the directions are
+    unclear. When all three finish it easily, a student could too.</strong></p>
+
+  <div class="learn">
+    <div><b>Where your directions are ambiguous</b><span>Every guess a model makes is a guess a student will make. The ones several models flag are the ones to fix first.</span></div>
+    <div><b>How easily AI can do it as written</b><span>If every model rates it HIGH, you get a redesign move: grade the process, require AI and critique it, or ask for local context.</span></div>
+  </div>
+
+  <div class="banner warn"><span class="ic" aria-hidden="true">!</span>
+    <p><strong>Paste the assignment, never a student's submission.</strong> Directions, rubrics and readings you wrote
+      are fine. Student work and anything that names a student stays out of every AI tool.</p></div>
+
+  <h2 class="sec" id="step1"><i>01</i> Your assignment</h2>
+  <div class="grid2">
+    <section class="panel" aria-label="Your assignment">
+      <div class="fields">
+        <div class="two">
+          <div class="f"><label for="course">Course</label><input id="course" placeholder="SOCI 1301, Introduction to Sociology"></div>
+          <div class="f"><label for="level">Students</label>
+            <select id="level">
+              <option value="first-year college">First-year college</option>
+              <option value="second-year college">Second-year college</option>
+              <option value="dual-credit high school">Dual credit (high school)</option>
+              <option value="adult workforce and continuing education">Workforce / continuing ed</option>
+              <option value="developmental (college-readiness)">Developmental</option>
+            </select></div>
+        </div>
+        <div class="f"><label for="dir">Assignment directions <small>word for word, as students get them</small></label>
+          <textarea id="dir" placeholder="Paste the assignment directions here."></textarea></div>
+        <div class="f"><label for="extra">Anything else students get <small>optional: rubric, word limits, a reading list</small></label>
+          <textarea id="extra" placeholder="Only include what students actually receive. The test is whether the directions stand on their own."></textarea></div>
+      </div>
+      <div class="alerts" id="alerts"></div>
+      <div class="row-acts">
+        <button class="btn" id="sample">Load the worked example</button>
+        <button class="btn" id="clear">Clear everything</button>
+      </div>
+      <div class="flag" id="aFlag" role="status"></div>
+    </section>
+
+    <section class="panel" aria-label="The stress-test prompt">
+      <p class="how"><b>Run this prompt in at least two different AI tools, in a fresh chat each time.</b> Or run it
+        once in LEX, which sends one question to several engines and shows them side by side. Then paste each answer
+        into step 2.</p>
+      <div class="out" id="out" aria-live="polite"></div>
+      <div class="row-acts"><button class="btn primary" id="copy">Copy the stress-test prompt</button></div>
+      <div class="flag" id="flag" role="status"></div>
+      <div class="handoff"><small>Open:</small>
+        <a href="https://m365.cloud.microsoft/chat" target="_blank" rel="noopener">Microsoft 365 Copilot ↗</a>
+        <a href="https://claude.ai/new" target="_blank" rel="noopener">Claude ↗</a>
+        <a href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPT ↗</a>
+        <a class="lex" href="https://exmultis.com/mcc?src=mcc-pd-stress-test" target="_blank" rel="noopener">LEX · several engines at once ↗</a>
+      </div>
+    </section>
+  </div>
+
+  <h2 class="sec" id="step2"><i>02</i> Paste what each model said</h2>
+  <div class="resps" id="resps"></div>
+  <div class="row-acts"><button class="btn sm" id="addResp">+ Add another model</button></div>
+
+  <section id="results" hidden aria-live="polite">
+    <h2 class="sec" id="step3"><i>03</i> What the models found</h2>
+    <div class="verdict">
+      <div class="panel meter">
+        <h3>How easily AI could do it</h3>
+        <div id="ratings"></div>
+        <p class="sum" id="ratingSum"></p>
+      </div>
+      <div class="panel gaps">
+        <h3>Where they had to guess</h3>
+        <div class="stat" id="stats"></div>
+        <div id="groups"></div>
+        <p class="note">Guesses are grouped when they quote or share the same words from your directions. The grouping is a
+          starting point. Read each one and decide for yourself.</p>
+        <div class="row-acts"><button class="btn" id="copyClarity">Copy a prompt to fix the wording</button></div>
+        <div class="flag" id="cFlag" role="status"></div>
+      </div>
+    </div>
+
+    <h2 class="sec" id="step4"><i>04</i> Redesign moves</h2>
+    <div class="moves">
+      <div id="lowMsg"></div>
+      <div class="movegrid" id="moveGrid"></div>
+      <div class="flag" id="mFlag" role="status"></div>
+    </div>
+  </section>
+
+  <details class="notes">
+    <summary><span class="chev">&#9654;</span> Teaching notes — running this in a session</summary>
+    <div class="nbody">
+      <h4>Start with the worked example</h4>
+      <p>The sample sociology essay looks ordinary. Three models read "proper formatting" as APA, MLA and ASA. That one
+        disagreement makes the point faster than any slide: if the models guessed three ways, so will thirty students.</p>
+      <h4>Run it in thirty minutes</h4>
+      <p>Five minutes on the worked example together. Fifteen minutes: each person pastes one of their own assignments,
+        runs the prompt in two tools (or LEX once), and pastes the answers back. Ten minutes: pairs pick one flagged gap
+        and one redesign move, and rewrite one sentence of the directions together.</p>
+      <h4>Disagreement is the useful signal</h4>
+      <p>One model's guess is just a guess. When several models land on different readings of the same words, the words
+        are the problem. That is why this lab asks for more than one model, and why a tool that shows several engines side
+        by side fits it so well.</p>
+      <h4>HIGH is not an accusation</h4>
+      <p>Plenty of good assignments are easy for AI as written. A HIGH rating means the final product alone no longer
+        shows you the learning, so you change what you grade, not whether the assignment is worth doing. And a LOW
+        rating only helps if it comes from what students bring, not from directions so vague nobody could finish them.</p>
+      <h4>The model's rating is an opinion too</h4>
+      <p>Models are not reliable judges of their own abilities. Treat the rating as one more reader's view and look at the
+        actual attempt it wrote. If the attempt would earn a B in your class, that is your answer.</p>
+    </div>
+  </details>
+</main>
+
+<footer>
+  <div>Ted Gonzalez, JD/MBA</div>
+  <div>&copy; 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
+</footer>
+
+<script src="../assets/mcc-qr.js" defer></script>
+<script src="../assets/mcc-content.js" defer></script>
+<script src="../assets/mcc-activity-shell.js" defer></script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+var MODELS=['Microsoft 365 Copilot','Claude','ChatGPT','Gemini','LEX engine 1','LEX engine 2','LEX engine 3','Other'];
+
+/* ---------- worked example ---------- */
+var SAMPLE={course:'SOCI 1301, Introduction to Sociology',level:'first-year college',
+ dir:'Sociological Imagination Paper\n\nWrite a 3–4 page paper analyzing a social issue using the sociological imagination. Use at least three sources. Follow proper formatting. Due Friday.',
+ extra:'',
+ resps:[
+ {model:'Microsoft 365 Copilot',text:'ATTEMPT:\n[Shortened for the sample. The model wrote a complete 1,000-word essay on food insecurity among college students, citing three websites.]\n\nUNCLEAR:\n1. "3–4 pages" — I assumed double-spaced, 12-point font, about 900–1,200 words.\n2. "at least three sources" — I assumed any credible source counts, including websites. It does not say whether scholarly sources are required.\n3. "proper formatting" — No style is named. I used APA because it is common in the social sciences.\n\nAI-COMPLETION:\nHIGH. The topic is open and needs no personal or class-specific material.\n\nNEEDS-FROM-STUDENT:\nNothing.'},
+ {model:'Claude',text:'ATTEMPT:\n[Shortened for the sample. The model wrote a full essay on social media and loneliness, built around C. Wright Mills.]\n\nUNCLEAR:\n1. "proper formatting" — No style guide is named. I used MLA.\n2. "a social issue" — Unclear whether any issue is allowed or it must come from the course. I chose social media and loneliness.\n3. "using the sociological imagination" — Unclear whether students must cite Mills directly or just apply the idea.\n4. "at least three sources" — Unclear whether the textbook counts as one of the three.\n\nAI-COMPLETION:\nHIGH. Everything needed is general knowledge.\n\nNEEDS-FROM-STUDENT:\nNothing.'},
+ {model:'ChatGPT',text:'ATTEMPT:\n[Shortened for the sample. The model wrote an essay on rising rent costs in mid-sized Texas cities.]\n\nUNCLEAR:\n1. "analyzing" — Unclear whether the paper should argue a position or describe the issue. I described causes and effects.\n2. "3–4 pages" — Unclear whether the reference page counts toward the length.\n3. "Follow proper formatting" — No style is named. I used ASA style.\n4. "Due Friday" — Which Friday, and how to submit, is not stated.\n\nAI-COMPLETION:\nMEDIUM. A complete paper is easy to produce, but the sociological imagination usually connects personal troubles to public issues, which would need the student\'s own experience.\n\nNEEDS-FROM-STUDENT:\nIf the instructor expects students to connect the issue to their own lives, the directions do not say so, and I could not supply that.'}
+ ]};
+
+/* ---------- state ---------- */
+var KEY='mcc-stress-test-v1';
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'null')||{};}catch(e){return {};}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+var state=load();
+if(!Array.isArray(state.resps)||!state.resps.length)state.resps=[{model:MODELS[0],text:''},{model:MODELS[1],text:''},{model:MODELS[2],text:''}];
+['course','dir','extra'].forEach(function(id){if(state[id])$(id).value=state[id];});
+if(state.level)$('level').value=state.level;
+
+/* ---------- prompt ---------- */
+function stressPrompt(html){
+  var course=$('course').value.trim(),dir=$('dir').value.trim(),extra=$('extra').value.trim(),level=$('level').value;
+  var c=course?(html?esc(course):course):(html?'<span class="blank">[course]</span>':'[course]');
+  var d=dir?(html?'<span class="src">'+esc(dir)+'</span>':dir):(html?'<span class="blank">[paste your assignment directions on the left]</span>':'[paste your assignment directions here]');
+  var p='I am an instructor checking my assignment directions before students see them. The course is '+c+' and the students are '+level+' students. Here are the directions exactly as students will get them:\n"""\n'+d+'\n"""\n';
+  if(extra)p+='\nStudents also receive this:\n"""\n'+(html?'<span class="src">'+esc(extra)+'</span>':extra)+'\n"""\n';
+  var rest='\nDo four things, under these exact headings, in this order.\n\nATTEMPT:\nComplete the assignment the way a capable student would, using only these directions. If it calls for more than about 600 words, write the opening section and outline the rest.\n\nUNCLEAR:\nA numbered list of every place you had to guess what the instructor wanted. For each one, quote the words from the directions in quotation marks, then say what you assumed.\n\nAI-COMPLETION:\nOne word, HIGH, MEDIUM or LOW: how completely could a student submit AI-generated work for this assignment as written? Then one sentence explaining why.\n\nNEEDS-FROM-STUDENT:\nWhat, if anything, the assignment requires that you could not supply: personal experience, local or class-specific material, in-person work, or a process the instructor would see. Write "Nothing" if that is true.\n\nDo not ask me questions first. Do all four parts now.';
+  return p+(html?esc(rest):rest);
+}
+
+/* ---------- parse ---------- */
+var HEAD=/^[\s>*#_-]*(ATTEMPT|UNCLEAR|AI[\s-]*COMPLETION|NEEDS[\s-]*FROM[\s-]*STUDENT)\b[\s*_:#-]*(.*)$/i;
+function parse(text){
+  var lines=String(text||'').split(/\r?\n/),sec=null,secs={},found=0;
+  lines.forEach(function(line){
+    var m=line.match(HEAD);
+    if(m){sec=m[1].toUpperCase().replace(/[\s-]+/g,'-');if(sec.indexOf('AI')===0)sec='AI-COMPLETION';if(sec.indexOf('NEEDS')===0)sec='NEEDS-FROM-STUDENT';secs[sec]=secs[sec]||[];if(m[2].trim())secs[sec].push(m[2].trim());found++;return;}
+    if(sec)secs[sec].push(line);
+  });
+  var rating=null,rs=(secs['AI-COMPLETION']||[]).join(' ').match(/\b(HIGH|MEDIUM|LOW)\b/i);if(rs)rating=rs[1].toUpperCase();
+  var why=(secs['AI-COMPLETION']||[]).join(' ').replace(/^\W*(HIGH|MEDIUM|LOW)\W*/i,'').trim();
+  var items=[],cur=null;
+  (secs.UNCLEAR||[]).forEach(function(line){
+    var t=line.trim();if(!t)return;
+    var m=t.match(/^(?:\d+[.)]|[-*•])\s+(.*)$/);
+    if(m){cur=m[1].replace(/\*\*/g,'').trim();items.push(cur);}
+    else if(items.length){items[items.length-1]+=' '+t.replace(/\*\*/g,'');}
+    else{items.push(t.replace(/\*\*/g,''));}
+  });
+  var needs=(secs['NEEDS-FROM-STUDENT']||[]).join(' ').replace(/\s+/g,' ').trim();
+  return {ok:found>0&&(rating||items.length),rating:rating,why:why,items:items,needs:needs};
+}
+
+/* ---------- grouping ---------- */
+var STOP='the a an and or of to in is it for on that this with as be are was were i you they my your their what which whether not no does do did if at by from about any one each there it\'s its so than then also only just how who when where use used using assumed assume assuming unclear clear directions instructor student students say says said stated state does'.split(' ');
+function quotes(s){var out=[],m,re=/["“”']([^"“”']{2,80})["“”']/g;while((m=re.exec(s)))out.push(m[1].toLowerCase().replace(/[^a-z0-9– ]/g,'').trim());return out.filter(Boolean);}
+function words(s){return String(s).toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(function(w){return w.length>3&&STOP.indexOf(w)<0;});}
+function similar(a,b){
+  var qa=quotes(a.text),qb=quotes(b.text);
+  for(var i=0;i<qa.length;i++)for(var j=0;j<qb.length;j++){if(qa[i]&&qb[j]&&(qa[i]===qb[j]||qa[i].indexOf(qb[j])>-1||qb[j].indexOf(qa[i])>-1))return true;}
+  var wa=words(qa.join(' ')||a.text),wb=words(qb.join(' ')||b.text);if(!wa.length||!wb.length)return false;
+  var inter=wa.filter(function(w){return wb.indexOf(w)>-1;}).length,uni=new Set(wa.concat(wb)).size;
+  return inter/uni>=0.34;
+}
+function group(all){
+  var groups=[];
+  all.forEach(function(it){
+    var g=groups.find(function(gr){return gr.items.some(function(x){return x.model!==it.model&&similar(x,it);});});
+    if(g)g.items.push(it);else groups.push({items:[it]});
+  });
+  groups.forEach(function(g){
+    var models=[];g.items.forEach(function(x){if(models.indexOf(x.model)<0)models.push(x.model);});g.models=models;
+    var q=quotes(g.items[0].text)[0];g.label=q?'“'+(g.items[0].text.match(/["“”']([^"“”']{2,80})["“”']/)||[,q])[1]+'”':g.items[0].text.split(/[—–:-]/)[0].slice(0,70);
+  });
+  groups.sort(function(a,b){return b.models.length-a.models.length;});
+  return groups;
+}
+
+/* ---------- render responses ---------- */
+function renderResps(){
+  $('resps').innerHTML=state.resps.map(function(r,i){
+    return '<div class="resp"><div class="resp-top f"><select data-i="'+i+'" aria-label="Which model">'+MODELS.map(function(m){return '<option'+(m===r.model?' selected':'')+'>'+esc(m)+'</option>';}).join('')+'</select>'+(state.resps.length>1?'<button class="x" data-del="'+i+'" aria-label="Remove this model">×</button>':'')+'</div><div class="f"><textarea data-t="'+i+'" aria-label="Paste the answer from '+esc(r.model)+'" placeholder="Paste the full answer here.">'+esc(r.text)+'</textarea></div><div class="status" id="st-'+i+'"></div></div>';
+  }).join('');
+  $('resps').querySelectorAll('select[data-i]').forEach(function(el){el.onchange=function(){state.resps[+el.dataset.i].model=el.value;save();analyze();};});
+  $('resps').querySelectorAll('textarea[data-t]').forEach(function(el){el.oninput=function(){state.resps[+el.dataset.t].text=el.value;save();analyze();};});
+  $('resps').querySelectorAll('[data-del]').forEach(function(el){el.onclick=function(){state.resps.splice(+el.dataset.del,1);save();renderResps();analyze();};});
+  $('addResp').hidden=state.resps.length>=5;
+}
+
+/* ---------- analyze ---------- */
+var lastGroups=[],lastRating=null,completed=false;
+function analyze(){
+  var parsed=state.resps.map(function(r,i){
+    var p=parse(r.text),st=$('st-'+i);
+    if(!r.text.trim()){st.textContent='Waiting for an answer.';st.className='status';}
+    else if(p.ok){st.textContent='Found '+(p.rating?'a '+p.rating+' rating':'no rating')+' and '+p.items.length+' guess'+(p.items.length===1?'':'es')+'.';st.className='status ok';}
+    else{st.textContent='Could not find the headings. Ask the tool: "Reformat your answer with the headings ATTEMPT, UNCLEAR, AI-COMPLETION and NEEDS-FROM-STUDENT."';st.className='status bad';}
+    return {model:r.model,p:p,has:!!r.text.trim()};
+  });
+  var good=parsed.filter(function(x){return x.p.ok;});
+  $('results').hidden=good.length<1;
+  if(!good.length)return;
+
+  // ratings
+  $('ratings').innerHTML=good.map(function(x){return '<div class="rate"><span>'+esc(x.model)+'</span><span class="pill '+(x.p.rating||'NONE')+'">'+(x.p.rating||'NO RATING')+'</span></div>';}).join('');
+  var rs=good.map(function(x){return x.p.rating;}).filter(Boolean),score={HIGH:3,MEDIUM:2,LOW:1};
+  var counts={HIGH:0,MEDIUM:0,LOW:0};rs.forEach(function(r){counts[r]++;});
+  var top=rs.length?['HIGH','MEDIUM','LOW'].reduce(function(a,b){return counts[b]>counts[a]?b:a;}):null;
+  var avg=rs.length?rs.reduce(function(s,r){return s+score[r];},0)/rs.length:0;
+  lastRating=avg>=2.5?'HIGH':avg>=1.75?'MEDIUM':rs.length?'LOW':null;
+  var agree=rs.length>1&&rs.every(function(r){return r===rs[0];});
+  var s='';
+  if(!rs.length)s='No model gave a rating. Look at the attempts themselves.';
+  else if(good.length===1)s='One model rated it <b>'+rs[0]+'</b>. Add a second model before you trust that. A single reader is just a guess.';
+  else if(agree)s='All '+rs.length+' models agree: <b>'+rs[0]+'</b>. '+(rs[0]==='HIGH'?'A student could hand in AI-generated work for this as written.':rs[0]==='LOW'?'Check why. It should be because of what students bring, not because the directions are unclear.':'AI gets partway there. See what each one said it could not supply.');
+  else s='The models disagree ('+['HIGH','MEDIUM','LOW'].filter(function(r){return counts[r];}).map(function(r){return counts[r]+' '+r;}).join(', ')+'). That disagreement is information: read what the '+(counts.LOW||counts.MEDIUM?'lower-rating':'')+' model'+(counts.LOW+counts.MEDIUM>1?'s':'')+' said students would need to bring.';
+  var needs=good.filter(function(x){return x.p.needs&&!/^nothing\.?$/i.test(x.p.needs);});
+  if(needs.length)s+='<br><br><b>What models said they could not supply:</b> '+needs.map(function(x){return esc(x.model)+': '+esc(x.p.needs);}).join(' · ');
+  $('ratingSum').innerHTML=s;
+
+  // gaps
+  var all=[];good.forEach(function(x){x.p.items.forEach(function(t){all.push({model:x.model,text:t});});});
+  var groups=group(all);lastGroups=groups;
+  var multi=groups.filter(function(g){return g.models.length>1;}).length;
+  $('stats').innerHTML='<div><b>'+all.length+'</b>guesses in total</div><div><b>'+groups.length+'</b>different spots in your directions</div><div><b>'+multi+'</b>flagged by more than one model</div>';
+  $('groups').innerHTML=groups.length?groups.map(function(g){
+    var m=g.models.length>1;
+    return '<div class="group '+(m?'multi':'single')+'"><div class="who">'+(m?'Flagged by '+g.models.length+' models':'Flagged by 1 model')+'</div><div class="q">'+esc(g.label)+'</div><ul>'+g.items.map(function(it){return '<li><b>'+esc(it.model)+':</b> '+esc(it.text)+'</li>';}).join('')+'</ul></div>';
+  }).join(''):'<p class="note">No guesses listed. Either the directions are very clear, or the models skipped the step. Read the attempts to be sure.</p>';
+
+  renderMoves();
+  if(good.length>1&&!completed){completed=true;document.dispatchEvent(new CustomEvent('mcc:activity-complete'));}
+}
+
+/* ---------- redesign ---------- */
+var MOVES=[
+ {id:'process',title:'Grade the process',body:'Collect a proposal, a draft and a short revision memo, and put real points on them. AI can produce a finished product. It is much worse at showing the thinking between versions you have already seen.',
+  ask:'grade the process: break the assignment into checkpoints (for example a proposal, a draft and a short revision memo), give each one points, and say what I will look for at each checkpoint'},
+ {id:'critique',title:'Require AI use, then critique it',body:'Have students generate an AI answer to part of the task, then mark up where it is wrong, thin or generic. The skill you grade is judgment, and AI use becomes visible instead of hidden.',
+  ask:'require AI use and critique: students generate an AI response to one part of the task, then annotate where it is wrong, thin or generic and explain how they fixed it, and the critique is what gets graded'},
+ {id:'local',title:'Ask for local context',body:'Tie the work to something only your students have: a class discussion, a Waco or campus example, their own job or experience, or data you collected together.',
+  ask:'ask for local context: require students to connect the work to something only they have, such as our class discussions, a local Waco or campus example, their own work or life experience, or data we collected in class'}
+];
+function renderMoves(){
+  var rec=lastRating==='HIGH'?['process','critique','local']:lastRating==='MEDIUM'?['local','process']:[];
+  $('lowMsg').innerHTML=lastRating==='LOW'?'<div class="lowmsg"><b>AI struggles with this as written.</b> That is good news only if it is because of what students bring. If the models struggled because the directions were unclear, fix the wording first. The moves below are still available.</div>':
+    lastRating==='MEDIUM'?'<div class="lowmsg" style="border-color:var(--amber);background:rgba(239,185,77,.08);color:#F4E2BC"><b>AI gets partway there.</b> Asking for local context and grading the process close the gap most directly.</div>':'';
+  $('moveGrid').innerHTML=MOVES.map(function(m){var r=rec.indexOf(m.id)>-1;
+    return '<div class="move'+(r?' rec':'')+'"><span class="tag">'+(r?'Suggested for this assignment':'Also an option')+'</span><b>'+esc(m.title)+'</b><p>'+esc(m.body)+'</p><button class="btn sm" data-move="'+m.id+'">Copy a redesign prompt</button></div>';}).join('');
+  $('moveGrid').querySelectorAll('[data-move]').forEach(function(b){b.onclick=function(){var m=MOVES.find(function(x){return x.id===b.dataset.move;});copy(redesignPrompt(m),'mFlag','Copied. Paste it into your AI tool, then check that your outcome and grading weight survived.');};});
+}
+function gapList(){
+  return lastGroups.map(function(g,i){return (i+1)+'. '+g.label+' ('+g.models.length+' model'+(g.models.length===1?'':'s')+'): '+g.items.map(function(x){return x.text;}).join(' / ');}).join('\n');
+}
+function redesignPrompt(m){
+  return 'Here are my assignment directions for '+($('course').value.trim()||'[course]')+' ('+$('level').value+' students):\n"""\n'+$('dir').value.trim()+'\n"""\n\nSeveral AI models tested these directions. They rated how easily AI could complete it as: '+(lastRating||'not rated')+'. They had to guess at these points:\n'+(gapList()||'(none listed)')+'\n\nRevise the assignment using one redesign move: '+m.ask+'.\n\nKeep my learning outcome and the assignment\'s weight the same. Also resolve the guesses listed above. Show the revised directions first, then list what changed and why. Do not invent course policies, dates or resources. Write [CONFIRM] anywhere I need to fill something in.';
+}
+$('copyClarity').onclick=function(){
+  var p='Here are my assignment directions:\n"""\n'+$('dir').value.trim()+'\n"""\n\nSeveral AI models had to guess at these points:\n'+(gapList()||'(none listed)')+'\n\nFor each point, give me two alternative wordings that remove the guess. Do not change what the assignment requires. If fixing a point needs a decision only I can make (for example which citation style), ask me that as a short question instead of choosing for me.';
+  copy(p,'cFlag','Copied. The decisions stay yours. The tool only drafts the wording.');
+};
+
+/* ---------- red-data scan ---------- */
+function scan(text){
+  var out=[],t=String(text);
+  if(/\b\d{3}-\d{2}-\d{4}\b/.test(t))out.push('a Social Security number');
+  if(/\b[A-Z]?\d{7,9}\b/.test(t))out.push('an ID number');
+  if(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/.test(t))out.push('an email address');
+  [['\\bGPA\\b','a GPA'],['transcript','a transcript'],['accommodation','disability information'],['student (work|essay|submission|paper|response)s?\\b','student work'],['\\b(he|she) (wrote|submitted|turned in)\\b','a student submission']].forEach(function(w){if(new RegExp(w[0],'i').test(t)&&out.indexOf(w[1])<0)out.push(w[1]);});
+  return out;
+}
+
+/* ---------- copy ---------- */
+function copy(txt,flagId,msg){
+  var done=function(){$(flagId).textContent=msg;};
+  var fallback=function(){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){$(flagId).textContent='Select the text and copy it.';}ta.remove();};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,fallback);else fallback();
+}
+
+/* ---------- inputs ---------- */
+function renderTop(){$('out').innerHTML=stressPrompt(true);$('alerts').innerHTML=scan($('dir').value+' '+$('extra').value).map(function(h){return '<div class="alert"><b>This looks like '+esc(h)+'.</b> Paste the assignment only. Information about a specific student stays out of every AI tool.</div>';}).join('');}
+['course','dir','extra'].forEach(function(id){$(id).addEventListener('input',function(){state[id]=$(id).value;save();renderTop();});});
+$('level').onchange=function(){state.level=$('level').value;save();renderTop();};
+$('copy').onclick=function(){if(!$('dir').value.trim()){$('flag').textContent='Paste your assignment directions first.';return;}copy(stressPrompt(false),'flag','Copied. Use a fresh chat in each tool so earlier conversations do not color the answer.');};
+$('addResp').onclick=function(){var used=state.resps.map(function(r){return r.model;});state.resps.push({model:MODELS.find(function(m){return used.indexOf(m)<0;})||'Other',text:''});save();renderResps();analyze();};
+$('sample').onclick=function(){
+  ['course','dir','extra'].forEach(function(id){$(id).value=SAMPLE[id];state[id]=SAMPLE[id];});$('level').value=SAMPLE.level;state.level=SAMPLE.level;
+  state.resps=SAMPLE.resps.map(function(r){return {model:r.model,text:r.text};});save();renderTop();renderResps();analyze();
+  $('aFlag').textContent='Worked example loaded, including three sample answers. Scroll down to see what the models found.';
+};
+$('clear').onclick=function(){var b=$('clear');if(!b.dataset.armed){b.dataset.armed='1';b.textContent='Click again to clear';return;}
+  delete b.dataset.armed;b.textContent='Clear everything';
+  ['course','dir','extra'].forEach(function(id){$(id).value='';});state={resps:[{model:MODELS[0],text:''},{model:MODELS[1],text:''},{model:MODELS[2],text:''}]};save();renderTop();renderResps();analyze();$('aFlag').textContent='Cleared.';};
+
+renderTop();renderResps();analyze();
+if(location.hash==='#example')$('sample').click();
+})();
+</script>
+</body>
+</html>
