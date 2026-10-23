@@ -240,7 +240,7 @@ padding:20px 18px;background:rgba(255,255,255,.025);text-decoration:none;transit
 <a class="hub-door" href="#your-work" style="--dc:#FF6600">
 <div class="hub-door__n">03</div><h3>Your Work</h3>
 <p>Tools for the job you actually hold. Faculty, staff, advising, builders.</p>
-<div class="hub-door__meta">11 tools &middot; by role</div></a>
+<div class="hub-door__meta" id="door-your-work-meta">by role</div></a>
 <a class="hub-door" href="presentations/" style="--dc:#F9DD56">
 <div class="hub-door__n">04</div><h3>Library</h3>
 <p>Decks to teach from, in the browser or as editable PowerPoint. The policy template repository is still being built.</p>
@@ -248,10 +248,9 @@ padding:20px 18px;background:rgba(255,255,255,.025);text-decoration:none;transit
 </div>
 </section>
 
-<a id="your-work" aria-hidden="true"></a>
 <section class="hub-pathways" id="pathways">
 <div class="hub-section-heading">
-<div><small>Your Work</small><h2>What brings you here?</h2></div>
+<div><small>Sort by role</small><h2>What brings you here?</h2></div>
 <p>Pick a role to sort the tools. Foundations and Legal Boundaries stay visible either way &mdash; they are not optional by role.</p>
 </div>
 <div class="hub-path-grid" role="group" aria-label="Filter by audience">
@@ -397,11 +396,13 @@ featuredRoot.innerHTML=FEATURED_IDS.map(id=>SECTIONS.find(s=>s.id===id)).filter(
 const zoneRoot = document.getElementById('activity-zones');
 zoneRoot.innerHTML = Object.keys(ZONES).map(zone => {
 const items = SECTIONS.filter(s => s.zone === zone);
-return '<section class="zone" data-zone="'+zone+'"><div class="zone__heading"><div class="zone__number">'+ZONES[zone].number+'</div><div><h2>'+zone+'</h2><p>'+ZONES[zone].desc+'</p></div><span class="zone__count">'+items.length+' activities</span></div><div class="zone-grid">'
+const zid = zone==='Your Work' ? 'your-work' : 'zone-'+zone.toLowerCase().replace(/[^a-z]+/g,'-');
+return '<section class="zone" id="'+zid+'" data-zone="'+zone+'"><div class="zone__heading"><div class="zone__number">'+ZONES[zone].number+'</div><div><h2>'+zone+'</h2><p>'+ZONES[zone].desc+'</p></div><span class="zone__count">'+items.length+' activities</span></div><div class="zone-grid">'
 + items.map(s => '<a class="activity-card" href="'+s.href+'" data-search="'+esc((s.title+' '+s.desc+' '+s.type+' '+s.level+' '+s.keywords+' '+s.audience.join(' ')).toLowerCase())+'" data-audience="'+s.audience.join(' ')+'" data-title="'+esc(s.title)+'"><div class="activity-card__top"><span class="activity-card__type">'+esc(s.type)+'</span><span class="activity-card__level">'+esc(s.level)+'</span></div><h3>'+esc(s.title)+'</h3><p>'+esc(s.desc)+'</p><div class="activity-card__meta"><span>◷ '+esc(s.duration)+'</span><span>◎ '+esc(s.audience.join(' · '))+'</span></div><div class="activity-card__go">'+esc(s.cta)+' →</div></a>').join('')
 + '</div></section>';
 }).join('');
 
+(function(){var m=document.getElementById('door-your-work-meta');var n=SECTIONS.filter(function(s){return s.zone==='Your Work';}).length;if(m)m.innerHTML=n+' tools &middot; by role';})();
 const searchInput=document.getElementById('hub-search');
 const cards=[...document.querySelectorAll('.activity-card')];
 const pathButtons=[...document.querySelectorAll('[data-audience]')];
@@ -747,6 +748,12 @@ if(!entered && (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape')){ e.pr
 
 /* Keep in-page jumps clear of the sticky toolbar. Its height changes when it wraps
    (narrow screens, search on its own row), so measure it rather than guess. */
+/* Targets inside the "View all activities" catalog (e.g. #your-work) are hidden until it opens. */
+function revealTarget(t){
+var cat = document.getElementById('all-activities');
+if(cat && cat.contains(t) && cat.hidden && typeof setCatalogOpen === 'function') setCatalogOpen(true, false);
+if(t.hidden){ var c = document.getElementById('clear-filter'); if(c) c.click(); }
+}
 function setHubOffset(){
 var tb = document.querySelector('.hub-topbar');
 if(!tb) return;
@@ -765,6 +772,7 @@ var t = null;
 try { t = document.querySelector(id); } catch(err) { t = null; }
 if(!t) return;
 e.preventDefault();
+revealTarget(t);
 setHubOffset();
 if(location.hash !== id) history.pushState(null, '', id);
 t.scrollIntoView({behavior:'smooth', block:'start'});
@@ -781,7 +789,7 @@ enter(true);
 if(incoming === '#hub') return;
 var target = null;
 try { target = document.querySelector(incoming); } catch(e) { target = null; }
-if(target) setTimeout(function(){ setHubOffset(); target.scrollIntoView({block:'start'}); }, 60);
+if(target) setTimeout(function(){ revealTarget(target); setHubOffset(); target.scrollIntoView({block:'start'}); }, 60);
 })();
 
 document.getElementById('replay').addEventListener('click', function(){
