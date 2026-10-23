@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One Source, Five Formats — MCC AI Professional Development</title>
+<meta name="author" content="Ted Gonzalez, JD/MBA">
+<meta name="description" content="Paste a lecture outline or reading you wrote and get grounded prompts for a study guide, practice quiz, discussion questions, plain-language summary and alt text, each with its own checklist.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A1A2E; --navy:#003366; --orange:#FF6600; --gold:#F9DD56; --teal:#008DA7;
+  --ondk:#A7B7C9; --dimdk:#5C6E82; --line:rgba(255,255,255,.12);
+  --green:#6FD79B; --red:#FF8A78; --amber:#EFB94D;
+  --sans:'Poppins','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--ink);color:#fff;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100vh}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+.bar{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,30px);border-bottom:1px solid var(--line);background:rgba(6,16,30,.92);position:sticky;top:0;z-index:40;flex-wrap:wrap}
+.bar .home{font-size:14.5px;font-weight:700;text-decoration:none;white-space:nowrap}
+.bar .home span{color:var(--orange)}
+.bar .sep{width:1px;height:20px;background:var(--line)}
+.bar .where{font-size:13.5px;color:var(--ondk)}
+
+main{flex:1;width:100%;max-width:1320px;margin:0 auto;padding:clamp(22px,5vw,44px) clamp(16px,4vw,30px) 60px}
+.kicker{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--orange)}
+h1{font-size:clamp(27px,5vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1.08;margin-top:12px}
+h1 span{color:var(--dimdk)}
+.lede{color:var(--ondk);font-size:clamp(15px,1.8vw,18px);line-height:1.65;margin-top:18px;max-width:74ch}
+.lede strong{color:#fff}
+.banner{display:flex;gap:12px;align-items:flex-start;margin-top:14px;padding:14px 16px;border-radius:12px;max-width:80ch}
+.banner p{font-size:13px;line-height:1.6}
+.banner .ic{flex-shrink:0;font-weight:700;width:20px;text-align:center}
+.banner.safe{border:1px solid rgba(111,215,155,.38);background:rgba(111,215,155,.08)} .banner.safe p{color:#CFE9DA} .banner.safe strong,.banner.safe .ic{color:#8FE3B4}
+.banner.warn{border:1px solid rgba(255,138,120,.38);background:rgba(255,138,120,.08)} .banner.warn p{color:#FFD9D0} .banner.warn strong,.banner.warn .ic{color:#FFB8A8}
+
+h2.sec{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:38px 0 14px;display:flex;align-items:center;gap:10px}
+h2.sec::after{content:'';flex:1;height:1px;background:var(--line)}
+
+.rule{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:760px){.rule{grid-template-columns:1fr}}
+.rule div{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:rgba(255,255,255,.035)}
+.rule b{display:block;font-size:13.5px}
+.rule b i{font-style:normal;color:var(--orange);margin-right:6px}
+.rule span{display:block;font-size:12.5px;color:var(--ondk);line-height:1.55;margin-top:5px}
+
+.layout{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:22px;align-items:start}
+@media(max-width:960px){.layout{grid-template-columns:1fr}}
+.panel{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04);padding:18px;min-width:0}
+.panel h3.ph{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+
+.fields{display:grid;gap:14px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.two{grid-template-columns:1fr}}
+.f label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ondk);margin-bottom:6px}
+.f label small{font-weight:500;letter-spacing:0;text-transform:none;color:var(--dimdk);margin-left:6px}
+.f input,.f textarea,.f select{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:10px;padding:11px 12px;color:#fff;font-size:14px}
+.f select option{background:var(--ink)}
+.f textarea{resize:vertical;min-height:84px;line-height:1.55;font-family:var(--sans)}
+#src{min-height:260px}
+.f input:focus,.f textarea:focus,.f select:focus{outline:none;border-color:var(--orange);background:rgba(255,255,255,.09)}
+.f .hint{font-size:11.5px;color:var(--dimdk);margin-top:5px;line-height:1.5}
+.toggle{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ondk);line-height:1.5;cursor:pointer}
+.toggle input{margin-top:4px;accent-color:var(--orange)}
+.row-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.btn{border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;border:1px solid var(--line);color:var(--ondk);text-decoration:none;display:inline-block}
+.btn:hover{background:rgba(255,255,255,.08);color:#fff}
+.btn.primary{background:var(--orange);border-color:var(--orange);color:#fff}
+.btn.primary:hover{background:#e25c00}
+.flag{font-size:12px;color:var(--green);margin-top:8px;min-height:1.2em}
+.alerts{display:grid;gap:8px;margin-top:12px}
+.alert{border:1px solid rgba(255,138,120,.45);background:rgba(255,138,120,.1);border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.5;color:#FFD9D0}
+.alert b{color:#FFB8A8}
+.wc{font-size:11.5px;color:var(--dimdk);margin-top:5px}
+.wc.long{color:var(--amber)}
+
+/* format tabs */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.tab{border:1px solid var(--line);border-radius:30px;padding:8px 14px;font-size:12.5px;font-weight:600;color:var(--ondk);display:flex;align-items:center;gap:7px}
+.tab .n{font-family:var(--mono);font-size:10.5px;color:var(--dimdk)}
+.tab[aria-selected="true"]{background:var(--orange);border-color:var(--orange);color:#fff}
+.tab[aria-selected="true"] .n{color:#fff}
+.tab .done{color:var(--green);font-size:12px}
+.tab[aria-selected="true"] .done{color:#fff}
+.fmt-head h3{font-size:18px;font-weight:600}
+.fmt-head p{font-size:13px;color:var(--ondk);margin-top:6px;line-height:1.55}
+.opts{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+.opts .f{min-width:150px;flex:1}
+.out{font-family:var(--mono);font-size:12.5px;line-height:1.7;white-space:pre-wrap;word-wrap:break-word;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:16px;max-height:420px;overflow:auto;color:#E7EDF3}
+.out .src{color:var(--green)}
+.out .blank{color:var(--orange);background:rgba(255,102,0,.1);border-radius:4px}
+.handoff{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.handoff small{font-size:11px;color:var(--dimdk);margin-right:4px}
+.handoff a{font-size:11.5px;border:1px solid var(--line);border-radius:20px;padding:5px 11px;text-decoration:none;color:var(--ondk)}
+.handoff a:hover{border-color:var(--orange);color:#fff}
+
+.checklist{margin-top:18px;border:1px solid rgba(0,141,167,.45);background:rgba(0,141,167,.08);border-radius:12px;padding:14px 16px}
+.checklist h4{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#56d3e4;display:flex;justify-content:space-between;gap:10px}
+.checklist h4 span{letter-spacing:0;text-transform:none;font-weight:500;color:var(--ondk)}
+.checklist label{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5;color:#DCE7F0;margin-top:10px;cursor:pointer}
+.checklist input{margin-top:4px;accent-color:var(--teal);flex-shrink:0}
+.checklist .why{display:block;font-size:11.5px;color:var(--dimdk)}
+.checklist .verdict{margin-top:12px;font-size:12.5px;color:var(--green);min-height:1.2em}
+
+details.notes{margin-top:44px;border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.03);overflow:hidden}
+details.notes summary{padding:17px 21px;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:11px;list-style:none}
+details.notes summary::-webkit-details-marker{display:none}
+details.notes summary .chev{color:var(--orange);transition:transform .2s;display:inline-block}
+details.notes[open] summary .chev{transform:rotate(90deg)}
+details.notes .nbody{padding:0 21px 24px;font-size:14px;line-height:1.72;color:var(--ondk);max-width:76ch}
+details.notes h4{color:#fff;font-size:13.5px;margin:19px 0 7px;font-weight:600}
+details.notes strong{color:#fff}
+footer{border-top:1px solid var(--line);padding:22px clamp(16px,4vw,30px) 30px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--dimdk)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{.bar,.banner,.rule,.tabs,.handoff,.row-acts,details.notes,footer,#inputs{display:none!important}.out{max-height:none;color:#000;background:#fff}body{background:#fff;color:#000}}
+</style>
+<link rel="stylesheet" href="../assets/mcc-activity-shell.css">
+</head>
+<body data-mcc-activity="five-formats" data-activity-target="#lab">
+
+<div class="bar" data-mcc-legacy-nav>
+  <a class="home" href="../">AI Professional <span>Development</span></a>
+  <div class="sep" aria-hidden="true"></div>
+  <div class="where">One Source, Five Formats</div>
+</div>
+
+<main>
+  <div data-activity-shell-mount></div>
+  <div class="kicker">Faculty lab</div>
+  <h1>One Source, Five Formats<br><span>Give it the document. Then check the output.</span></h1>
+  <p class="lede">You already wrote the hard part: the lecture outline or the reading. Paste it once and this lab builds
+    five prompts that keep the AI tied to <strong>your</strong> material: a study guide, a practice quiz with an answer key,
+    discussion questions, a plain-language summary, and alt text for your images. <strong>Each one comes with a short
+    checklist, because a grounded answer can still be wrong.</strong></p>
+
+  <div class="banner safe"><span class="ic" aria-hidden="true">✓</span>
+    <p><strong>Nothing is sent anywhere from this page.</strong> It only builds prompts. Your draft is saved in this
+      browser so you can come back to it. You copy each prompt into the AI tool yourself.</p></div>
+  <div class="banner warn"><span class="ic" aria-hidden="true">!</span>
+    <p><strong>Use material you wrote, about the subject, not about students.</strong> Lecture notes are fine. Student
+      work, grades, or anything that names a student is red data and stays out of every AI tool. Publisher content may
+      be restricted by its license, so check before pasting a textbook chapter.</p></div>
+
+  <h2 class="sec">Why every prompt here looks the same at the top</h2>
+  <div class="rule">
+    <div><b><i>1</i>Only your source</b><span>Every prompt tells the tool to use your material and nothing else. That narrows what can go wrong.</span></div>
+    <div><b><i>2</i>Say what is missing</b><span>If it needs a fact you did not supply, it writes [NOT IN SOURCE] instead of making one up.</span></div>
+    <div><b><i>3</i>Show where it came from</b><span>Each item names the heading it came from, so checking takes minutes, not an afternoon.</span></div>
+  </div>
+
+  <h2 class="sec" id="lab">Build your five prompts</h2>
+  <div class="layout">
+    <section class="panel" id="inputs" aria-label="Your source material">
+      <h3 class="ph">1 · Your source</h3>
+      <div class="fields">
+        <div class="two">
+          <div class="f"><label for="course">Course</label><input id="course" placeholder="PSYC 2301, Intro to Psychology"></div>
+          <div class="f"><label for="level">Students</label>
+            <select id="level">
+              <option value="first-year college">First-year college</option>
+              <option value="second-year college">Second-year college</option>
+              <option value="dual-credit high school">Dual credit (high school)</option>
+              <option value="adult workforce and continuing education">Workforce / continuing ed</option>
+              <option value="developmental (college-readiness)">Developmental</option>
+            </select></div>
+        </div>
+        <div class="f"><label for="src">Lecture outline or reading <small>that you wrote</small></label>
+          <textarea id="src" placeholder="Paste your outline or reading here. Headings help: the prompts ask the AI to say which heading each item came from."></textarea>
+          <div class="wc" id="wc"></div></div>
+        <label class="toggle"><input type="checkbox" id="attach"> <span>My source is long. I will <b>attach the file</b> in the AI tool instead of pasting it here.</span></label>
+      </div>
+      <div class="alerts" id="alerts"></div>
+      <div class="row-acts">
+        <button class="btn" id="sample">Load a sample outline</button>
+        <button class="btn" id="clear">Clear</button>
+      </div>
+      <div class="flag" id="srcFlag" role="status"></div>
+    </section>
+
+    <section class="panel" aria-label="Prompts">
+      <h3 class="ph">2 · Pick a format, copy, then check</h3>
+      <div class="tabs" role="tablist" id="tabs"></div>
+      <div id="pane"></div>
+    </section>
+  </div>
+
+  <details class="notes">
+    <summary><span class="chev">&#9654;</span> Teaching notes — running this in a session</summary>
+    <div class="nbody">
+      <h4>The point is the checklist, not the prompts</h4>
+      <p>Faculty will leave with five useful prompts, but the habit is the real lesson. Grounding narrows the failure
+        mode; it does not close it. A quiz built only from your notes can still have two defensible answers, or an
+        answer key that quotes a sentence that does not quite say what the answer claims.</p>
+      <h4>Run it in twenty-five minutes</h4>
+      <p>Five minutes: everyone loads the sample or pastes their own outline. Ten minutes: each person runs the quiz
+        prompt in their tool of choice. Ten minutes: trade quizzes with a neighbor and work the checklist on each other's
+        answer key. Ask how many found a problem. Most tables will.</p>
+      <h4>Why the quiz asks for a quote</h4>
+      <p>"Quote the sentence that supports the answer" turns checking from rereading your notes into matching a quote.
+        It also exposes the common failure: the quote is real, but it supports a slightly different answer.</p>
+      <h4>Alt text is the one that needs the image</h4>
+      <p>The tool cannot see an image you have not attached. Without it, the tool will happily describe what it expects
+        the image to show. That makes a good live demonstration of the fluency-versus-accuracy point.</p>
+      <h4>Which tool</h4>
+      <p>Any of them. Microsoft 365 Copilot is available with your MCC account. Running the same prompt in two tools and
+        comparing the quizzes is a fast way to see that neither one is the answer key.</p>
+    </div>
+  </details>
+</main>
+
+<footer>
+  <div>Ted Gonzalez, JD/MBA</div>
+  <div>&copy; 2026 Ted Gonzalez, JD/MBA. All rights reserved.</div>
+</footer>
+
+<script src="../assets/mcc-qr.js" defer></script>
+<script src="../assets/mcc-content.js" defer></script>
+<script src="../assets/mcc-activity-shell.js" defer></script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+
+var TOOLS=[
+  ['Microsoft 365 Copilot','https://m365.cloud.microsoft/chat'],
+  ['Claude','https://claude.ai/new'],
+  ['ChatGPT','https://chatgpt.com/'],
+  ['LEX (several engines at once)','https://exmultis.com/mcc?src=mcc-pd-five-formats']
+];
+
+var SAMPLE='Unit 4: Classical Conditioning\n\n1. What it is\n- Learning by association: a neutral stimulus comes to trigger a response after being paired with a stimulus that already triggers it.\n- Described by Ivan Pavlov in his studies of digestion in dogs.\n\n2. Key terms\n- Unconditioned stimulus (US): triggers a response without learning (food).\n- Unconditioned response (UR): the unlearned response (salivating to food).\n- Neutral stimulus (NS): causes no response at first (a tone).\n- Conditioned stimulus (CS): the former neutral stimulus after pairing.\n- Conditioned response (CR): the learned response to the CS (salivating to the tone).\n\n3. How it changes over time\n- Acquisition: the CS-US link forms; timing matters, and the CS works best just before the US.\n- Extinction: the CR weakens when the CS appears repeatedly without the US.\n- Spontaneous recovery: after a pause, an extinguished CR can briefly return.\n- Generalization: similar stimuli trigger the CR. Discrimination: telling similar stimuli apart.\n\n4. Everyday examples\n- Feeling anxious at the sound of a dentist\'s drill.\n- A phone notification sound that makes you reach for your phone.\n\nFigure 4.1: Diagram of the three stages of conditioning (before, during, after).';
+
+var FORMATS=[
+  {id:'study-guide',label:'Study guide',blurb:'A one-page guide students can review from, in your terms and your order.',
+   opts:[{id:'len',label:'Length',choices:['one page','two pages','a half-page quick review']}],
+   task:function(o){return 'TASK: Create a study guide of about '+o.len+' for these students. Include:\n1. Key terms, each with a definition that uses my wording from the source.\n2. The main ideas, in the same order the source presents them.\n3. Three self-check questions at the end, answerable from the source alone.\nUse short headings and short bullets. Do not add examples, research findings or names that are not in the source.';},
+   checks:[
+    ['Every term and definition appears in my source.','The usual slip is a textbook definition swapped in for yours.'],
+    ['Nothing is added that I do not teach.','Watch for extra examples, dates or researchers.'],
+    ['The order matches how I teach it.','Students study in the order they see it.'],
+    ['Nothing important is missing.','Hold it next to your outline headings and look for gaps.'],
+    ['Any [NOT IN SOURCE] markers are resolved or removed.','That marker is the tool being honest. Decide what goes there.']]},
+  {id:'quiz',label:'Practice quiz',blurb:'Questions plus a separate answer key that quotes your source for every answer.',
+   opts:[{id:'n',label:'Questions',choices:['8','5','10','15']},{id:'kind',label:'Question types',choices:['multiple choice and short answer','multiple choice only','short answer only','true/false with a one-line explanation']}],
+   task:function(o){return 'TASK: Write a practice quiz of '+o.n+' questions ('+o.kind+') for these students.\n- Test understanding of the main ideas, not trivia or wording tricks.\n- Each multiple-choice question has exactly one correct answer and three wrong answers a confused student might pick.\n\nThen write a separate ANSWER KEY. For every answer, quote the exact sentence or bullet from the source that supports it, and name the heading it is under. If you cannot find a supporting quote, rewrite or drop the question.';},
+   checks:[
+    ['Every answer is actually supported by the quoted sentence.','A real quote can still support a slightly different answer.'],
+    ['Each multiple-choice question has only one defensible answer.','Read the wrong answers as a student who studied would.'],
+    ['The wrong answers are plausible, not silly or tricky.','Silly distractors make the quiz too easy to learn from.'],
+    ['It covers what I care about, not trivia.','Count how many questions hit your main outcomes.'],
+    ['The answer key is separated before students see the quiz.','It is easy to paste both by accident.']]},
+  {id:'discussion',label:'Discussion questions',blurb:'Questions that start from your material and push students to apply it.',
+   opts:[{id:'n',label:'Questions',choices:['5','3','8']},{id:'mode',label:'Setting',choices:['an in-class discussion','an online discussion board','small-group work']}],
+   task:function(o){return 'TASK: Write '+o.n+' discussion questions for '+o.mode+'.\nMix the types:\n- one that checks understanding of a main idea,\n- at least one that asks students to apply an idea to their own work, community or experience,\n- one that asks students to compare or weigh two ideas from the source.\nDo not build a question on facts that are not in the source. After each question, add one sentence on what a strong answer would include.';},
+   checks:[
+    ['Each question can be answered from the material plus thinking.','No question should depend on something you never taught.'],
+    ['At least one asks students to connect it to their own lives or work.','That is the question a model cannot answer for them.'],
+    ['None presumes facts that are not in my source.','Look for confident set-ups like "Since research shows..."'],
+    ['They fit the time and setting I have.','Five deep questions do not fit a ten-minute discussion.']]},
+  {id:'plain',label:'Plain-language summary',blurb:'Your material, rewritten for an easier reading level without losing anything that matters.',
+   opts:[{id:'grade',label:'Reading level',choices:['8th-grade','6th-grade','10th-grade']},{id:'len',label:'Length',choices:['about 250 words','about 150 words','about 400 words']}],
+   task:function(o){return 'TASK: Rewrite the source as a plain-language summary at about a '+o.grade+' reading level, '+o.len+'.\n- Keep every number, date, requirement and technical term exactly as written. Define each technical term in plain words the first time it appears.\n- Keep qualifiers such as "usually," "often" and "in most cases." Do not turn a hedge into a rule.\n- After the summary, list anything from the source you left out.';},
+   checks:[
+    ['Every number, date and requirement is unchanged.','Compare line by line. Simplifying is where numbers drift.'],
+    ['Nothing important was dropped.','Read the "left out" list it gave you. Is anything there essential?'],
+    ['Simplifying did not change the meaning.','"Usually" becoming "always" is the classic error.'],
+    ['Technical terms are kept and defined, not replaced.','Students still need the real vocabulary for the test.']]},
+  {id:'alt-text',label:'Alt text',blurb:'Descriptions of your images that carry what a student needs from them.',
+   opts:[{id:'n',label:'Images',choices:['1','2','3','4','5']}],
+   extra:{id:'purpose',label:'What each image is for',hint:'Optional. One line per image, e.g. "Figure 4.1 shows the three stages in order."'},
+   task:function(o){return 'TASK: I am attaching '+o.n+' image'+(o.n==='1'?'':'s')+' from this material. For each image, write:\n1. Alt text under 125 characters that gives a student what they need from the image, not what it looks like. Do not begin with "Image of" or "Picture of."\n2. If it is a chart, diagram or table, a longer description that states the data, steps or relationships in words.\nUse the source to understand why each image is there, but describe only what is actually visible in the image. If you cannot read part of an image, say so instead of guessing.'+(o.purpose?'\n\nWhat each image is for, in my words:\n'+o.purpose:'');},
+   checks:[
+    ['I attached the actual images.','Without them the tool describes what it expects to see.'],
+    ['It matches the real image.','Check every label, number and arrow against the picture.'],
+    ['It gives the teaching point, not decoration.','"Three labeled stages, left to right" beats "a colorful diagram."'],
+    ['Charts and diagrams have the long description too.','A screen reader user needs the data, not just the title.']]}
+];
+
+/* ---------- state ---------- */
+var KEY='mcc-five-formats-v1';
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'null')||{};}catch(e){return {};}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+var state=load();
+state.opts=state.opts||{};state.checks=state.checks||{};
+var current=FORMATS[0].id;
+
+['course','src'].forEach(function(id){if(state[id])$(id).value=state[id];});
+if(state.level)$('level').value=state.level;
+$('attach').checked=!!state.attach;
+
+/* ---------- red-data scan ---------- */
+function scan(text){
+  var out=[],t=String(text);
+  if(/\b\d{3}-\d{2}-\d{4}\b/.test(t))out.push('a Social Security number');
+  if(/\b[A-Z]?\d{7,9}\b/.test(t))out.push('an ID number');
+  if(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/.test(t))out.push('an email address');
+  [['\\bGPA\\b','a GPA'],['\\bgrade[sd]? (for|of)\\b','a student grade'],['transcript','a transcript'],['\\bISIR\\b','financial aid records'],['\\bFAFSA\\b','financial aid records'],['accommodation','disability information'],['student (work|essay|submission|paper)s?\\b','student work']].forEach(function(w){if(new RegExp(w[0],'i').test(t)&&out.indexOf(w[1])<0)out.push(w[1]);});
+  return out;
+}
+
+/* ---------- prompt ---------- */
+function optVals(f){var o={},s=state.opts[f.id]||{};(f.opts||[]).forEach(function(op){o[op.id]=s[op.id]||op.choices[0];});if(f.extra)o[f.extra.id]=(s[f.extra.id]||'').trim();return o;}
+function header(html){
+  var course=$('course').value.trim(),level=$('level').value,src=$('src').value.trim(),attach=$('attach').checked;
+  var c=course?course:'[course]';
+  var h='I teach '+(html?(course?esc(c):'<span class="blank">[course]</span>'):c)+' at a community college. My students are '+level+' students. Below is source material I wrote for the course.\n\nGROUND RULES\n- Use only the source material. Do not add facts, examples, dates, names or definitions that are not in it.\n- If something you would normally include is not in the source, write [NOT IN SOURCE] instead of filling it in.\n- After each item, name the heading or section of the source it came from.\n\n';
+  if(attach)h+='SOURCE MATERIAL\nThe source material is in the attached file.\n\n';
+  else{
+    var body=src?(html?'<span class="src">'+esc(src)+'</span>':src):(html?'<span class="blank">[paste your outline or reading on the left]</span>':'[paste your outline or reading here]');
+    h+='SOURCE MATERIAL\n"""\n'+body+'\n"""\n\n';
+  }
+  return h;
+}
+function promptFor(f,html){var t=f.task(optVals(f));return header(html)+(html?esc(t):t);}
+
+/* ---------- render ---------- */
+function doneCount(f){var c=state.checks[f.id]||{};return f.checks.filter(function(_,i){return c[i];}).length;}
+function renderTabs(){
+  $('tabs').innerHTML=FORMATS.map(function(f,i){var d=doneCount(f)===f.checks.length;
+    return '<button class="tab" role="tab" data-id="'+f.id+'" aria-selected="'+(f.id===current)+'"><span class="n">'+(i+1)+'</span>'+esc(f.label)+(d?' <span class="done" aria-label="checked">✓</span>':'')+'</button>';}).join('');
+  $('tabs').querySelectorAll('.tab').forEach(function(b){b.onclick=function(){select(b.dataset.id,true);};});
+}
+function renderPane(){
+  var f=FORMATS.find(function(x){return x.id===current;}),s=state.opts[f.id]||{};
+  var h='<div class="fmt-head"><h3>'+esc(f.label)+'</h3><p>'+esc(f.blurb)+'</p></div><div class="opts">';
+  (f.opts||[]).forEach(function(op){
+    h+='<div class="f"><label for="op-'+op.id+'">'+esc(op.label)+'</label><select id="op-'+op.id+'" data-op="'+op.id+'">'+op.choices.map(function(c){return '<option'+((s[op.id]||op.choices[0])===c?' selected':'')+'>'+esc(c)+'</option>';}).join('')+'</select></div>';
+  });
+  h+='</div>';
+  if(f.extra)h+='<div class="f" style="margin-top:12px"><label for="op-'+f.extra.id+'">'+esc(f.extra.label)+' <small>optional</small></label><textarea id="op-'+f.extra.id+'" data-op="'+f.extra.id+'" style="min-height:64px">'+esc(s[f.extra.id]||'')+'</textarea><div class="hint">'+esc(f.extra.hint)+'</div></div>';
+  h+='<div class="out" id="out" aria-live="polite"></div>';
+  h+='<div class="row-acts"><button class="btn primary" id="copy">Copy this prompt</button><button class="btn" id="copyAll" title="All five in one message. Separate prompts usually give better results.">Copy all five</button></div>';
+  h+='<div class="flag" id="flag" role="status"></div>';
+  h+='<div class="handoff"><small>Then open:</small>'+TOOLS.map(function(t){return '<a href="'+t[1]+'" target="_blank" rel="noopener">'+esc(t[0])+' ↗</a>';}).join('')+'</div>';
+  var c=state.checks[f.id]||{};
+  h+='<div class="checklist"><h4>Check before you use it <span id="ccount"></span></h4>'+f.checks.map(function(ck,i){return '<label><input type="checkbox" data-ck="'+i+'"'+(c[i]?' checked':'')+'><span>'+esc(ck[0])+'<span class="why">'+esc(ck[1])+'</span></span></label>';}).join('')+'<div class="verdict" id="verdict" role="status"></div></div>';
+  $('pane').innerHTML=h;
+  $('pane').querySelectorAll('[data-op]').forEach(function(el){el.addEventListener(el.tagName==='TEXTAREA'?'input':'change',function(){state.opts[f.id]=state.opts[f.id]||{};state.opts[f.id][el.dataset.op]=el.value;save();renderOut();});});
+  $('pane').querySelectorAll('[data-ck]').forEach(function(el){el.onchange=function(){state.checks[f.id]=state.checks[f.id]||{};state.checks[f.id][el.dataset.ck]=el.checked;save();renderChecks();renderTabs();};});
+  $('copy').onclick=function(){copy(promptFor(f,false),'Copied. Paste it into your AI tool'+($('attach').checked?' and attach your file.':'.'));};
+  $('copyAll').onclick=function(){
+    var parts=FORMATS.map(function(x,i){return 'PART '+(i+1)+' OF 5: '+x.label.toUpperCase()+'\n'+x.task(optVals(x));});
+    copy(header(false)+'Complete all five parts below, each under its own heading.\n\n'+parts.join('\n\n'),'Copied all five. Separate prompts usually give sharper results, so use this when time is short.');
+  };
+  renderOut();renderChecks();
+}
+function renderOut(){var f=FORMATS.find(function(x){return x.id===current;});var o=$('out');if(o)o.innerHTML=promptFor(f,true);}
+function renderChecks(){
+  var f=FORMATS.find(function(x){return x.id===current;}),n=doneCount(f),t=f.checks.length;
+  $('ccount').textContent=n+' of '+t;
+  $('verdict').textContent=n===t?'Checked. This one is ready to use with your name on it.':'';
+  if(FORMATS.every(function(x){return doneCount(x)===x.checks.length;}))document.dispatchEvent(new CustomEvent('mcc:activity-complete'));
+}
+function renderSrc(){
+  var src=$('src').value,w=src.trim()?src.trim().split(/\s+/).length:0;
+  $('wc').textContent=w?w.toLocaleString()+' words':'';
+  $('wc').className='wc'+(w>3000?' long':'');
+  if(w>3000)$('wc').textContent+=' · long sources work better attached as a file';
+  $('alerts').innerHTML=scan(src+' '+$('course').value).map(function(h){return '<div class="alert"><b>This looks like '+esc(h)+'.</b> Information about a specific student stays out of every AI tool. Remove it before you copy a prompt.</div>';}).join('');
+}
+function select(id,push){
+  if(!FORMATS.some(function(f){return f.id===id;}))return;
+  current=id;renderTabs();renderPane();
+  if(push&&history.replaceState)history.replaceState(null,'','#'+id);
+}
+
+/* ---------- copy ---------- */
+var copied=false;
+function copy(txt,msg){
+  var done=function(){$('flag').textContent=msg;copied=true;};
+  var fallback=function(){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){$('flag').textContent='Select the prompt text and copy it.';}ta.remove();};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,fallback);else fallback();
+}
+
+/* ---------- inputs ---------- */
+['course','src'].forEach(function(id){$(id).addEventListener('input',function(){state[id]=$(id).value;save();renderSrc();renderOut();});});
+$('level').onchange=function(){state.level=$('level').value;save();renderOut();};
+$('attach').onchange=function(){state.attach=$('attach').checked;save();renderOut();};
+$('sample').onclick=function(){$('src').value=SAMPLE;$('course').value='PSYC 2301, General Psychology';state.src=SAMPLE;state.course=$('course').value;save();renderSrc();renderOut();$('srcFlag').textContent='Sample loaded. It is an outline written for this lab.';};
+$('clear').onclick=function(){var b=$('clear');if(!b.dataset.armed){b.dataset.armed='1';b.textContent='Click again to clear';return;}
+  delete b.dataset.armed;b.textContent='Clear';$('src').value='';$('course').value='';state={opts:{},checks:{}};save();renderSrc();renderTabs();renderPane();$('srcFlag').textContent='Cleared.';};
+
+/* ---------- keys ---------- */
+document.addEventListener('keydown',function(e){
+  if(e.target.closest('input,textarea,select')||e.metaKey||e.ctrlKey||e.altKey)return;
+  var n=parseInt(e.key,10);if(n>=1&&n<=FORMATS.length){select(FORMATS[n-1].id,true);}
+});
+
+window.addEventListener('hashchange',function(){var x=(location.hash||'').slice(1);if(x!==current)select(x,false);});
+var h=(location.hash||'').slice(1);
+select(FORMATS.some(function(f){return f.id===h;})?h:current,false);
+renderSrc();
+})();
+</script>
+</body>
+</html>
