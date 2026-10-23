@@ -190,12 +190,12 @@ const LIBRARY = [
     name: 'PD Day',
     who:  'Session materials from MCC Professional Development Day. Open to faculty and staff.',
     decks: [
-      { id:'pd-day-2026', tier:'PD Day 2026',
+      { id:'pd-day-2026', file:'AI_That_Actually_Helps_MCC_PD_Day_2026_v3_updated', officeViewer:true, tier:'PD Day 2026',
         name:'AI That Actually Helps — Practical Workflows for MCC Employees',
         slides:18, time:'About 65 minutes · October 23, 2026',
         desc:'Dr. Yolanda Gonzalez and Ted Gonzalez. Choose, Prompt, Check, Own — with MCC’s AI policy (Handbook §1.11), what the law protects, the data line, and two prompting slides.' },
 
-      { id:'pd-day-2026-handout', tier:'Handout', pdfOnly:true,
+      { id:'pd-day-2026-handout', file:'AI_That_Actually_Helps_Participant_Handout', tier:'Handout', pdfOnly:true,
         name:'Participant Handout — Build Your Prompt',
         slides:2, unit:'pages', time:'Print double-sided, black and white',
         desc:'Front: Choose, Prompt, Check, Own; choosing the right task; the four-part prompt. Back: a worksheet for writing your own prompt.' }
@@ -283,17 +283,28 @@ function load(ci, di, push, page){
   const assetRoot = inReviewPreview
     ? 'https://tedg145.github.io/mcc-professional-development/presentations/files/'
     : 'files/';
-  const pdf = assetRoot + d.id + '.pdf';
-  const pptx = assetRoot + d.id + '.pptx';
+  /* `file` (optional) names the files when they differ from the id; the id stays the deep link. */
+  const base = d.file || d.id;
+  const pdf = assetRoot + base + '.pdf';
+  const pptx = assetRoot + base + '.pptx';
+  /* officeViewer: no PDF uploaded, so show the .pptx in Microsoft's PowerPoint web viewer. */
+  const office = d.officeViewer
+    ? 'https://view.officeapps.live.com/op/{mode}.aspx?src=' + encodeURIComponent(new URL(pptx, location.href).href)
+    : '';
   const at = page ? '#page=' + page : '';
-  acts.innerHTML = d.pdfOnly
+  acts.innerHTML = d.officeViewer
+    ? '<a class="btn primary" href="' + office.replace('{mode}', 'view') + '" target="_blank" rel="noopener">Present full screen &#8599;</a>'
+      + '<a class="btn" href="' + pptx + '" download>Download .pptx</a>'
+    : d.pdfOnly
     ? '<a class="btn primary" href="' + pdf + '" target="_blank" rel="noopener">Open to print &#8599;</a>'
       + '<a class="btn" href="' + pdf + '" download>Download .pdf</a>'
     : '<a class="btn primary" href="' + pdf + at + '" target="_blank" rel="noopener">Present full screen &#8599;</a>'
       + '<a class="btn" href="' + pptx + '" download>Download .pptx</a>';
   // view=Fit shows the WHOLE slide with no scrolling. Keep it as the ONLY fragment
   // parameter — adding &toolbar=1 makes Chrome ignore the fit entirely.
-  frame.innerHTML = '<iframe src="' + pdf + (page ? '#page=' + page + '&view=Fit' : '#view=Fit') + '" title="' + esc(d.name) + '"></iframe>';
+  frame.innerHTML = d.officeViewer
+    ? '<iframe src="' + office.replace('{mode}', 'embed') + '" title="' + esc(d.name) + '" allowfullscreen></iframe>'
+    : '<iframe src="' + pdf + (page ? '#page=' + page + '&view=Fit' : '#view=Fit') + '" title="' + esc(d.name) + '"></iframe>';
   document.title = d.name + ' — MCC Presentations';
   if(push !== false){
     try{ history.replaceState(null, '', '#' + d.id); }catch(err){ /* cross-origin review renderer */ }
