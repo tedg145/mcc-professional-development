@@ -232,7 +232,10 @@ const LIBRARY = [
     name: 'Faculty',
     who:  'Instructional faculty — assignment design, rubrics, and academic integrity.',
     decks: [
-      /* Faculty decks go here. Copy the shape of a Staff deck above. */
+      { id:'ai-course-design', file:'MCC_AI_Course_Design_v3', tier:'Workshop', pdfDeck:true,
+        name:'AI-Powered Course Design — From OER Resources to Ready-to-Teach Courses',
+        slides:17, time:'90 minutes · October 28, 2026',
+        desc:'Find OER on OER Commons and OERTX, direct the AI with constraints, and build one course component. Two workflows: paid tools for a whole course, free tools one module at a time.' }
     ]
   }
 ];
@@ -295,6 +298,9 @@ function load(ci, di, push, page){
   acts.innerHTML = d.officeViewer
     ? '<a class="btn primary" href="' + office.replace('{mode}', 'view') + '" target="_blank" rel="noopener">Present full screen &#8599;</a>'
       + '<a class="btn" href="' + pptx + '" download>Download .pptx</a>'
+    : d.pdfDeck
+    ? '<a class="btn primary" href="' + pdf + at + '" target="_blank" rel="noopener">Present full screen &#8599;</a>'
+      + '<a class="btn" href="' + pdf + '" download>Download .pdf</a>'
     : d.pdfOnly
     ? '<a class="btn primary" href="' + pdf + '" target="_blank" rel="noopener">Open to print &#8599;</a>'
       + '<a class="btn" href="' + pdf + '" download>Download .pdf</a>'
